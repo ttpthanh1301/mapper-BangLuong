@@ -1,0 +1,43 @@
+@model DanhMucKhenThuong
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>DanhMucKhenThuong</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="MaKT" class="control-label"></label>
+                <input asp-for="MaKT" class="form-control" />
+                <span asp-validation-for="MaKT" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TenKhenThuong" class="control-label"></label>
+                <input asp-for="TenKhenThuong" class="form-control" />
+                <span asp-validation-for="TenKhenThuong" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SoTien" class="control-label"></label>
+                <input asp-for="SoTien" class="form-control" />
+                <span asp-validation-for="SoTien" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

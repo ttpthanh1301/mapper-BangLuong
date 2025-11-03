@@ -1,0 +1,58 @@
+@using BangLuong.ViewModels
+@using static BangLuong.ViewModels.NhanVienViewModels
+@model PaginatedList<NhanVienViewModel>
+
+@{
+    var prevDisabledClass = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabledClass = !Model.HasNextPage ? "disabled" : "";
+}
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<form asp-action="Index">
+    <div class="d-flex">
+        <input class="form-control" placeholder="Search..." value="@ViewData["CurrentFilter"]" type="text"
+               autocomplete="off" name="SearchString" />
+    </div>
+</form>
+<table class="table">
+<tbody>
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.HoTen</td>
+        <td>@item.NgaySinh?.ToString("dd/MM/yyyy")</td>
+        <td>@item.GioiTinh</td>
+        <td>@item.CCCD</td>
+        <td>@item.DiaChi</td>
+        <td>@item.SoDienThoai</td>
+        <td>@item.Email</td>
+        <td>@item.MaSoThue</td>
+        <td>@item.TaiKhoanNganHang</td>
+        <td>@item.TenNganHang</td>
+        <td>@item.NgayVaoLam.ToString("dd/MM/yyyy")</td>
+        <td>@item.TrangThai</td>
+        <td>@item.MaPB</td>
+        <td>@item.MaCV</td>
+        <td>
+            <a asp-action="Edit" asp-route-id="@item.MaNV">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.MaNV">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.MaNV">Delete</a>
+        </td>
+    </tr>
+}
+</tbody>
+</table>
+
+ 
+<a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-default @prevDisabledClass">
+    Previous
+</a>
+<a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-default @nextDisabledClass">
+    Next
+</a>
+

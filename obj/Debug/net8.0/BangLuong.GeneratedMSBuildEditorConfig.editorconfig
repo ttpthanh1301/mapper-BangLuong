@@ -1,0 +1,355 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = BangLuong
+build_property.RootNamespace = BangLuong
+build_property.ProjectDir = /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong
+build_property._RazorSourceGeneratorDebug = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChamCong/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hhbUNvbmcvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChamCong/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hhbUNvbmcvRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChamCong/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hhbUNvbmcvRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChamCong/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hhbUNvbmcvRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChamCong/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hhbUNvbmcvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietKhenThuong/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldEtoZW5UaHVvbmcvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietKhenThuong/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldEtoZW5UaHVvbmcvRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietKhenThuong/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldEtoZW5UaHVvbmcvRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietKhenThuong/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldEtoZW5UaHVvbmcvRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietKhenThuong/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldEtoZW5UaHVvbmcvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietKyLuat/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldEt5THVhdC9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietKyLuat/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldEt5THVhdC9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietKyLuat/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldEt5THVhdC9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietKyLuat/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldEt5THVhdC9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietKyLuat/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldEt5THVhdC9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietPhuCap/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldFBodUNhcC9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietPhuCap/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldFBodUNhcC9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietPhuCap/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldFBodUNhcC9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietPhuCap/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldFBodUNhcC9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChiTietPhuCap/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hpVGlldFBodUNhcC9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChucVu/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2h1Y1Z1L0NyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChucVu/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2h1Y1Z1L0RlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChucVu/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2h1Y1Z1L0RldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChucVu/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2h1Y1Z1L0VkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChucVu/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2h1Y1Z1L0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucKhenThuong/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y0toZW5UaHVvbmcvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucKhenThuong/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y0toZW5UaHVvbmcvRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucKhenThuong/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y0toZW5UaHVvbmcvRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucKhenThuong/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y0toZW5UaHVvbmcvRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucKhenThuong/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y0toZW5UaHVvbmcvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucKyLuat/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y0t5THVhdC9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucKyLuat/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y0t5THVhdC9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucKyLuat/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y0t5THVhdC9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucKyLuat/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y0t5THVhdC9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucKyLuat/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y0t5THVhdC9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucPhuCap/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y1BodUNhcC9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucPhuCap/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y1BodUNhcC9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucPhuCap/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y1BodUNhcC9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucPhuCap/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y1BodUNhcC9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/DanhMucPhuCap/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFuaE11Y1BodUNhcC9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Qcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/HopDong/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9wRG9uZy9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/HopDong/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9wRG9uZy9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/HopDong/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9wRG9uZy9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/HopDong/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9wRG9uZy9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/HopDong/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9wRG9uZy9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NguoiDung/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmd1b2lEdW5nL0NyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NguoiDung/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmd1b2lEdW5nL0RlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NguoiDung/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmd1b2lEdW5nL0RldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NguoiDung/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmd1b2lEdW5nL0VkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NguoiDung/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmd1b2lEdW5nL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NguoiPhuThuoc/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmd1b2lQaHVUaHVvYy9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NguoiPhuThuoc/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmd1b2lQaHVUaHVvYy9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NguoiPhuThuoc/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmd1b2lQaHVUaHVvYy9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NguoiPhuThuoc/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmd1b2lQaHVUaHVvYy9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NguoiPhuThuoc/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmd1b2lQaHVUaHVvYy9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NhanVien/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmhhblZpZW4vQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NhanVien/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmhhblZpZW4vRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NhanVien/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmhhblZpZW4vRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NhanVien/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmhhblZpZW4vRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/NhanVien/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTmhhblZpZW4vSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/PhongBan/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGhvbmdCYW4vQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/PhongBan/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGhvbmdCYW4vRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/PhongBan/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGhvbmdCYW4vRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/PhongBan/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGhvbmdCYW4vRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/PhongBan/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGhvbmdCYW4vSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ThamSoHeThong/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGhhbVNvSGVUaG9uZy9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ThamSoHeThong/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGhhbVNvSGVUaG9uZy9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ThamSoHeThong/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGhhbVNvSGVUaG9uZy9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ThamSoHeThong/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGhhbVNvSGVUaG9uZy9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ThamSoHeThong/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGhhbVNvSGVUaG9uZy9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/TongHopCong/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVG9uZ0hvcENvbmcvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/TongHopCong/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVG9uZ0hvcENvbmcvRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/TongHopCong/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVG9uZ0hvcENvbmcvRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/TongHopCong/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVG9uZ0hvcENvbmcvRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/TongHopCong/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVG9uZ0hvcENvbmcvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-a2zgeq2fd8

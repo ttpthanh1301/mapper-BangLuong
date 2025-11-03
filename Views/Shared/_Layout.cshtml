@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Bảng lương</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BangLuong.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Bảng Lương</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+
+                        <!-- Trang chủ -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+
+                        <!-- Quản lý nhân sự -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="NhanVien" asp-action="Index">Nhân viên</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="NguoiPhuThuoc" asp-action="Index">Người phụ thuộc</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="PhongBan" asp-action="Index">Phòng ban</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="ChucVu" asp-action="Index">Chức vụ</a>
+                        </li>
+
+                        <!-- Hợp đồng & Chấm công -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="congMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Hợp đồng & Chấm công
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="congMenu">
+                                <li><a class="dropdown-item" asp-controller="HopDong" asp-action="Index">Hợp đồng</a></li>
+                                <li><a class="dropdown-item" asp-controller="ChamCong" asp-action="Index">Chấm công</a></li>
+                                <li><a class="dropdown-item" asp-controller="TongHopCong" asp-action="Index">Tổng hợp công</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Khen thưởng & Phụ cấp -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="rewardMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Khen thưởng & Phụ cấp
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="rewardMenu">
+                                <li><a class="dropdown-item" asp-controller="DanhMucPhuCap" asp-action="Index">Danh mục phụ cấp</a></li>
+                                <li><a class="dropdown-item" asp-controller="ChiTietPhuCap" asp-action="Index">Chi tiết phụ cấp</a></li>
+                                <li><a class="dropdown-item" asp-controller="DanhMucKhenThuong" asp-action="Index">Danh mục khen thưởng</a></li>
+                                <li><a class="dropdown-item" asp-controller="ChiTietKhenThuong" asp-action="Index">Chi tiết khen thưởng</a></li>
+                                <li><a class="dropdown-item" asp-controller="DanhMucKyLuat" asp-action="Index">Danh mục kỷ luật</a></li>
+                                <li><a class="dropdown-item" asp-controller="ChiTietKyLuat" asp-action="Index">Chi tiết kỷ luật</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Hệ thống -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="systemMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Hệ thống
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="systemMenu">
+                                <li><a class="dropdown-item" asp-controller="NguoiDung" asp-action="Index">Người dùng</a></li>
+                                <li><a class="dropdown-item" asp-controller="ThamSoHeThong" asp-action="Index">Tham số hệ thống</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ⚠️ Quan trọng: phải có RenderBody -->
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted mt-3">
+        <div class="container">
+            &copy; @DateTime.Now.Year - Bảng Lương
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
