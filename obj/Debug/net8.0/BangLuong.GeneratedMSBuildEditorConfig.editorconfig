@@ -26,6 +26,26 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong
 build_property._RazorSourceGeneratorDebug = 
 
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/BangTinhLuong/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFuZ1RpbmhMdW9uZy9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/BangTinhLuong/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFuZ1RpbmhMdW9uZy9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/BangTinhLuong/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFuZ1RpbmhMdW9uZy9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/BangTinhLuong/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFuZ1RpbmhMdW9uZy9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/BangTinhLuong/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFuZ1RpbmhMdW9uZy9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChamCong/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hhbUNvbmcvQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

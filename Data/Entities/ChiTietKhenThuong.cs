@@ -8,16 +8,11 @@ public class ChiTietKhenThuong
     [Key]
     public int MaCTKT { get; set; }
 
-    [Required, DataType(DataType.Date)]
+    [DataType(DataType.Date)]
     public DateTime NgayKhenThuong { get; set; }
-
-    [StringLength(255)]
     public string? LyDo { get; set; }
-
-    [Required, StringLength(10)]
     public string MaKT { get; set; } = null!;
 
-    [Required, StringLength(15)]
     public string MaNV { get; set; } = null!;
 
     [ForeignKey(nameof(MaKT))]
