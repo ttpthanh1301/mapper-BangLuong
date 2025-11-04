@@ -7,23 +7,17 @@ public class NguoiPhuThuoc
 {
     [Key]
     public int MaNPT { get; set; }
-
-    [Required, StringLength(100)]
     public string HoTen { get; set; } = null!;
 
-    [Required, DataType(DataType.Date)]
+    [DataType(DataType.Date)]
     public DateTime NgaySinh { get; set; }
-
-    [Required, StringLength(50)]
     public string MoiQuanHe { get; set; } = null!;
 
-    [Required, DataType(DataType.Date)]
+    [DataType(DataType.Date)]
     public DateTime ThoiGianBatDauGiamTru { get; set; }
 
     [DataType(DataType.Date)]
     public DateTime? ThoiGianKetThucGiamTru { get; set; }
-
-    [Required, StringLength(15)]
     public string MaNV { get; set; } = null!;
 
     [ForeignKey(nameof(MaNV))]

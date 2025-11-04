@@ -8,14 +8,9 @@ namespace BangLuong.Data.Entities;
 public class PhongBan
 {
     [Key]
-    [StringLength(10)]
     public string MaPB { get; set; } = null!;
-
-    [Required]
-    [StringLength(100)]
     public string TenPB { get; set; } = null!;
 
-    [StringLength(255)]
     public string? MoTa { get; set; }
 
     // Navigation

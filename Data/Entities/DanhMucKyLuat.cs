@@ -5,14 +5,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public class DanhMucKyLuat
 {
-    [Key, StringLength(10)]
+    [Key]
     public string MaKL { get; set; } = null!;
 
-    [Required, StringLength(100)]
     public string TenKyLuat { get; set; } = null!;
-
-    [Precision(18, 2)]
-    [Required]
     public decimal SoTienPhat { get; set; }
 
     public ICollection<ChiTietKyLuat>? ChiTietKyLuat { get; set; }

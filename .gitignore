@@ -1,0 +1,48 @@
+# --------------------
+# 1. Thư mục và file build
+# --------------------
+[Bb]in/
+[Oo]bj/
+
+# Loại trừ output build của Roslyn
+*.pdb
+*.suo
+
+# --------------------
+# 2. File khởi tạo / cấu hình
+# --------------------
+appsettings.Development.json
+appsettings.json       # Nếu có thông tin nhạy cảm, nên ignore
+#!appsettings.json     # Bỏ comment nếu muốn giữ file gốc (không có secret)
+
+Properties/launchSettings.json
+
+# File tạm của IDE
+*.user
+*.log
+*.cache
+*.vs/
+
+# --------------------
+# 3. IDE / .NET specifics
+# --------------------
+.vscode/*
+!**/.vscode/extensions.json
+*.DotSettings.user     # ReSharper
+*.csproj.user
+*.sln.idef
+*.sln.docstates
+
+# --------------------
+# 4. macOS system files
+# --------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# --------------------
+# 5. File database (nếu có)
+# --------------------
+*.mdf
+*.ldf
+*.sdf

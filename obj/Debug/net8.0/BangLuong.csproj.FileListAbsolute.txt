@@ -277,3 +277,4 @@
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/BangLuong.genruntimeconfig.cache
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/ref/BangLuong.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/BCrypt.Net-Next.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/BangLuong.sourcelink.json
