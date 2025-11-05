@@ -1,4 +1,4 @@
-@model IEnumerable<ChiTietKhenThuong>
+@model IEnumerable<ChiTietKhenThuongViewModels.ChiTietKhenThuongViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -19,10 +19,10 @@
                 @Html.DisplayNameFor(model => model.LyDo)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DanhMucKhenThuong)
+                @Html.DisplayNameFor(model => model.MaKT)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NhanVien)
+                @Html.DisplayNameFor(model => model.MaNV)
             </th>
             <th></th>
         </tr>
@@ -37,10 +37,10 @@
                 @Html.DisplayFor(modelItem => item.LyDo)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DanhMucKhenThuong.MaKT)
+                @Html.DisplayFor(modelItem => item.MaKT)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.NhanVien.MaNV)
+                @Html.DisplayFor(modelItem => item.MaNV)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.MaCTKT">Edit</a> |

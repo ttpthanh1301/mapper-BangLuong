@@ -1,4 +1,4 @@
-@model BangLuong.Data.Entities.HopDong
+@model HopDongViewModels.HopDongViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -77,10 +77,10 @@
             @Html.DisplayFor(model => model.TrangThai)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NhanVien)
+            @Html.DisplayNameFor(model => model.MaNV)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NhanVien.MaNV)
+            @Html.DisplayFor(model => model.MaNV)
         </dd>
     </dl>
 </div>

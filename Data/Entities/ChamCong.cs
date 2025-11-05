@@ -17,6 +17,7 @@ public class ChamCong
 
     [DataType(DataType.Time)]
     public TimeSpan? GioRa { get; set; }
+    [Precision(18, 2)]
 
     public decimal? SoGioTangCa { get; set; }
     public string MaNV { get; set; } = null!;

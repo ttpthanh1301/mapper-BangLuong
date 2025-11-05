@@ -1,48 +1,43 @@
-# --------------------
-# 1. Thư mục và file build
-# --------------------
-[Bb]in/
-[Oo]bj/
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+nupkg/
 
-# Loại trừ output build của Roslyn
-*.pdb
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# Visual Studio
+.vs/
+
+# Fleet
+.fleet/
+
+# Code Rush
+.cr/
+
+# User-specific files
 *.suo
-
-# --------------------
-# 2. File khởi tạo / cấu hình
-# --------------------
-appsettings.Development.json
-appsettings.json       # Nếu có thông tin nhạy cảm, nên ignore
-#!appsettings.json     # Bỏ comment nếu muốn giữ file gốc (không có secret)
-
-Properties/launchSettings.json
-
-# File tạm của IDE
 *.user
-*.log
-*.cache
-*.vs/
-
-# --------------------
-# 3. IDE / .NET specifics
-# --------------------
-.vscode/*
-!**/.vscode/extensions.json
-*.DotSettings.user     # ReSharper
-*.csproj.user
-*.sln.idef
+*.userosscache
 *.sln.docstates
 
-# --------------------
-# 4. macOS system files
-# --------------------
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# --------------------
-# 5. File database (nếu có)
-# --------------------
-*.mdf
-*.ldf
-*.sdf
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn

@@ -7,23 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangLuong.Data;
 using BangLuong.Data.Entities;
+using AutoMapper;
+using static BangLuong.ViewModels.HopDongViewModels;
 
 namespace BangLuong.Controllers
 {
     public class HopDongController : Controller
     {
         private readonly BangLuongDbContext _context;
-
-        public HopDongController(BangLuongDbContext context)
+        private readonly IMapper _mapper;
+        public HopDongController(BangLuongDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: HopDong
         public async Task<IActionResult> Index()
         {
             var bangLuongDbContext = _context.HopDong.Include(h => h.NhanVien);
-            return View(await bangLuongDbContext.ToListAsync());
+            var hopDong = await bangLuongDbContext.ToListAsync();
+            return View(_mapper.Map<IEnumerable<HopDongViewModel>>(hopDong));
         }
 
         // GET: HopDong/Details/5
@@ -42,7 +46,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(hopDong);
+            return View(_mapper.Map<HopDongViewModel>(hopDong));
         }
 
         // GET: HopDong/Create
@@ -57,16 +61,17 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaHD,SoHopDong,LoaiHD,NgayBatDau,NgayKetThuc,LuongCoBan,PhuCapAnTrua,PhuCapXangXe,PhuCapDienThoai,PhuCapTrachNhiem,PhuCapKhac,TrangThai,MaNV")] HopDong hopDong)
+        public async Task<IActionResult> Create(HopDongRequest request)
         {
             if (ModelState.IsValid)
             {
+                 var hopDong = _mapper.Map<HopDong>(request);
                 _context.Add(hopDong);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", hopDong.MaNV);
-            return View(hopDong);
+            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", request.MaNV);
+            return View(request);
         }
 
         // GET: HopDong/Edit/5
@@ -83,7 +88,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
             ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", hopDong.MaNV);
-            return View(hopDong);
+            return View(_mapper.Map<HopDongViewModel>(hopDong));
         }
 
         // POST: HopDong/Edit/5
@@ -91,7 +96,7 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaHD,SoHopDong,LoaiHD,NgayBatDau,NgayKetThuc,LuongCoBan,PhuCapAnTrua,PhuCapXangXe,PhuCapDienThoai,PhuCapTrachNhiem,PhuCapKhac,TrangThai,MaNV")] HopDong hopDong)
+        public async Task<IActionResult> Edit(int id, HopDongViewModel hopDong)
         {
             if (id != hopDong.MaHD)
             {
@@ -102,7 +107,7 @@ namespace BangLuong.Controllers
             {
                 try
                 {
-                    _context.Update(hopDong);
+                    _context.Update(_mapper.Map<HopDong>(hopDong));
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -138,7 +143,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(hopDong);
+            return View(_mapper.Map<HopDongViewModel>(hopDong));
         }
 
         // POST: HopDong/Delete/5

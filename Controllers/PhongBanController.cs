@@ -7,22 +7,28 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangLuong.Data;
 using BangLuong.Data.Entities;
+using AutoMapper;
+using static BangLuong.ViewModels.PhongBanViewModels;
 
 namespace BangLuong.Controllers
 {
     public class PhongBanController : Controller
     {
         private readonly BangLuongDbContext _context;
+        private readonly IMapper _mapper;
 
-        public PhongBanController(BangLuongDbContext context)
+        public PhongBanController(BangLuongDbContext context,IMapper mapper )
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: PhongBan
         public async Task<IActionResult> Index()
         {
-            return View(await _context.PhongBan.ToListAsync());
+            var phongBan = await _context.PhongBan.ToListAsync(); 
+            return View(_mapper.Map<IEnumerable<PhongBanViewModel>>(phongBan));
+
         }
 
         // GET: PhongBan/Details/5
@@ -40,7 +46,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(phongBan);
+            return View(_mapper.Map<PhongBanViewModel>(phongBan));
         }
 
         // GET: PhongBan/Create
@@ -54,15 +60,16 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaPB,TenPB,MoTa")] PhongBan phongBan)
+        public async Task<IActionResult> Create(PhongBanRequest request)
         {
             if (ModelState.IsValid)
             {
+                var phongBan = _mapper.Map<PhongBan>(request);
                 _context.Add(phongBan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(phongBan);
+            return View(request);
         }
 
         // GET: PhongBan/Edit/5
@@ -78,7 +85,7 @@ namespace BangLuong.Controllers
             {
                 return NotFound();
             }
-            return View(phongBan);
+            return View(_mapper.Map<PhongBanViewModel>(phongBan));
         }
 
         // POST: PhongBan/Edit/5
@@ -86,7 +93,7 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaPB,TenPB,MoTa")] PhongBan phongBan)
+        public async Task<IActionResult> Edit(string id, PhongBanViewModel phongBan)
         {
             if (id != phongBan.MaPB)
             {
@@ -97,7 +104,7 @@ namespace BangLuong.Controllers
             {
                 try
                 {
-                    _context.Update(phongBan);
+                    _context.Update(_mapper.Map<PhongBan>(phongBan));
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -131,7 +138,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(phongBan);
+            return View(_mapper.Map<PhongBanViewModel>(phongBan));
         }
 
         // POST: PhongBan/Delete/5

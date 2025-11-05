@@ -1,4 +1,4 @@
-@model ChamCong
+@model ChamCongViewModels.ChamCongViewModel;
 
 @{
     ViewData["Title"] = "Delete";
@@ -36,10 +36,10 @@
             @Html.DisplayFor(model => model.SoGioTangCa)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NhanVien)
+            @Html.DisplayNameFor(model => model.MaNV)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NhanVien.MaNV)
+            @Html.DisplayFor(model => model.MaNV)
         </dd>
     </dl>
     

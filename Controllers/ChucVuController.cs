@@ -7,22 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangLuong.Data;
 using BangLuong.Data.Entities;
+using AutoMapper;
+using static BangLuong.ViewModels.ChucVuViewModels;
 
 namespace BangLuong.Controllers
 {
     public class ChucVuController : Controller
     {
         private readonly BangLuongDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ChucVuController(BangLuongDbContext context)
+        public ChucVuController(BangLuongDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: ChucVu
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ChucVu.ToListAsync());
+            var chucVu = await _context.ChucVu.ToListAsync();
+            return View(_mapper.Map<IEnumerable<ChucVuViewModel>>(chucVu));
         }
 
         // GET: ChucVu/Details/5
@@ -40,7 +45,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(chucVu);
+            return View(_mapper.Map<ChucVuViewModel>(chucVu));
         }
 
         // GET: ChucVu/Create
@@ -54,15 +59,16 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaCV,TenCV,MoTa")] ChucVu chucVu)
+        public async Task<IActionResult> Create(ChucVuRequest request)
         {
             if (ModelState.IsValid)
             {
+                var chucVu = _mapper.Map<ChucVu>(request);
                 _context.Add(chucVu);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(chucVu);
+            return View(request);
         }
 
         // GET: ChucVu/Edit/5
@@ -78,7 +84,7 @@ namespace BangLuong.Controllers
             {
                 return NotFound();
             }
-            return View(chucVu);
+            return View(_mapper.Map<ChucVuViewModel>(chucVu));
         }
 
         // POST: ChucVu/Edit/5
@@ -86,7 +92,7 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaCV,TenCV,MoTa")] ChucVu chucVu)
+        public async Task<IActionResult> Edit(string id, ChucVuViewModel chucVu)
         {
             if (id != chucVu.MaCV)
             {
@@ -97,7 +103,7 @@ namespace BangLuong.Controllers
             {
                 try
                 {
-                    _context.Update(chucVu);
+                    _context.Update(_mapper.Map<ChucVu>(chucVu));
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -131,7 +137,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(chucVu);
+            return View(_mapper.Map<ChucVuViewModel>(chucVu));
         }
 
         // POST: ChucVu/Delete/5

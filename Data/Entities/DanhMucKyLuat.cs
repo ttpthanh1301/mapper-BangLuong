@@ -9,18 +9,19 @@ public class DanhMucKyLuat
     public string MaKL { get; set; } = null!;
 
     public string TenKyLuat { get; set; } = null!;
+    [Precision(18, 2)]
     public decimal SoTienPhat { get; set; }
 
     public ICollection<ChiTietKyLuat>? ChiTietKyLuat { get; set; }
 }
-public class  DanhMucKyLuatConfiguration : IEntityTypeConfiguration< DanhMucKyLuat>
+public class DanhMucKyLuatConfiguration : IEntityTypeConfiguration<DanhMucKyLuat>
 {
-        public void Configure(EntityTypeBuilder< DanhMucKyLuat> builder)
+    public void Configure(EntityTypeBuilder<DanhMucKyLuat> builder)
     {
         builder.HasKey(e => e.MaKL);
 
         builder.HasMany(e => e.ChiTietKyLuat)
-               .WithOne(e => e. DanhMucKyLuat)
+               .WithOne(e => e.DanhMucKyLuat)
                .HasForeignKey(e => e.MaKL)
                .HasPrincipalKey(e => e.MaKL);
     }

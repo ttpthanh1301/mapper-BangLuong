@@ -6,23 +6,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangLuong.Data;
+using AutoMapper;
+using static BangLuong.ViewModels.ChamCongViewModels;
 
 namespace BangLuong.Controllers
 {
     public class ChamCongController : Controller
     {
         private readonly BangLuongDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ChamCongController(BangLuongDbContext context)
+        public ChamCongController(BangLuongDbContext context,IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: ChamCong
         public async Task<IActionResult> Index()
         {
             var bangLuongDbContext = _context.ChamCong.Include(c => c.NhanVien);
-            return View(await bangLuongDbContext.ToListAsync());
+            var chamCong = await bangLuongDbContext.ToListAsync();
+            return View(_mapper.Map<IEnumerable<ChamCongViewModel>>(chamCong));
         }
 
         // GET: ChamCong/Details/5
@@ -41,7 +46,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(chamCong);
+            return View(_mapper.Map<ChamCongViewModel>(chamCong));
         }
 
         // GET: ChamCong/Create
@@ -56,16 +61,17 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaCC,NgayChamCong,GioVao,GioRa,SoGioTangCa,MaNV")] ChamCong chamCong)
+        public async Task<IActionResult> Create(ChamCongRequest request)
         {
             if (ModelState.IsValid)
             {
+                var chamCong = _mapper.Map<ChamCong>(Request);
                 _context.Add(chamCong);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", chamCong.MaNV);
-            return View(chamCong);
+            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", request.MaNV);
+            return View(request);
         }
 
         // GET: ChamCong/Edit/5
@@ -82,7 +88,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
             ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", chamCong.MaNV);
-            return View(chamCong);
+            return View(_mapper.Map<ChamCongViewModel>(chamCong));
         }
 
         // POST: ChamCong/Edit/5
@@ -90,7 +96,7 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaCC,NgayChamCong,GioVao,GioRa,SoGioTangCa,MaNV")] ChamCong chamCong)
+        public async Task<IActionResult> Edit(int id, ChamCongViewModel chamCong)
         {
             if (id != chamCong.MaCC)
             {
@@ -101,7 +107,7 @@ namespace BangLuong.Controllers
             {
                 try
                 {
-                    _context.Update(chamCong);
+                    _context.Update(_mapper.Map<ChamCong>(chamCong));
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -137,7 +143,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(chamCong);
+            return View(_mapper.Map<ChamCongViewModel>(chamCong));
         }
 
         // POST: ChamCong/Delete/5

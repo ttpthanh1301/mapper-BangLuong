@@ -8,6 +8,7 @@ public class DanhMucKhenThuong
     [Key]
     public string MaKT { get; set; } = null!;
     public string TenKhenThuong { get; set; } = null!;
+    [Precision(18, 2)]
     public decimal SoTien { get; set; }
     public ICollection<ChiTietKhenThuong>? ChiTietKhenThuong { get; set; }
 }

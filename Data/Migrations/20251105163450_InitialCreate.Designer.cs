@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BangLuong.Migrations
+namespace BangLuong.Data.Migrations
 {
     [DbContext(typeof(BangLuongDbContext))]
-    [Migration("20251103104940_Addseedtion")]
-    partial class Addseedtion
+    [Migration("20251105163450_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,13 +32,11 @@ namespace BangLuong.Migrations
                         .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("MoTa")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenCV")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaCV");
 
@@ -55,10 +53,10 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("LoaiHD")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("LuongCoBan")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("MaNV")
@@ -72,28 +70,31 @@ namespace BangLuong.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal?>("PhuCapAnTrua")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("PhuCapDienThoai")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("PhuCapKhac")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("PhuCapTrachNhiem")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("PhuCapXangXe")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("SoHopDong")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TrangThai")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaHD");
 
@@ -128,7 +129,7 @@ namespace BangLuong.Migrations
                         .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("MaPB")
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaSoThue")
                         .HasColumnType("nvarchar(max)");
@@ -164,17 +165,14 @@ namespace BangLuong.Migrations
             modelBuilder.Entity("BangLuong.Data.Entities.PhongBan", b =>
                 {
                     b.Property<string>("MaPB")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MoTa")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenPB")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaPB");
 
@@ -221,7 +219,6 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<decimal>("ThucLanh")
@@ -246,8 +243,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("TrangThai")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaBL");
 
@@ -272,7 +268,6 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<DateTime>("NgayChamCong")
@@ -298,17 +293,14 @@ namespace BangLuong.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaCTKT"));
 
                     b.Property<string>("LyDo")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaKT")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<DateTime>("NgayKhenThuong")
@@ -332,17 +324,14 @@ namespace BangLuong.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaCTKL"));
 
                     b.Property<string>("LyDo")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaKL")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<DateTime>("NgayViPham")
@@ -366,18 +355,15 @@ namespace BangLuong.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaCTPC"));
 
                     b.Property<string>("GhiChu")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("MaPC")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("NgayApDung")
                         .HasColumnType("datetime2");
@@ -394,8 +380,7 @@ namespace BangLuong.Migrations
             modelBuilder.Entity("DanhMucKhenThuong", b =>
                 {
                     b.Property<string>("MaKT")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("SoTien")
                         .HasPrecision(18, 2)
@@ -403,8 +388,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("TenKhenThuong")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaKT");
 
@@ -414,8 +398,7 @@ namespace BangLuong.Migrations
             modelBuilder.Entity("DanhMucKyLuat", b =>
                 {
                     b.Property<string>("MaKL")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("SoTienPhat")
                         .HasPrecision(18, 2)
@@ -423,8 +406,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("TenKyLuat")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaKL");
 
@@ -434,8 +416,7 @@ namespace BangLuong.Migrations
             modelBuilder.Entity("DanhMucPhuCap", b =>
                 {
                     b.Property<string>("MaPC")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("SoTien")
                         .HasPrecision(18, 2)
@@ -443,8 +424,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("TenPhuCap")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaPC");
 
@@ -454,23 +434,19 @@ namespace BangLuong.Migrations
             modelBuilder.Entity("NguoiDung", b =>
                 {
                     b.Property<string>("MaNV")
-                        .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("MatKhau")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhanQuyen")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TrangThai")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaNV");
 
@@ -487,18 +463,15 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("HoTen")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("MoiQuanHe")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("NgaySinh")
                         .HasColumnType("datetime2");
@@ -519,21 +492,18 @@ namespace BangLuong.Migrations
             modelBuilder.Entity("ThamSoHeThong", b =>
                 {
                     b.Property<string>("MaTS")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("GiaTri")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("NgayApDung")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TenThamSo")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaTS");
 
@@ -556,7 +526,6 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<decimal?>("SoGioTangCaCuoiTuan")

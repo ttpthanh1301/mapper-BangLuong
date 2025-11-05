@@ -6,22 +6,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangLuong.Data;
+using AutoMapper;
+using static BangLuong.ViewModels.DanhMucKhenThuongViewModels;     
 
 namespace BangLuong.Controllers
 {
     public class DanhMucKhenThuongController : Controller
     {
         private readonly BangLuongDbContext _context;
+        private readonly IMapper _mapper;
 
-        public DanhMucKhenThuongController(BangLuongDbContext context)
+        public DanhMucKhenThuongController(BangLuongDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper  = mapper;
         }
 
         // GET: DanhMucKhenThuong
         public async Task<IActionResult> Index()
         {
-            return View(await _context.DanhMucKhenThuong.ToListAsync());
+            var danhMucKhenThuong = await _context.DanhMucKhenThuong.ToListAsync();
+            return View(_mapper.Map<IEnumerable<DanhMucKhenThuongViewModel>>(danhMucKhenThuong));
         }
 
         // GET: DanhMucKhenThuong/Details/5
@@ -39,7 +44,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(danhMucKhenThuong);
+            return View(_mapper.Map<DanhMucKhenThuongViewModel>(danhMucKhenThuong));
         }
 
         // GET: DanhMucKhenThuong/Create
@@ -53,15 +58,16 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaKT,TenKhenThuong,SoTien")] DanhMucKhenThuong danhMucKhenThuong)
+        public async Task<IActionResult> Create(DanhMucKhenThuongRequest request)
         {
             if (ModelState.IsValid)
             {
+                 var danhMucKhenThuong = _mapper.Map<DanhMucKhenThuong>(request);
                 _context.Add(danhMucKhenThuong);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(danhMucKhenThuong);
+            return View(request);
         }
 
         // GET: DanhMucKhenThuong/Edit/5
@@ -77,7 +83,7 @@ namespace BangLuong.Controllers
             {
                 return NotFound();
             }
-            return View(danhMucKhenThuong);
+            return View(_mapper.Map<DanhMucKhenThuongViewModel>(danhMucKhenThuong));
         }
 
         // POST: DanhMucKhenThuong/Edit/5
@@ -85,7 +91,7 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaKT,TenKhenThuong,SoTien")] DanhMucKhenThuong danhMucKhenThuong)
+        public async Task<IActionResult> Edit(string id,DanhMucKhenThuongViewModel danhMucKhenThuong)
         {
             if (id != danhMucKhenThuong.MaKT)
             {
@@ -96,7 +102,7 @@ namespace BangLuong.Controllers
             {
                 try
                 {
-                    _context.Update(danhMucKhenThuong);
+                    _context.Update(_mapper.Map<DanhMucKhenThuong>(danhMucKhenThuong));
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -130,7 +136,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(danhMucKhenThuong);
+            return View(_mapper.Map<DanhMucKhenThuongViewModel>(danhMucKhenThuong));
         }
 
         // POST: DanhMucKhenThuong/Delete/5

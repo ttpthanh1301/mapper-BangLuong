@@ -6,23 +6,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangLuong.Data;
-
+using AutoMapper;
+using static BangLuong.ViewModels.BangTinhLuongViewModels;
 namespace BangLuong.Controllers
 {
     public class BangTinhLuongController : Controller
     {
         private readonly BangLuongDbContext _context;
+        private readonly IMapper _mapper;
 
-        public BangTinhLuongController(BangLuongDbContext context)
+        public BangTinhLuongController(BangLuongDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: BangTinhLuong
         public async Task<IActionResult> Index()
         {
             var bangLuongDbContext = _context.BangTinhLuong.Include(b => b.NhanVien);
-            return View(await bangLuongDbContext.ToListAsync());
+            var bangTinhLuong = await bangLuongDbContext.ToListAsync();
+            return View(_mapper.Map<IEnumerable<BangTinhLuongViewModel>>(bangTinhLuong));
         }
 
         // GET: BangTinhLuong/Details/5
@@ -41,7 +45,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(bangTinhLuong);
+            return View(_mapper.Map<BangTinhLuongViewModel>(bangTinhLuong));
         }
 
         // GET: BangTinhLuong/Create
@@ -56,16 +60,17 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaBL,KyLuongThang,KyLuongNam,LuongCoBan,TongPhuCap,TongKhenThuong,LuongTangCa,TongThuNhap,GiamTruBHXH,GiamTruBHYT,GiamTruBHTN,TongGiamTruKyLuat,GiamTruThueTNCN,ThucLanh,TrangThai,MaNV")] BangTinhLuong bangTinhLuong)
+        public async Task<IActionResult> Create(BangTinhLuongRequest request)
         {
             if (ModelState.IsValid)
             {
+                var bangTinhLuong = _mapper.Map<BangTinhLuong>(request);
                 _context.Add(bangTinhLuong);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", bangTinhLuong.MaNV);
-            return View(bangTinhLuong);
+            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", request.MaNV);
+            return View(request);
         }
 
         // GET: BangTinhLuong/Edit/5
@@ -82,7 +87,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
             ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", bangTinhLuong.MaNV);
-            return View(bangTinhLuong);
+            return View(_mapper.Map<BangTinhLuongViewModel>(bangTinhLuong));
         }
 
         // POST: BangTinhLuong/Edit/5
@@ -90,7 +95,7 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaBL,KyLuongThang,KyLuongNam,LuongCoBan,TongPhuCap,TongKhenThuong,LuongTangCa,TongThuNhap,GiamTruBHXH,GiamTruBHYT,GiamTruBHTN,TongGiamTruKyLuat,GiamTruThueTNCN,ThucLanh,TrangThai,MaNV")] BangTinhLuong bangTinhLuong)
+        public async Task<IActionResult> Edit(int id, BangTinhLuongViewModel bangTinhLuong)
         {
             if (id != bangTinhLuong.MaBL)
             {
@@ -101,7 +106,7 @@ namespace BangLuong.Controllers
             {
                 try
                 {
-                    _context.Update(bangTinhLuong);
+                    _context.Update(_mapper.Map<BangTinhLuong>(bangTinhLuong));
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -137,7 +142,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(bangTinhLuong);
+            return View(_mapper.Map<BangTinhLuongViewModel>(bangTinhLuong));
         }
 
         // POST: BangTinhLuong/Delete/5

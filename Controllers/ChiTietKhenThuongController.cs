@@ -6,23 +6,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangLuong.Data;
+using AutoMapper;
+using static BangLuong.ViewModels.ChiTietKhenThuongViewModels;
 
 namespace BangLuong.Controllers
 {
     public class ChiTietKhenThuongController : Controller
     {
         private readonly BangLuongDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ChiTietKhenThuongController(BangLuongDbContext context)
+        public ChiTietKhenThuongController(BangLuongDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: ChiTietKhenThuong
         public async Task<IActionResult> Index()
         {
             var bangLuongDbContext = _context.ChiTietKhenThuong.Include(c => c.DanhMucKhenThuong).Include(c => c.NhanVien);
-            return View(await bangLuongDbContext.ToListAsync());
+            var chiTietKhenThuong = await bangLuongDbContext.ToListAsync();
+            return View(_mapper.Map<IEnumerable<ChiTietKhenThuongViewModel>>(chiTietKhenThuong));
         }
 
         // GET: ChiTietKhenThuong/Details/5
@@ -42,7 +47,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(chiTietKhenThuong);
+            return View(_mapper.Map<ChiTietKhenThuongViewModel>(chiTietKhenThuong));
         }
 
         // GET: ChiTietKhenThuong/Create
@@ -58,17 +63,18 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaCTKT,NgayKhenThuong,LyDo,MaKT,MaNV")] ChiTietKhenThuong chiTietKhenThuong)
+        public async Task<IActionResult> Create(ChiTietKhenThuongRequest request)
         {
             if (ModelState.IsValid)
             {
+                var chiTietKhenThuong = _mapper.Map<ChiTietKhenThuong>(request);
                 _context.Add(chiTietKhenThuong);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MaKT"] = new SelectList(_context.DanhMucKhenThuong, "MaKT", "MaKT", chiTietKhenThuong.MaKT);
-            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", chiTietKhenThuong.MaNV);
-            return View(chiTietKhenThuong);
+            ViewData["MaKT"] = new SelectList(_context.DanhMucKhenThuong, "MaKT", "MaKT", request.MaKT);
+            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", request.MaNV);
+            return View(request);
         }
 
         // GET: ChiTietKhenThuong/Edit/5
@@ -86,7 +92,7 @@ namespace BangLuong.Controllers
             }
             ViewData["MaKT"] = new SelectList(_context.DanhMucKhenThuong, "MaKT", "MaKT", chiTietKhenThuong.MaKT);
             ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", chiTietKhenThuong.MaNV);
-            return View(chiTietKhenThuong);
+            return View(_mapper.Map<ChiTietKhenThuongViewModel>(chiTietKhenThuong));
         }
 
         // POST: ChiTietKhenThuong/Edit/5
@@ -94,7 +100,7 @@ namespace BangLuong.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaCTKT,NgayKhenThuong,LyDo,MaKT,MaNV")] ChiTietKhenThuong chiTietKhenThuong)
+        public async Task<IActionResult> Edit(int id, ChiTietKhenThuongViewModel chiTietKhenThuong)
         {
             if (id != chiTietKhenThuong.MaCTKT)
             {
@@ -105,7 +111,7 @@ namespace BangLuong.Controllers
             {
                 try
                 {
-                    _context.Update(chiTietKhenThuong);
+                    _context.Update(_mapper.Map<ChiTietKhenThuong>(chiTietKhenThuong));
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -143,7 +149,7 @@ namespace BangLuong.Controllers
                 return NotFound();
             }
 
-            return View(chiTietKhenThuong);
+            return View(_mapper.Map<ChiTietKhenThuongViewModel>(chiTietKhenThuong));
         }
 
         // POST: ChiTietKhenThuong/Delete/5

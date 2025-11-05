@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BangLuong.Data.Entities; 
+using BangLuong.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BangLuong.Data.Entities;
 
@@ -17,11 +18,17 @@ public class HopDong
 
     [DataType(DataType.Date)]
     public DateTime? NgayKetThuc { get; set; }
+     [Precision(18, 2)]
     public decimal LuongCoBan { get; set; }
+     [Precision(18, 2)]
     public decimal? PhuCapAnTrua { get; set; }
+     [Precision(18, 2)]
     public decimal? PhuCapXangXe { get; set; }
+     [Precision(18, 2)]
     public decimal? PhuCapDienThoai { get; set; }
+     [Precision(18, 2)]
     public decimal? PhuCapTrachNhiem { get; set; }
+     [Precision(18, 2)]
     public decimal? PhuCapKhac { get; set; }
     public string TrangThai { get; set; } = null!;
 

@@ -12,11 +12,15 @@ public class TongHopCong
     public int KyLuongThang { get; set; }
 
     public int KyLuongNam { get; set; }
+    [Precision(18, 2)]
 
     public decimal SoNgayCong { get; set; }
+    [Precision(18, 2)]
 
     public decimal? SoGioTangCaNgayThuong { get; set; }
+    [Precision(18, 2)]
     public decimal? SoGioTangCaCuoiTuan { get; set; }
+    [Precision(18, 2)]
     public decimal? SoGioTangCaNgayLe { get; set; }
     public int? SoNgayNghiPhep { get; set; }
     public string MaNV { get; set; } = null!;

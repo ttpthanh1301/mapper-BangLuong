@@ -1,4 +1,4 @@
-@model ChiTietKhenThuong
+@model ChiTietKhenThuongViewModels.ChiTietKhenThuongViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -24,16 +24,16 @@
             @Html.DisplayFor(model => model.LyDo)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DanhMucKhenThuong)
+            @Html.DisplayNameFor(model => model.MaKT)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DanhMucKhenThuong.MaKT)
+            @Html.DisplayFor(model => model.MaKT)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NhanVien)
+            @Html.DisplayNameFor(model => model.MaNV)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NhanVien.MaNV)
+            @Html.DisplayFor(model => model.MaNV)
         </dd>
     </dl>
     

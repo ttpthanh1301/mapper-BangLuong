@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BangLuong.Migrations
+namespace BangLuong.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class initCreate : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,8 +16,8 @@ namespace BangLuong.Migrations
                 columns: table => new
                 {
                     MaCV = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    TenCV = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    MoTa = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                    TenCV = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -28,8 +28,8 @@ namespace BangLuong.Migrations
                 name: "DanhMucKhenThuong",
                 columns: table => new
                 {
-                    MaKT = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    TenKhenThuong = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    MaKT = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TenKhenThuong = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SoTien = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
                 },
                 constraints: table =>
@@ -41,8 +41,8 @@ namespace BangLuong.Migrations
                 name: "DanhMucKyLuat",
                 columns: table => new
                 {
-                    MaKL = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    TenKyLuat = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    MaKL = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TenKyLuat = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SoTienPhat = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
                 },
                 constraints: table =>
@@ -54,8 +54,8 @@ namespace BangLuong.Migrations
                 name: "DanhMucPhuCap",
                 columns: table => new
                 {
-                    MaPC = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    TenPhuCap = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    MaPC = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TenPhuCap = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SoTien = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
                 },
                 constraints: table =>
@@ -64,12 +64,25 @@ namespace BangLuong.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PhongBan",
+                columns: table => new
+                {
+                    MaPB = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TenPB = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PhongBan", x => x.MaPB);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ThamSoHeThong",
                 columns: table => new
                 {
-                    MaTS = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    TenThamSo = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    GiaTri = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    MaTS = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TenThamSo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GiaTri = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NgayApDung = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
@@ -94,18 +107,22 @@ namespace BangLuong.Migrations
                     TenNganHang = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NgayVaoLam = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TrangThai = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MaPB = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MaCV = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ChucVuMaCV = table.Column<string>(type: "nvarchar(10)", nullable: true)
+                    MaPB = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    MaCV = table.Column<string>(type: "nvarchar(10)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_NhanVien", x => x.MaNV);
                     table.ForeignKey(
-                        name: "FK_NhanVien_ChucVu_ChucVuMaCV",
-                        column: x => x.ChucVuMaCV,
+                        name: "FK_NhanVien_ChucVu_MaCV",
+                        column: x => x.MaCV,
                         principalTable: "ChucVu",
                         principalColumn: "MaCV");
+                    table.ForeignKey(
+                        name: "FK_NhanVien_PhongBan_MaPB",
+                        column: x => x.MaPB,
+                        principalTable: "PhongBan",
+                        principalColumn: "MaPB");
                 });
 
             migrationBuilder.CreateTable(
@@ -127,8 +144,8 @@ namespace BangLuong.Migrations
                     TongGiamTruKyLuat = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     GiamTruThueTNCN = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     ThucLanh = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    TrangThai = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    MaNV = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false)
+                    TrangThai = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaNV = table.Column<string>(type: "nvarchar(15)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -151,7 +168,7 @@ namespace BangLuong.Migrations
                     GioVao = table.Column<TimeSpan>(type: "time", nullable: true),
                     GioRa = table.Column<TimeSpan>(type: "time", nullable: true),
                     SoGioTangCa = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
-                    MaNV = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false)
+                    MaNV = table.Column<string>(type: "nvarchar(15)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -171,9 +188,9 @@ namespace BangLuong.Migrations
                     MaCTKT = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NgayKhenThuong = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LyDo = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    MaKT = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    MaNV = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false)
+                    LyDo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MaKT = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MaNV = table.Column<string>(type: "nvarchar(15)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -199,9 +216,9 @@ namespace BangLuong.Migrations
                     MaCTKL = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NgayViPham = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LyDo = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    MaKL = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    MaNV = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false)
+                    LyDo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MaKL = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MaNV = table.Column<string>(type: "nvarchar(15)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -227,9 +244,9 @@ namespace BangLuong.Migrations
                     MaCTPC = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NgayApDung = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    GhiChu = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    MaPC = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    MaNV = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false)
+                    GhiChu = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MaPC = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MaNV = table.Column<string>(type: "nvarchar(15)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -254,17 +271,17 @@ namespace BangLuong.Migrations
                 {
                     MaHD = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SoHopDong = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    LoaiHD = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    SoHopDong = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LoaiHD = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NgayBatDau = table.Column<DateTime>(type: "datetime2", nullable: false),
                     NgayKetThuc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LuongCoBan = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PhuCapAnTrua = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    PhuCapXangXe = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    PhuCapDienThoai = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    PhuCapTrachNhiem = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    PhuCapKhac = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    TrangThai = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LuongCoBan = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    PhuCapAnTrua = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    PhuCapXangXe = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    PhuCapDienThoai = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    PhuCapTrachNhiem = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    PhuCapKhac = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    TrangThai = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MaNV = table.Column<string>(type: "nvarchar(15)", nullable: false)
                 },
                 constraints: table =>
@@ -282,10 +299,10 @@ namespace BangLuong.Migrations
                 name: "NguoiDung",
                 columns: table => new
                 {
-                    MaNV = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    MatKhau = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    PhanQuyen = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    TrangThai = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    MaNV = table.Column<string>(type: "nvarchar(15)", nullable: false),
+                    MatKhau = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhanQuyen = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TrangThai = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -304,12 +321,12 @@ namespace BangLuong.Migrations
                 {
                     MaNPT = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    HoTen = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    HoTen = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NgaySinh = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MoiQuanHe = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    MoiQuanHe = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ThoiGianBatDauGiamTru = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ThoiGianKetThucGiamTru = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    MaNV = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false)
+                    MaNV = table.Column<string>(type: "nvarchar(15)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -335,7 +352,7 @@ namespace BangLuong.Migrations
                     SoGioTangCaCuoiTuan = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     SoGioTangCaNgayLe = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     SoNgayNghiPhep = table.Column<int>(type: "int", nullable: true),
-                    MaNV = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false)
+                    MaNV = table.Column<string>(type: "nvarchar(15)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -399,9 +416,14 @@ namespace BangLuong.Migrations
                 column: "MaNV");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NhanVien_ChucVuMaCV",
+                name: "IX_NhanVien_MaCV",
                 table: "NhanVien",
-                column: "ChucVuMaCV");
+                column: "MaCV");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NhanVien_MaPB",
+                table: "NhanVien",
+                column: "MaPB");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TongHopCong_MaNV",
@@ -456,6 +478,9 @@ namespace BangLuong.Migrations
 
             migrationBuilder.DropTable(
                 name: "ChucVu");
+
+            migrationBuilder.DropTable(
+                name: "PhongBan");
         }
     }
 }
