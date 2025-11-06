@@ -1,144 +1,84 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BangLuong.Data;
-using BangLuong.Data.Entities;
-using AutoMapper;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using BangLuong.Services;
 using static BangLuong.ViewModels.PhongBanViewModels;
 
 namespace BangLuong.Controllers
 {
     public class PhongBanController : Controller
     {
-        private readonly BangLuongDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly IPhongBanService _phongBanService;
 
-        public PhongBanController(BangLuongDbContext context,IMapper mapper )
+        public PhongBanController(IPhongBanService phongBanService)
         {
-            _context = context;
-            _mapper = mapper;
+            _phongBanService = phongBanService;
         }
 
         // GET: PhongBan
         public async Task<IActionResult> Index()
         {
-            var phongBan = await _context.PhongBan.ToListAsync(); 
-            return View(_mapper.Map<IEnumerable<PhongBanViewModel>>(phongBan));
-
+            var list = await _phongBanService.GetAll();
+            return View(list);
         }
 
         // GET: PhongBan/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var phongBan = await _context.PhongBan
-                .FirstOrDefaultAsync(m => m.MaPB == id);
-            if (phongBan == null)
-            {
-                return NotFound();
-            }
+            var phongBan = await _phongBanService.GetById(id);
+            if (phongBan == null) return NotFound();
 
-            return View(_mapper.Map<PhongBanViewModel>(phongBan));
+            return View(phongBan);
         }
 
         // GET: PhongBan/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         // POST: PhongBan/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PhongBanRequest request)
         {
-            if (ModelState.IsValid)
-            {
-                var phongBan = _mapper.Map<PhongBan>(request);
-                _context.Add(phongBan);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(request);
+            if (!ModelState.IsValid) return View(request);
+
+            await _phongBanService.Create(request);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: PhongBan/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var phongBan = await _context.PhongBan.FindAsync(id);
-            if (phongBan == null)
-            {
-                return NotFound();
-            }
-            return View(_mapper.Map<PhongBanViewModel>(phongBan));
+            var phongBan = await _phongBanService.GetById(id);
+            if (phongBan == null) return NotFound();
+
+            return View(phongBan);
         }
 
         // POST: PhongBan/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, PhongBanViewModel phongBan)
+        public async Task<IActionResult> Edit(string id, PhongBanViewModel request)
         {
-            if (id != phongBan.MaPB)
-            {
-                return NotFound();
-            }
+            if (id != request.MaPB) return NotFound();
+            if (!ModelState.IsValid) return View(request);
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(_mapper.Map<PhongBan>(phongBan));
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PhongBanExists(phongBan.MaPB))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(phongBan);
+            await _phongBanService.Update(request);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: PhongBan/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var phongBan = await _context.PhongBan
-                .FirstOrDefaultAsync(m => m.MaPB == id);
-            if (phongBan == null)
-            {
-                return NotFound();
-            }
+            var phongBan = await _phongBanService.GetById(id);
+            if (phongBan == null) return NotFound();
 
-            return View(_mapper.Map<PhongBanViewModel>(phongBan));
+            return View(phongBan);
         }
 
         // POST: PhongBan/Delete/5
@@ -146,19 +86,8 @@ namespace BangLuong.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var phongBan = await _context.PhongBan.FindAsync(id);
-            if (phongBan != null)
-            {
-                _context.PhongBan.Remove(phongBan);
-            }
-
-            await _context.SaveChangesAsync();
+            await _phongBanService.Delete(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool PhongBanExists(string id)
-        {
-            return _context.PhongBan.Any(e => e.MaPB == id);
         }
     }
 }

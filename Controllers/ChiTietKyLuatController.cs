@@ -1,155 +1,95 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BangLuong.Data;
-using AutoMapper;
+using BangLuong.Services;
 using static BangLuong.ViewModels.ChiTietKyLuatViewModels;
 
 namespace BangLuong.Controllers
 {
     public class ChiTietKyLuatController : Controller
     {
-        private readonly BangLuongDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly IChiTietKyLuatService _chiTietKyLuatService;
+        private readonly INhanVienService _nhanVienService;
+        private readonly IDanhMucKyLuatService _danhMucKyLuatService;
 
-        public ChiTietKyLuatController(BangLuongDbContext context, IMapper mapper)
+        public ChiTietKyLuatController(
+            IChiTietKyLuatService chiTietKyLuatService,
+            INhanVienService nhanVienService,
+            IDanhMucKyLuatService danhMucKyLuatService)
         {
-            _context = context;
-            _mapper = mapper;
+            _chiTietKyLuatService = chiTietKyLuatService;
+            _nhanVienService = nhanVienService;
+            _danhMucKyLuatService = danhMucKyLuatService;
         }
 
         // GET: ChiTietKyLuat
         public async Task<IActionResult> Index()
         {
-            var bangLuongDbContext = _context.ChiTietKyLuat.Include(c => c.DanhMucKyLuat).Include(c => c.NhanVien);
-            var chiTietKyLuat = await bangLuongDbContext.ToListAsync();
-            return View(_mapper.Map<IEnumerable<ChiTietKyLuatViewModel>>(chiTietKyLuat));
+            var list = await _chiTietKyLuatService.GetAllAsync();
+            return View(list);
         }
 
         // GET: ChiTietKyLuat/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var chiTietKyLuat = await _context.ChiTietKyLuat
-                .Include(c => c.DanhMucKyLuat)
-                .Include(c => c.NhanVien)
-                .FirstOrDefaultAsync(m => m.MaCTKL == id);
-            if (chiTietKyLuat == null)
-            {
-                return NotFound();
-            }
-
-            return View(_mapper.Map<ChiTietKyLuatViewModel>(chiTietKyLuat));
+            var item = await _chiTietKyLuatService.GetByIdAsync(id);
+            if (item == null) return NotFound();
+            return View(item);
         }
 
         // GET: ChiTietKyLuat/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["MaKL"] = new SelectList(_context.DanhMucKyLuat, "MaKL", "MaKL");
-            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV");
+            await LoadDropdownDataAsync();
             return View();
         }
 
         // POST: ChiTietKyLuat/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ChiTietKyLuatRequest request)
         {
             if (ModelState.IsValid)
             {
-                var chiTietKyLuat = _mapper.Map<ChiTietKyLuat>(request);
-                _context.Add(chiTietKyLuat);
-                await _context.SaveChangesAsync();
+                await _chiTietKyLuatService.CreateAsync(request);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MaKL"] = new SelectList(_context.DanhMucKyLuat, "MaKL", "MaKL", request.MaKL);
-            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", request.MaNV);
+
+            await LoadDropdownDataAsync(request.MaKL, request.MaNV);
             return View(request);
         }
 
         // GET: ChiTietKyLuat/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var item = await _chiTietKyLuatService.GetByIdAsync(id);
+            if (item == null) return NotFound();
 
-            var chiTietKyLuat = await _context.ChiTietKyLuat.FindAsync(id);
-            if (chiTietKyLuat == null)
-            {
-                return NotFound();
-            }
-            ViewData["MaKL"] = new SelectList(_context.DanhMucKyLuat, "MaKL", "MaKL", chiTietKyLuat.MaKL);
-            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", chiTietKyLuat.MaNV);
-            return View(_mapper.Map<ChiTietKyLuatViewModel>(chiTietKyLuat));
+            await LoadDropdownDataAsync(item.MaKL, item.MaNV);
+            return View(item);
         }
 
         // POST: ChiTietKyLuat/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ChiTietKyLuatViewModel chiTietKyLuat)
+        public async Task<IActionResult> Edit(int id, ChiTietKyLuatViewModel request)
         {
-            if (id != chiTietKyLuat.MaCTKL)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(_mapper.Map<ChiTietKyLuat>(chiTietKyLuat));
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ChiTietKyLuatExists(chiTietKyLuat.MaCTKL))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _chiTietKyLuatService.UpdateAsync(id, request);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MaKL"] = new SelectList(_context.DanhMucKyLuat, "MaKL", "MaKL", chiTietKyLuat.MaKL);
-            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", chiTietKyLuat.MaNV);
-            return View(chiTietKyLuat);
+
+            await LoadDropdownDataAsync(request.MaKL, request.MaNV);
+            return View(request);
         }
 
         // GET: ChiTietKyLuat/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var chiTietKyLuat = await _context.ChiTietKyLuat
-                .Include(c => c.DanhMucKyLuat)
-                .Include(c => c.NhanVien)
-                .FirstOrDefaultAsync(m => m.MaCTKL == id);
-            if (chiTietKyLuat == null)
-            {
-                return NotFound();
-            }
-
-            return View(_mapper.Map<ChiTietKyLuatViewModel>(chiTietKyLuat));
+            var item = await _chiTietKyLuatService.GetByIdAsync(id);
+            if (item == null) return NotFound();
+            return View(item);
         }
 
         // POST: ChiTietKyLuat/Delete/5
@@ -157,19 +97,18 @@ namespace BangLuong.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var chiTietKyLuat = await _context.ChiTietKyLuat.FindAsync(id);
-            if (chiTietKyLuat != null)
-            {
-                _context.ChiTietKyLuat.Remove(chiTietKyLuat);
-            }
-
-            await _context.SaveChangesAsync();
+            await _chiTietKyLuatService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ChiTietKyLuatExists(int id)
+        // ✅ Hàm dùng để nạp dữ liệu dropdown list (dùng service, không dùng DbContext)
+        private async Task LoadDropdownDataAsync(string? selectedMaKL = null, string? selectedMaNV = null)
         {
-            return _context.ChiTietKyLuat.Any(e => e.MaCTKL == id);
+            var kyLuatList = await _danhMucKyLuatService.GetAllAsync();
+            var nhanVienList = await _nhanVienService.GetAll();
+
+            ViewData["MaKL"] = new SelectList(kyLuatList, "MaKL", "TenKyLuat", selectedMaKL);
+            ViewData["MaNV"] = new SelectList(nhanVienList, "MaNV", "HoTen", selectedMaNV);
         }
     }
 }

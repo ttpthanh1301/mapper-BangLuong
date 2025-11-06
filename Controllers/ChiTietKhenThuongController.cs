@@ -1,155 +1,120 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BangLuong.Data;
-using AutoMapper;
+using BangLuong.Services;
 using static BangLuong.ViewModels.ChiTietKhenThuongViewModels;
 
 namespace BangLuong.Controllers
 {
     public class ChiTietKhenThuongController : Controller
     {
-        private readonly BangLuongDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly IChiTietKhenThuongService _service;
+        private readonly INhanVienService _nhanVienService;
+        private readonly IDanhMucKhenThuongService _khenThuongService;
 
-        public ChiTietKhenThuongController(BangLuongDbContext context, IMapper mapper)
+        public ChiTietKhenThuongController(
+            IChiTietKhenThuongService service,
+            INhanVienService nhanVienService,
+            IDanhMucKhenThuongService khenThuongService)
         {
-            _context = context;
-            _mapper = mapper;
+            _service = service;
+            _nhanVienService = nhanVienService;
+            _khenThuongService = khenThuongService;
         }
 
         // GET: ChiTietKhenThuong
         public async Task<IActionResult> Index()
         {
-            var bangLuongDbContext = _context.ChiTietKhenThuong.Include(c => c.DanhMucKhenThuong).Include(c => c.NhanVien);
-            var chiTietKhenThuong = await bangLuongDbContext.ToListAsync();
-            return View(_mapper.Map<IEnumerable<ChiTietKhenThuongViewModel>>(chiTietKhenThuong));
+            var list = await _service.GetAllAsync();
+            return View(list);
         }
 
         // GET: ChiTietKhenThuong/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
+            var item = await _service.GetByIdAsync(id);
+            if (item == null)
                 return NotFound();
-            }
 
-            var chiTietKhenThuong = await _context.ChiTietKhenThuong
-                .Include(c => c.DanhMucKhenThuong)
-                .Include(c => c.NhanVien)
-                .FirstOrDefaultAsync(m => m.MaCTKT == id);
-            if (chiTietKhenThuong == null)
-            {
-                return NotFound();
-            }
-
-            return View(_mapper.Map<ChiTietKhenThuongViewModel>(chiTietKhenThuong));
+            return View(item);
         }
 
         // GET: ChiTietKhenThuong/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["MaKT"] = new SelectList(_context.DanhMucKhenThuong, "MaKT", "MaKT");
-            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV");
+            var nhanVienList = await _nhanVienService.GetAll();
+            var khenThuongList = await _khenThuongService.GetAllAsync();
+
+            ViewData["MaNV"] = new SelectList(nhanVienList, "MaNV", "TenNV");
+            ViewData["MaKT"] = new SelectList(khenThuongList, "MaKT", "TenKhenThuong");
+
             return View();
         }
 
         // POST: ChiTietKhenThuong/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ChiTietKhenThuongRequest request)
         {
             if (ModelState.IsValid)
             {
-                var chiTietKhenThuong = _mapper.Map<ChiTietKhenThuong>(request);
-                _context.Add(chiTietKhenThuong);
-                await _context.SaveChangesAsync();
+                await _service.CreateAsync(request);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MaKT"] = new SelectList(_context.DanhMucKhenThuong, "MaKT", "MaKT", request.MaKT);
-            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", request.MaNV);
+
+            var nhanVienList = await _nhanVienService.GetAll();
+            var khenThuongList = await _khenThuongService.GetAllAsync();
+
+            ViewData["MaNV"] = new SelectList(nhanVienList, "MaNV", "TenNV", request.MaNV);
+            ViewData["MaKT"] = new SelectList(khenThuongList, "MaKT", "TenKhenThuong", request.MaKT);
+
             return View(request);
         }
 
         // GET: ChiTietKhenThuong/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
+            var item = await _service.GetByIdAsync(id);
+            if (item == null)
                 return NotFound();
-            }
 
-            var chiTietKhenThuong = await _context.ChiTietKhenThuong.FindAsync(id);
-            if (chiTietKhenThuong == null)
-            {
-                return NotFound();
-            }
-            ViewData["MaKT"] = new SelectList(_context.DanhMucKhenThuong, "MaKT", "MaKT", chiTietKhenThuong.MaKT);
-            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", chiTietKhenThuong.MaNV);
-            return View(_mapper.Map<ChiTietKhenThuongViewModel>(chiTietKhenThuong));
+            var nhanVienList = await _nhanVienService.GetAll();
+            var khenThuongList = await _khenThuongService.GetAllAsync();
+
+            ViewData["MaNV"] = new SelectList(nhanVienList, "MaNV", "TenNV", item.MaNV);
+            ViewData["MaKT"] = new SelectList(khenThuongList, "MaKT", "TenKhenThuong", item.MaKT);
+
+            return View(item);
         }
 
         // POST: ChiTietKhenThuong/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ChiTietKhenThuongViewModel chiTietKhenThuong)
+        public async Task<IActionResult> Edit(int id, ChiTietKhenThuongViewModel request)
         {
-            if (id != chiTietKhenThuong.MaCTKT)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(_mapper.Map<ChiTietKhenThuong>(chiTietKhenThuong));
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ChiTietKhenThuongExists(chiTietKhenThuong.MaCTKT))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _service.UpdateAsync(id, request);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MaKT"] = new SelectList(_context.DanhMucKhenThuong, "MaKT", "MaKT", chiTietKhenThuong.MaKT);
-            ViewData["MaNV"] = new SelectList(_context.NhanVien, "MaNV", "MaNV", chiTietKhenThuong.MaNV);
-            return View(chiTietKhenThuong);
+
+            var nhanVienList = await _nhanVienService.GetAll();
+            var khenThuongList = await _khenThuongService.GetAllAsync();
+
+            ViewData["MaNV"] = new SelectList(nhanVienList, "MaNV", "TenNV", request.MaNV);
+            ViewData["MaKT"] = new SelectList(khenThuongList, "MaKT", "TenKhenThuong", request.MaKT);
+
+            return View(request);
         }
 
         // GET: ChiTietKhenThuong/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
+            var item = await _service.GetByIdAsync(id);
+            if (item == null)
                 return NotFound();
-            }
 
-            var chiTietKhenThuong = await _context.ChiTietKhenThuong
-                .Include(c => c.DanhMucKhenThuong)
-                .Include(c => c.NhanVien)
-                .FirstOrDefaultAsync(m => m.MaCTKT == id);
-            if (chiTietKhenThuong == null)
-            {
-                return NotFound();
-            }
-
-            return View(_mapper.Map<ChiTietKhenThuongViewModel>(chiTietKhenThuong));
+            return View(item);
         }
 
         // POST: ChiTietKhenThuong/Delete/5
@@ -157,19 +122,8 @@ namespace BangLuong.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var chiTietKhenThuong = await _context.ChiTietKhenThuong.FindAsync(id);
-            if (chiTietKhenThuong != null)
-            {
-                _context.ChiTietKhenThuong.Remove(chiTietKhenThuong);
-            }
-
-            await _context.SaveChangesAsync();
+            await _service.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ChiTietKhenThuongExists(int id)
-        {
-            return _context.ChiTietKhenThuong.Any(e => e.MaCTKT == id);
         }
     }
 }
