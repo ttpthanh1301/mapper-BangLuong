@@ -6,6 +6,7 @@ using AutoMapper;
 using BangLuong.Data;
 using BangLuong.Data.Entities;
 using static BangLuong.ViewModels.DanhMucPhuCapViewModels;
+using BangLuong;
 
 public class DanhMucPhuCapService : IDanhMucPhuCapService
 {
@@ -16,6 +17,42 @@ public class DanhMucPhuCapService : IDanhMucPhuCapService
     {
         _context = context;
         _mapper = mapper;
+    }
+    public async Task<PaginatedList<DanhMucPhuCapViewModel>> GetAllFilter(
+        string sortOrder,
+        string currentFilter,
+        string searchString,
+        int? pageNumber,
+        int pageSize)
+    {
+        if (searchString != null)
+            pageNumber = 1;
+        else
+            searchString = currentFilter;
+
+        var query = from pc in _context.DanhMucPhuCap
+                    select pc;
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            query = query.Where(pc =>
+                pc.MaPC.Contains(searchString) ||
+                pc.TenPhuCap.Contains(searchString)
+            );
+        }
+
+        query = sortOrder switch
+        {
+            "name_desc" => query.OrderByDescending(pc => pc.TenPhuCap),
+            "code" => query.OrderBy(pc => pc.MaPC),
+            "code_desc" => query.OrderByDescending(pc => pc.MaPC),
+            _ => query.OrderBy(pc => pc.TenPhuCap)
+        };
+
+        var list = await query.ToListAsync();
+        var viewModels = _mapper.Map<IEnumerable<DanhMucPhuCapViewModel>>(list);
+
+        return PaginatedList<DanhMucPhuCapViewModel>.Create(viewModels, pageNumber ?? 1, pageSize);
     }
 
     public async Task<IEnumerable<DanhMucPhuCapViewModel>> GetAllAsync()

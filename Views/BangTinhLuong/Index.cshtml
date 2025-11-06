@@ -1,119 +1,90 @@
-@model IEnumerable<BangTinhLuongViewModels.BangTinhLuongViewModel>
+@using static BangLuong.ViewModels.BangTinhLuongViewModels
+@model PaginatedList<BangTinhLuongViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Bảng Tính Lương";
+    var prevDisabledClass = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabledClass = !Model.HasNextPage ? "disabled" : "";
 }
 
-<h1>Index</h1>
+<h1>Bảng Tính Lương</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
-<table class="table">
+
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="d-flex">
+        <input class="form-control me-2" placeholder="Search..." value="@ViewData["CurrentFilter"]" 
+               name="searchString" autocomplete="off" />
+        <button type="submit" class="btn btn-secondary">Search</button>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.KyLuongThang)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.KyLuongNam)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LuongCoBan)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TongPhuCap)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TongKhenThuong)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LuongTangCa)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TongThuNhap)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GiamTruBHXH)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GiamTruBHYT)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GiamTruBHTN)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TongGiamTruKyLuat)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GiamTruThueTNCN)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ThucLanh)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TrangThai)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MaNV)
-            </th>
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model[0].KyLuongThang)</th>
+            <th>@Html.DisplayNameFor(model => model[0].KyLuongNam)</th>
+            <th>@Html.DisplayNameFor(model => model[0].LuongCoBan)</th>
+            <th>@Html.DisplayNameFor(model => model[0].TongPhuCap)</th>
+            <th>@Html.DisplayNameFor(model => model[0].TongKhenThuong)</th>
+            <th>@Html.DisplayNameFor(model => model[0].LuongTangCa)</th>
+            <th>@Html.DisplayNameFor(model => model[0].TongThuNhap)</th>
+            <th>@Html.DisplayNameFor(model => model[0].GiamTruBHXH)</th>
+            <th>@Html.DisplayNameFor(model => model[0].GiamTruBHYT)</th>
+            <th>@Html.DisplayNameFor(model => model[0].GiamTruBHTN)</th>
+            <th>@Html.DisplayNameFor(model => model[0].TongGiamTruKyLuat)</th>
+            <th>@Html.DisplayNameFor(model => model[0].GiamTruThueTNCN)</th>
+            <th>@Html.DisplayNameFor(model => model[0].ThucLanh)</th>
+            <th>@Html.DisplayNameFor(model => model[0].TrangThai)</th>
+            <th>@Html.DisplayNameFor(model => model[0].MaNV)</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.KyLuongThang)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.KyLuongNam)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LuongCoBan)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TongPhuCap)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TongKhenThuong)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LuongTangCa)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TongThuNhap)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GiamTruBHXH)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GiamTruBHYT)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GiamTruBHTN)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TongGiamTruKyLuat)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GiamTruThueTNCN)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ThucLanh)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TrangThai)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaNV)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MaBL">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MaBL">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MaBL">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.KyLuongThang)</td>
+                <td>@Html.DisplayFor(modelItem => item.KyLuongNam)</td>
+                <td>@Html.DisplayFor(modelItem => item.LuongCoBan)</td>
+                <td>@Html.DisplayFor(modelItem => item.TongPhuCap)</td>
+                <td>@Html.DisplayFor(modelItem => item.TongKhenThuong)</td>
+                <td>@Html.DisplayFor(modelItem => item.LuongTangCa)</td>
+                <td>@Html.DisplayFor(modelItem => item.TongThuNhap)</td>
+                <td>@Html.DisplayFor(modelItem => item.GiamTruBHXH)</td>
+                <td>@Html.DisplayFor(modelItem => item.GiamTruBHYT)</td>
+                <td>@Html.DisplayFor(modelItem => item.GiamTruBHTN)</td>
+                <td>@Html.DisplayFor(modelItem => item.TongGiamTruKyLuat)</td>
+                <td>@Html.DisplayFor(modelItem => item.GiamTruThueTNCN)</td>
+                <td>@Html.DisplayFor(modelItem => item.ThucLanh)</td>
+                <td>@Html.DisplayFor(modelItem => item.TrangThai)</td>
+                <td>@Html.DisplayFor(modelItem => item.MaNV)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MaBL">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.MaBL">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.MaBL">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div class="d-flex justify-content-between">
+    <a asp-action="Index" 
+       asp-route-pageNumber="@(Model.PageIndex - 1)" 
+       asp-route-currentFilter="@ViewData["CurrentFilter"]" 
+       class="btn btn-outline-primary @prevDisabledClass">
+        Previous
+    </a>
+
+    <span>Page @Model.PageIndex of @Model.TotalPages</span>
+
+    <a asp-action="Index" 
+       asp-route-pageNumber="@(Model.PageIndex + 1)" 
+       asp-route-currentFilter="@ViewData["CurrentFilter"]" 
+       class="btn btn-outline-primary @nextDisabledClass">
+        Next
+    </a>
+</div>

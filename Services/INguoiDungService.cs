@@ -12,5 +12,6 @@ namespace BangLuong.Services
         Task<bool> UpdateAsync(string id, NguoiDungViewModel viewModel);
         Task<bool> DeleteAsync(string id);
         Task<IEnumerable<string>> GetAllNhanVienIdsAsync(); // dùng cho dropdown chọn nhân viên
+        Task<PaginatedList<NguoiDungViewModel>> GetAllFilter(string sortOrder, string currentFilter, string searchString, int? pageNumber, int pageSize);
     }
 }

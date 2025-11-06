@@ -11,5 +11,6 @@ namespace BangLuong.Services
         Task<int> Create(ChamCongRequest request);
         Task<int> Update(ChamCongViewModel request);
         Task<int> Delete(int id);
+        Task<PaginatedList<ChamCongViewModel>> GetAllFilter(string sortOrder, string currentFilter, string searchString, int? pageNumber, int pageSize);
     }
 }

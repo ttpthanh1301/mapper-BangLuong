@@ -19,6 +19,44 @@ namespace BangLuong.Services
             _context = context;
             _mapper = mapper;
         }
+        public async Task<PaginatedList<ChiTietPhuCapViewModel>> GetAllFilter(
+    string sortOrder,
+    string currentFilter,
+    string searchString,
+    int? pageNumber,
+    int pageSize)
+        {
+            if (searchString != null)
+                pageNumber = 1;
+            else
+                searchString = currentFilter;
+
+            var query = from ct in _context.ChiTietPhuCap
+                        select ct;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(ct =>
+                    ct.MaCTPC.ToString().Contains(searchString) ||
+                    ct.MaNV.Contains(searchString) ||
+                    ct.MaPC.Contains(searchString) ||
+                    (ct.GhiChu != null && ct.GhiChu.Contains(searchString))
+                );
+            }
+
+            query = sortOrder switch
+            {
+                "date_desc" => query.OrderByDescending(ct => ct.NgayApDung),
+                "date" => query.OrderBy(ct => ct.NgayApDung),
+                _ => query.OrderBy(ct => ct.NgayApDung)
+            };
+
+            var list = await query.ToListAsync();
+            var viewModels = _mapper.Map<IEnumerable<ChiTietPhuCapViewModel>>(list);
+
+            return PaginatedList<ChiTietPhuCapViewModel>.Create(viewModels, pageNumber ?? 1, pageSize);
+        }
+
 
         public async Task<IEnumerable<ChiTietPhuCapViewModel>> GetAll()
         {

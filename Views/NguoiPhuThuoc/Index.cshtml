@@ -1,65 +1,73 @@
-@model IEnumerable<NguoiPhuThuocViewModels.NguoiPhuThuocViewModel>
+@using static BangLuong.ViewModels.NguoiPhuThuocViewModels
+
+@model PaginatedList<NguoiPhuThuocViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Người Phụ Thuộc";
+    var prevDisabledClass = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabledClass = !Model.HasNextPage ? "disabled" : "";
 }
 
-<h1>Index</h1>
+<h1>Người Phụ Thuộc</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
-<table class="table">
+
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="d-flex">
+        <input class="form-control me-2" placeholder="Search..." 
+               value="@ViewData["CurrentFilter"]" name="searchString" autocomplete="off" />
+        <button type="submit" class="btn btn-secondary">Search</button>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.HoTen)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NgaySinh)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MoiQuanHe)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ThoiGianBatDauGiamTru)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ThoiGianKetThucGiamTru)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MaNV)
-            </th>
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model[0].HoTen)</th>
+            <th>@Html.DisplayNameFor(model => model[0].NgaySinh)</th>
+            <th>@Html.DisplayNameFor(model => model[0].MoiQuanHe)</th>
+            <th>@Html.DisplayNameFor(model => model[0].ThoiGianBatDauGiamTru)</th>
+            <th>@Html.DisplayNameFor(model => model[0].ThoiGianKetThucGiamTru)</th>
+            <th>@Html.DisplayNameFor(model => model[0].MaNV)</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.HoTen)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NgaySinh)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MoiQuanHe)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ThoiGianBatDauGiamTru)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ThoiGianKetThucGiamTru)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaNV)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MaNPT">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MaNPT">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MaNPT">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.HoTen)</td>
+                <td>@Html.DisplayFor(modelItem => item.NgaySinh)</td>
+                <td>@Html.DisplayFor(modelItem => item.MoiQuanHe)</td>
+                <td>@Html.DisplayFor(modelItem => item.ThoiGianBatDauGiamTru)</td>
+                <td>@Html.DisplayFor(modelItem => item.ThoiGianKetThucGiamTru)</td>
+                <td>@Html.DisplayFor(modelItem => item.MaNV)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MaNPT">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.MaNPT">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.MaNPT">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div class="d-flex justify-content-between">
+    <a asp-action="Index" 
+       asp-route-pageNumber="@(Model.PageIndex - 1)" 
+       asp-route-currentFilter="@ViewData["CurrentFilter"]" 
+       class="btn btn-outline-primary @prevDisabledClass">
+        Previous
+    </a>
+
+    <span>Page @Model.PageIndex of @Model.TotalPages</span>
+
+    <a asp-action="Index" 
+       asp-route-pageNumber="@(Model.PageIndex + 1)" 
+       asp-route-currentFilter="@ViewData["CurrentFilter"]" 
+       class="btn btn-outline-primary @nextDisabledClass">
+        Next
+    </a>
+</div>

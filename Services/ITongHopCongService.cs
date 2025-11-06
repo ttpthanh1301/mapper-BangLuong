@@ -11,5 +11,6 @@ namespace BangLuong.Services
         Task<bool> CreateAsync(TongHopCongRequest request);
         Task<bool> UpdateAsync(int id, TongHopCongViewModel request);
         Task<bool> DeleteAsync(int id);
+        Task<PaginatedList<TongHopCongViewModel>> GetAllFilter(string sortOrder, string currentFilter, string searchString, int? pageNumber, int pageSize);
     }
 }

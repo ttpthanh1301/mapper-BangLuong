@@ -25,17 +25,17 @@ namespace BangLuong.Controllers
         }
 
         // GET: NhanVien
-public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber, int pageSize = 10)
-{
-    ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) || sortOrder.Equals("name") ? "name_desc" : "name";
-    ViewData["GenderSortParm"] = String.IsNullOrEmpty(sortOrder) || sortOrder.Equals("gender") ? "gender_desc" : "gender";
-    ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) || sortOrder.Equals("date") ? "date_desc" : "date";
-    ViewData["CurrentFilter"] = searchString;
-    ViewData["CurrentSort"] = sortOrder;
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber, int pageSize = 10)
+        {
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) || sortOrder.Equals("name") ? "name_desc" : "name";
+            ViewData["GenderSortParm"] = String.IsNullOrEmpty(sortOrder) || sortOrder.Equals("gender") ? "gender_desc" : "gender";
+            ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) || sortOrder.Equals("date") ? "date_desc" : "date";
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentSort"] = sortOrder;
 
-    var result = await _NhanVienservice.GetAllFilter(sortOrder, currentFilter, searchString, pageNumber, pageSize);
-    return View(result);
-}
+            var result = await _NhanVienservice.GetAllFilter(sortOrder, currentFilter, searchString, pageNumber, pageSize);
+            return View(result);
+        }
 
         // GET: NhanVien/Details/5
         public async Task<IActionResult> Details(string id)
@@ -100,7 +100,7 @@ public async Task<IActionResult> Index(string sortOrder, string currentFilter, s
 
             if (ModelState.IsValid)
             {
-               await _NhanVienservice.Update(nhanVien);
+                await _NhanVienservice.Update(nhanVien);
                 return RedirectToAction(nameof(Index));
             }
             return View(nhanVien);

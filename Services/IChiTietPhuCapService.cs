@@ -11,5 +11,6 @@ namespace BangLuong.Services
         Task<int> Create(ChiTietPhuCapRequest request);
         Task<int> Update(ChiTietPhuCapViewModel request);
         Task<int> Delete(int id);
+        Task<PaginatedList<ChiTietPhuCapViewModel>> GetAllFilter(string sortOrder, string currentFilter, string searchString, int? pageNumber, int pageSize);
     }
 }

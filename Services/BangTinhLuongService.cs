@@ -16,6 +16,45 @@ namespace BangLuong.Services
             _context = context;
             _mapper = mapper;
         }
+        public async Task<PaginatedList<BangTinhLuongViewModel>> GetAllFilter(
+    string sortOrder,
+    string currentFilter,
+    string searchString,
+    int? pageNumber,
+    int pageSize)
+        {
+            if (searchString != null)
+                pageNumber = 1;
+            else
+                searchString = currentFilter;
+
+            var query = from bl in _context.BangTinhLuong
+                        select bl;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(bl =>
+                    bl.MaNV.Contains(searchString) ||
+                    bl.KyLuongThang.ToString().Contains(searchString) ||
+                    bl.KyLuongNam.ToString().Contains(searchString) ||
+                    bl.TrangThai.Contains(searchString)
+                );
+            }
+
+            query = sortOrder switch
+            {
+                "month_desc" => query.OrderByDescending(bl => bl.KyLuongThang),
+                "year_desc" => query.OrderByDescending(bl => bl.KyLuongNam),
+                "salary_desc" => query.OrderByDescending(bl => bl.ThucLanh),
+                _ => query.OrderBy(bl => bl.KyLuongNam).ThenBy(bl => bl.KyLuongThang)
+            };
+
+            var list = await query.ToListAsync();
+            var viewModels = _mapper.Map<IEnumerable<BangTinhLuongViewModel>>(list);
+
+            return PaginatedList<BangTinhLuongViewModel>.Create(viewModels, pageNumber ?? 1, pageSize);
+        }
+
 
         // Lấy tất cả bảng lương
         public async Task<IEnumerable<BangTinhLuongViewModel>> GetAllAsync()

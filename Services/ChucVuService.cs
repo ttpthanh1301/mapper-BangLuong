@@ -19,6 +19,44 @@ namespace BangLuong.Services
             _context = context;
             _mapper = mapper;
         }
+        public async Task<PaginatedList<ChucVuViewModel>> GetAllFilter(
+    string sortOrder,
+    string currentFilter,
+    string searchString,
+    int? pageNumber,
+    int pageSize)
+        {
+            if (searchString != null)
+                pageNumber = 1;
+            else
+                searchString = currentFilter;
+
+            var query = from cv in _context.ChucVu
+                        select cv;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(cv =>
+                    cv.MaCV.Contains(searchString) ||
+                    cv.TenCV.Contains(searchString) ||
+                    (cv.MoTa != null && cv.MoTa.Contains(searchString))
+                );
+            }
+
+            query = sortOrder switch
+            {
+                "name_desc" => query.OrderByDescending(cv => cv.TenCV),
+                "code" => query.OrderBy(cv => cv.MaCV),
+                "code_desc" => query.OrderByDescending(cv => cv.MaCV),
+                _ => query.OrderBy(cv => cv.TenCV)
+            };
+
+            var list = await query.ToListAsync();
+            var viewModels = _mapper.Map<IEnumerable<ChucVuViewModel>>(list);
+
+            return PaginatedList<ChucVuViewModel>.Create(viewModels, pageNumber ?? 1, pageSize);
+        }
+
 
         public async Task<IEnumerable<ChucVuViewModel>> GetAllAsync()
         {

@@ -17,6 +17,43 @@ namespace BangLuong.Services
             _mapper = mapper;
         }
 
+        public async Task<PaginatedList<TongHopCongViewModel>> GetAllFilter(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber,
+            int pageSize)
+        {
+            if (searchString != null)
+                pageNumber = 1;
+            else
+                searchString = currentFilter;
+
+            var query = from th in _context.TongHopCong
+                        select th;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(th =>
+                    th.MaNV.Contains(searchString) ||
+                    th.KyLuongThang.ToString().Contains(searchString) ||
+                    th.KyLuongNam.ToString().Contains(searchString)
+                );
+            }
+
+            query = sortOrder switch
+            {
+                "month_desc" => query.OrderByDescending(th => th.KyLuongThang),
+                "year_desc" => query.OrderByDescending(th => th.KyLuongNam),
+                _ => query.OrderBy(th => th.KyLuongNam).ThenBy(th => th.KyLuongThang)
+            };
+
+            var list = await query.ToListAsync();
+            var viewModels = _mapper.Map<IEnumerable<TongHopCongViewModel>>(list);
+
+            return PaginatedList<TongHopCongViewModel>.Create(viewModels, pageNumber ?? 1, pageSize);
+        }
+
         public async Task<IEnumerable<TongHopCongViewModel>> GetAllAsync()
         {
             var list = await _context.TongHopCong.Include(x => x.NhanVien).ToListAsync();

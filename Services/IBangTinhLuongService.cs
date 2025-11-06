@@ -11,5 +11,6 @@ namespace BangLuong.Services
         Task<bool> CreateAsync(BangTinhLuongRequest request);
         Task<bool> UpdateAsync(int id, BangTinhLuongViewModel request);
         Task<bool> DeleteAsync(int id);
+        Task<PaginatedList<BangTinhLuongViewModel>> GetAllFilter(string sortOrder, string currentFilter, string searchString, int? pageNumber, int pageSize);
     }
 }

@@ -3,56 +3,87 @@
 @model PaginatedList<NhanVienViewModel>
 
 @{
+    ViewData["Title"] = "Danh sách Nhân Viên";
     var prevDisabledClass = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabledClass = !Model.HasNextPage ? "disabled" : "";
 }
-<h1>Index</h1>
+
+<h1>Danh sách Nhân Viên</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
-<form asp-action="Index">
+
+<form asp-action="Index" method="get" class="mb-3">
     <div class="d-flex">
-        <input class="form-control" placeholder="Search..." value="@ViewData["CurrentFilter"]" type="text"
-               autocomplete="off" name="SearchString" />
+        <input class="form-control me-2" placeholder="Search..." 
+               value="@ViewData["CurrentFilter"]" name="SearchString" autocomplete="off" />
+        <button type="submit" class="btn btn-secondary">Search</button>
     </div>
 </form>
-<table class="table">
-<tbody>
-@foreach (var item in Model)
-{
-    <tr>
-        <td>@item.HoTen</td>
-        <td>@item.NgaySinh?.ToString("dd/MM/yyyy")</td>
-        <td>@item.GioiTinh</td>
-        <td>@item.CCCD</td>
-        <td>@item.DiaChi</td>
-        <td>@item.SoDienThoai</td>
-        <td>@item.Email</td>
-        <td>@item.MaSoThue</td>
-        <td>@item.TaiKhoanNganHang</td>
-        <td>@item.TenNganHang</td>
-        <td>@item.NgayVaoLam.ToString("dd/MM/yyyy")</td>
-        <td>@item.TrangThai</td>
-        <td>@item.MaPB</td>
-        <td>@item.MaCV</td>
-        <td>
-            <a asp-action="Edit" asp-route-id="@item.MaNV">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.MaNV">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.MaNV">Delete</a>
-        </td>
-    </tr>
-}
-</tbody>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Họ Tên</th>
+            <th>Ngày Sinh</th>
+            <th>Giới Tính</th>
+            <th>CCCD</th>
+            <th>Địa Chỉ</th>
+            <th>SĐT</th>
+            <th>Email</th>
+            <th>Mã Số Thuế</th>
+            <th>Tài Khoản Ngân Hàng</th>
+            <th>Tên Ngân Hàng</th>
+            <th>Ngày Vào Làm</th>
+            <th>Trạng Thái</th>
+            <th>Phòng Ban</th>
+            <th>Chức Vụ</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.HoTen</td>
+            <td>@item.NgaySinh?.ToString("dd/MM/yyyy")</td>
+            <td>@item.GioiTinh</td>
+            <td>@item.CCCD</td>
+            <td>@item.DiaChi</td>
+            <td>@item.SoDienThoai</td>
+            <td>@item.Email</td>
+            <td>@item.MaSoThue</td>
+            <td>@item.TaiKhoanNganHang</td>
+            <td>@item.TenNganHang</td>
+            <td>@item.NgayVaoLam.ToString("dd/MM/yyyy")</td>
+            <td>@item.TrangThai</td>
+            <td>@item.MaPB</td>
+            <td>@item.MaCV</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.MaNV">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.MaNV">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.MaNV">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
 </table>
 
- 
-<a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-default @prevDisabledClass">
-    Previous
-</a>
-<a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-default @nextDisabledClass">
-    Next
-</a>
+<div class="d-flex justify-content-between">
+    <a asp-action="Index" 
+       asp-route-pageNumber="@(Model.PageIndex - 1)" 
+       asp-route-currentFilter="@ViewData["CurrentFilter"]" 
+       class="btn btn-outline-primary @prevDisabledClass">
+        Previous
+    </a>
 
+    <span>Page @Model.PageIndex of @Model.TotalPages</span>
+
+    <a asp-action="Index" 
+       asp-route-pageNumber="@(Model.PageIndex + 1)" 
+       asp-route-currentFilter="@ViewData["CurrentFilter"]" 
+       class="btn btn-outline-primary @nextDisabledClass">
+        Next
+    </a>
+</div>

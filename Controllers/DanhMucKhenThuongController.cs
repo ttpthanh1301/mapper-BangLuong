@@ -12,10 +12,19 @@ namespace BangLuong.Controllers
         {
             _service = service;
         }
-
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
-            var list = await _service.GetAllAsync();
+            int pageSize = 10; // Số bản ghi mỗi trang
+
+            var list = await _service.GetAllFilter(sortOrder, currentFilter, searchString, pageNumber, pageSize);
+
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["CurrentFilter"] = searchString;
+
             return View(list);
         }
 

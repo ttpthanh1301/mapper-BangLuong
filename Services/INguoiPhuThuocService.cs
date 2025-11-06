@@ -12,5 +12,6 @@ namespace BangLuong.Services
         Task<bool> UpdateAsync(int id, NguoiPhuThuocViewModel viewModel);
         Task<bool> DeleteAsync(int id);
         Task<IEnumerable<string>> GetAllNhanVienIdsAsync(); // phục vụ dropdown MaNV
+        Task<PaginatedList<NguoiPhuThuocViewModel>> GetAllFilter(string sortOrder, string currentFilter, string searchString, int? pageNumber, int pageSize);
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BangLuong;
 using static BangLuong.ViewModels.DanhMucPhuCapViewModels;
 
 public interface IDanhMucPhuCapService
@@ -10,4 +11,5 @@ public interface IDanhMucPhuCapService
     Task UpdateAsync(DanhMucPhuCapViewModel viewModel);
     Task DeleteAsync(string id);
     Task<bool> ExistsAsync(string id);
+    Task<PaginatedList<DanhMucPhuCapViewModel>> GetAllFilter(string sortOrder, string currentFilter, string searchString, int? pageNumber, int pageSize);
 }

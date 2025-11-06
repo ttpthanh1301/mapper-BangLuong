@@ -19,6 +19,45 @@ namespace BangLuong.Services
             _context = context;
             _mapper = mapper;
         }
+        public async Task<PaginatedList<HopDongViewModel>> GetAllFilter(
+    string sortOrder,
+    string currentFilter,
+    string searchString,
+    int? pageNumber,
+    int pageSize)
+        {
+            if (searchString != null)
+                pageNumber = 1;
+            else
+                searchString = currentFilter;
+
+            var query = from hd in _context.HopDong
+                        select hd;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(hd =>
+                    (hd.SoHopDong != null && hd.SoHopDong.Contains(searchString)) ||
+                    hd.LoaiHD.Contains(searchString) ||
+                    hd.MaNV.Contains(searchString) ||
+                    hd.TrangThai.Contains(searchString)
+                );
+            }
+
+            query = sortOrder switch
+            {
+                "date_desc" => query.OrderByDescending(hd => hd.NgayBatDau),
+                "date" => query.OrderBy(hd => hd.NgayBatDau),
+                "salary_desc" => query.OrderByDescending(hd => hd.LuongCoBan),
+                _ => query.OrderBy(hd => hd.NgayBatDau)
+            };
+
+            var list = await query.ToListAsync();
+            var viewModels = _mapper.Map<IEnumerable<HopDongViewModel>>(list);
+
+            return PaginatedList<HopDongViewModel>.Create(viewModels, pageNumber ?? 1, pageSize);
+        }
+
 
         public async Task<IEnumerable<HopDongViewModel>> GetAll()
         {

@@ -23,11 +23,22 @@ namespace BangLuong.Controllers
         }
 
         // GET: ChiTietKyLuat
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+         string sortOrder,
+         string currentFilter,
+         string searchString,
+         int? pageNumber)
         {
-            var list = await _chiTietKyLuatService.GetAllAsync();
+            int pageSize = 10; // Số bản ghi mỗi trang
+
+            var list = await _chiTietKyLuatService.GetAllFilter(sortOrder, currentFilter, searchString, pageNumber, pageSize);
+
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["CurrentFilter"] = searchString;
+
             return View(list);
         }
+
 
         // GET: ChiTietKyLuat/Details/5
         public async Task<IActionResult> Details(int id)

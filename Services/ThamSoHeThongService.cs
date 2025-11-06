@@ -18,6 +18,42 @@ namespace BangLuong.Services
             _context = context;
             _mapper = mapper;
         }
+        public async Task<PaginatedList<ThamSoHeThongViewModel>> GetAllFilter(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber,
+            int pageSize)
+        {
+            if (searchString != null)
+                pageNumber = 1;
+            else
+                searchString = currentFilter;
+
+            var query = from ts in _context.ThamSoHeThong
+                        select ts;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(ts =>
+                    ts.MaTS.Contains(searchString) ||
+                    ts.TenThamSo.Contains(searchString) ||
+                    ts.GiaTri.Contains(searchString)
+                );
+            }
+
+            query = sortOrder switch
+            {
+                "date_desc" => query.OrderByDescending(ts => ts.NgayApDung),
+                "date" => query.OrderBy(ts => ts.NgayApDung),
+                _ => query.OrderBy(ts => ts.TenThamSo)
+            };
+
+            var list = await query.ToListAsync();
+            var viewModels = _mapper.Map<IEnumerable<ThamSoHeThongViewModel>>(list);
+
+            return PaginatedList<ThamSoHeThongViewModel>.Create(viewModels, pageNumber ?? 1, pageSize);
+        }
 
         public async Task<IEnumerable<ThamSoHeThongViewModel>> GetAllAsync()
         {
