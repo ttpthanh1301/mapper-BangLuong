@@ -1,8 +1,361 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model BangLuong.ViewModels.DashboardViewModel
+@{
+    // Giữ nguyên Title
+    ViewData["Title"] = "Dashboard - Bảng Lương";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="content-header">
+    <div class="container-fluid">
+        <h4 class="pb-2 mb-2 border-bottom"><i class="fas fa-tachometer-alt"></i> Dashboard Thống kê Lương & Nhân sự</h4>
+    </div>
 </div>
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-6 mb-3">
+                <div class="small-box bg-danger h-100" data-bs-toggle="tooltip" title="Tổng chi phí lương bao gồm BH Công ty đóng">
+                    <div class="inner">
+                        <h4 class="font-weight-bold">@Model.TongChiPhiLuong.ToString("N0") ₫</h4>
+                        <p class="mb-0">Tổng Chi phí Lương</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 mb-3">
+                <div class="small-box bg-success h-100" data-bs-toggle="tooltip" title="Lương thực nhận sau thuế, phụ cấp và khen thưởng">
+                    <div class="inner">
+                        <h4 class="font-weight-bold">@Model.TongLuongThucLanh.ToString("N0") ₫</h4>
+                        <p class="mb-0">Lương Thực Lãnh</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-wallet"></i></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 mb-3">
+                <div class="small-box bg-primary h-100" data-bs-toggle="tooltip" title="Số lượng nhân sự đang làm việc">
+                    <div class="inner">
+                        <h4 class="font-weight-bold">@Model.TongNhanSu</h4>
+                        <p class="mb-0">Tổng Nhân sự</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-user-tie"></i></div>
+                    <a  asp-controller="NhanVien" asp-action="Index"class="small-box-footer">Chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 mb-3">
+                <div class="small-box bg-warning h-100" data-bs-toggle="tooltip" title="Tổng giờ tăng ca của tất cả nhân viên">
+                    <div class="inner">
+                        <h4 class="font-weight-bold">@Model.TongGioTangCa</h4>
+                        <p class="mb-0">Giờ Tăng ca</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-stopwatch"></i></div>
+                    <a  asp-controller="TongHopCong" asp-action="Index" class="small-box-footer">Chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 mb-3">
+                <div class="small-box bg-info h-100" data-bs-toggle="tooltip" title="Số lượng khen thưởng đã phát">
+                    <div class="inner">
+                        <h4 class="font-weight-bold">@Model.SoLuongKhenThuong</h4>
+                        <p class="mb-0">Khen thưởng</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-trophy"></i></div>
+                    <a  asp-controller="ChiTietKhenThuong" asp-action="Index" class="small-box-footer">Chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 mb-3">
+                <div class="small-box bg-secondary h-100" data-bs-toggle="tooltip" title="Số lượng kỷ luật đã áp dụng">
+                    <div class="inner">
+                        <h4 class="font-weight-bold">@Model.SoLuongKyLuat</h4>
+                        <p class="mb-0">Kỷ luật</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-balance-scale"></i></div>
+                    <a  asp-controller="ChiTietKyLuat" asp-action="Index"class="small-box-footer">Chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header bg-light py-2">
+                        <h6 class="mb-0"><i class="fas fa-crown text-warning"></i> Top 5 Lương cao nhất</h6>
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 200px;"><canvas id="topLuong" class="h-100"></canvas></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header bg-light py-2">
+                        <h6 class="mb-0"><i class="fas fa-clock text-orange"></i> Top 5 Tăng ca nhiều nhất</h6>
+                    </div>
+                    <div class="card-body">
+    
+                        <div style="height: 200px;"><canvas id="topTangCa" class="h-100"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div class="row">
+    <div class="col-lg-6 mb-3">
+        <div class="card h-100">
+            <div class="card-header bg-light py-2">
+                <h6 class="mb-0"><i class="fas fa-chart-pie text-danger"></i> Cơ cấu Quỹ lương</h6>
+            </div>
+            <div class="card-body">
+                <div class="row h-100">
+                    
+                    <div class="col-md-6 d-flex flex-column justify-content-center">
+                        <ul class="list-group list-group-flush">
+                            @{
+                                // Tính tổng để có thể tính phần trăm trong Razor
+                                double totalCoCau = Model.TongLuongTheoNgayCong + Model.TongLuongTangCa + Model.TongPhuCap + Model.TongKhenThuong;
+
+                                var coCauItems = new (string Label, decimal Value, string Color)[]
+                                {
+                                    ("Lương Ngày công", (decimal)Model.TongLuongTheoNgayCong, "#FF6384"),
+                                    ("Lương Tăng ca", (decimal)Model.TongLuongTangCa, "#36A2EB"),
+                                    ("Phụ cấp", (decimal)Model.TongPhuCap, "#FFCE56"),
+                                    ("Khen thưởng", (decimal)Model.TongKhenThuong, "#81C784")
+                                };
+                            }
+
+                            @foreach (var item in coCauItems)
+                            {
+                                double percent = totalCoCau > 0 ? ((double)item.Value / totalCoCau * 100) : 0;
+                                
+                                <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-0 border-0">
+                                    <div>
+                                        <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:@item.Color; margin-right:5px;"></span>
+                                        <small class="text-muted">@item.Label</small>
+                                    </div>
+                                    <div>
+                                        <span class="font-weight-bold">@item.Value.ToString("N0") ₫</span>
+                                        <span class="badge badge-secondary ml-2">@percent.ToString("N1")%</span>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+
+                    <div class="col-md-6 d-flex align-items-center justify-content-center">
+                        <div style="height: 250px; width: 100%;"><canvas id="coCauLuongChart" class="h-100"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<div class="col-lg-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header bg-light py-2">
+                        <h6 class="mb-0"><i class="fas fa-building text-primary"></i> Chi phí Lương theo Phòng ban</h6>
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 200px;"><canvas id="luongPhongBanChart" class="h-100"></canvas></div>
+                    </div>
+                </div>
+            </div>
+</div>
+</div>
+
+        <div class="row">
+            <div class="col-lg-12 mb-3">
+                <div class="card">
+                    <div class="card-header bg-light py-2">
+                        <h6 class="mb-0"><i class="fas fa-chart-line text-success"></i> Xu hướng chi phí lương 12 tháng</h6>
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 250px;"><canvas id="luongThangChart" class="h-100"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
+<script>
+    // DỮ LIỆU
+    const topLuongLabels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.TopLuongCao?.Select(x => x.HoTen) ?? []));
+    const topLuongData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.TopLuongCao?.Select(x => (double)x.TongThuNhap) ?? []));
+    const topOTLabels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.TopGioTangCa?.Select(x => x.HoTen) ?? []));
+    const topOTData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.TopGioTangCa?.Select(x => (double)x.TongGioTangCa) ?? []));
+
+    const xuHuongLabels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.XuHuongLuongThang?.Select(x => x.Thang) ?? []));
+    const xuHuongData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.XuHuongLuongThang?.Select(x => (double)x.TongChiPhi) ?? []));
+
+    const coCauData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(new {
+        LuongTheoNgayCong = (double)Model.TongLuongTheoNgayCong,
+        LuongTangCa = (double)Model.TongLuongTangCa,
+        TongPhuCap = (double)Model.TongPhuCap,
+        TongKhenThuong = (double)Model.TongKhenThuong
+    }));
+
+    const phongBanLabels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.LuongTheoPhongBan?.Select(x => x.TenPhongBan) ?? []));
+    const phongBanData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.LuongTheoPhongBan?.Select(x => (double)x.TongChiPhi) ?? []));
+
+    // Hàm tạo gradient cho thanh
+    function createGradient(ctx, colorStart, colorEnd, value, maxValue) {
+        const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
+        const percent = value / maxValue;
+        gradient.addColorStop(0, colorStart);
+        gradient.addColorStop(percent, colorEnd);
+        gradient.addColorStop(1, '#e0e0e0');
+        return gradient;
+    }
+
+    // TOP LƯƠNG
+    const topLuongChart = new Chart(document.getElementById('topLuong'), {
+        type: 'bar',
+        data: {
+            labels: topLuongLabels,
+            datasets: [{
+                label: 'Lương thực lãnh (₫)',
+                data: topLuongData,
+                backgroundColor: ctx => {
+                    const chart = ctx.chart;
+                    const maxVal = Math.max(...topLuongData);
+                    return createGradient(chart.ctx, '#90CAF9', '#1565C0', ctx.raw, maxVal);
+                }
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false, // Thêm để điều chỉnh kích thước theo div cha
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => ctx.parsed.x.toLocaleString() + ' ₫' } },
+                datalabels: { anchor: 'end', align: 'right', formatter: val => val.toLocaleString() + ' ₫' }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+
+    // TOP TĂNG CA
+    const topOTChart = new Chart(document.getElementById('topTangCa'), {
+        type: 'bar',
+        data: {
+            labels: topOTLabels,
+            datasets: [{
+                label: 'Giờ tăng ca',
+                data: topOTData,
+                backgroundColor: ctx => {
+                    const chart = ctx.chart;
+                    const maxVal = Math.max(...topOTData);
+                    return createGradient(chart.ctx, '#FFD54F', '#FF6F00', ctx.raw, maxVal);
+                }
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false, // Thêm để điều chỉnh kích thước theo div cha
+            plugins: {
+                legend: { display: false },
+                datalabels: { anchor: 'end', align: 'right' }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+
+    // CƠ CẤU QUỸ LƯƠNG
+// CƠ CẤU QUỸ LƯƠNG (Đã TẮT Datalabels và Legend)
+    new Chart(document.getElementById('coCauLuongChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Lương Ngày công', 'Lương Tăng ca', 'Phụ cấp', 'Khen thưởng'],
+            datasets: [{
+                data: [coCauData.LuongTheoNgayCong, coCauData.LuongTangCa, coCauData.TongPhuCap, coCauData.TongKhenThuong],
+                backgroundColor: ['#FF6384','#36A2EB','#FFCE56','#81C784'],
+                borderColor: '#fff', // Giữ đường viền trắng cho lát cắt
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                // TẮT CHÚ THÍCH VÌ ĐÃ CÓ BẢNG TÓM TẮT RIÊNG
+                legend: { display: false }, 
+                // TẮT DATALABELS ĐỂ TRÁNH CHỒNG CHÉO TRÊN BIỂU ĐỒ
+                datalabels: { display: false },
+                // Giữ Tooltip để vẫn xem được chi tiết khi di chuột
+                tooltip: { callbacks: { label: ctx => {
+                    const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+                    const percent = (ctx.parsed / total * 100).toFixed(1);
+                    return `${ctx.label}: ${ctx.parsed.toLocaleString()} ₫ (${percent}%)`;
+                } } }
+            }
+        }
+        // BỎ PLUGINS [ChartDataLabels] nếu nó không được sử dụng cho biểu đồ này nữa
+        // hoặc giữ nếu các biểu đồ khác cần nó. Tốt nhất là giữ nguyên dòng này:
+        // plugins: [ChartDataLabels]
+    });
+    // XU HƯỚNG CHI PHÍ LƯƠNG
+    new Chart(document.getElementById('luongThangChart'), {
+        type: 'line',
+        data: {
+            labels: xuHuongLabels,
+            datasets: [{
+                label: 'Tổng chi phí lương (₫)',
+                data: xuHuongData,
+                fill: true,
+                borderColor: '#66BB6A',
+                backgroundColor: 'rgba(102,187,106,0.2)',
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, 
+            plugins: {
+                legend: { position: 'top' },
+                tooltip: { callbacks: { label: ctx => ctx.parsed.y.toLocaleString() + ' ₫' } },
+                datalabels: { display: false }
+            },
+            scales: { y: { beginAtZero: true } }
+        },
+        plugins: [ChartDataLabels]
+    });
+    // LƯƠNG THEO PHÒNG BAN
+    // Kiểm tra dữ liệu trước khi vẽ
+    if (phongBanData && phongBanData.length > 0) {
+        const luongPBChart = new Chart(document.getElementById('luongPhongBanChart'), {
+            type: 'bar',
+            data: {
+                labels: phongBanLabels,
+                datasets: [{
+                    label: 'Tổng lương (₫)',
+                    data: phongBanData,
+                    backgroundColor: ctx => {
+                        const chart = ctx.chart;
+                        const maxVal = Math.max(...phongBanData);
+                        return createGradient(chart.ctx, '#90CAF9', '#1565C0', ctx.raw, maxVal);
+                    }
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false, 
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => ctx.parsed.x.toLocaleString() + ' ₫' } },
+                    datalabels: { anchor: 'end', align: 'right', formatter: val => val.toLocaleString() + ' ₫' }
+                },
+                scales: { x: { beginAtZero: true } }
+            },
+            plugins: [ChartDataLabels]
+        });
+    } else {
+        // Nếu không có dữ liệu, hiển thị thông báo thay vì biểu đồ
+        document.getElementById('luongPhongBanChart').parentNode.innerHTML = '<p class="text-center text-danger pt-5">Không có dữ liệu chi phí lương theo phòng ban để hiển thị.</p>';
+    }
+</script>

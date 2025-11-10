@@ -10,7 +10,14 @@
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Azure.Core.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Azure.Identity.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/BCrypt.Net-Next.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/ClosedXML.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/DocumentFormat.OpenXml.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/EPPlus.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/EPPlus.Interfaces.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/ExcelNumberFormat.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Humanizer.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Irony.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.AspNetCore.Razor.Language.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.Bcl.AsyncInterfaces.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.Build.dll
@@ -39,6 +46,8 @@
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.Extensions.Caching.Abstractions.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.Extensions.Caching.Memory.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.Extensions.Configuration.Abstractions.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.Extensions.Configuration.FileExtensions.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.Extensions.Configuration.Json.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.Extensions.DependencyModel.dll
@@ -54,6 +63,7 @@
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.IO.RecyclableMemoryStream.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.NET.StringTools.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.SqlServer.Server.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/Microsoft.VisualStudio.Web.CodeGeneration.dll
@@ -74,6 +84,7 @@
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/NuGet.ProjectModel.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/NuGet.Protocol.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/NuGet.Versioning.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/SixLabors.Fonts.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.ClientModel.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.CodeDom.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.Composition.AttributedModel.dll
@@ -85,13 +96,17 @@
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.Diagnostics.DiagnosticSource.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.Formats.Asn1.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.IO.Packaging.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.IO.Pipelines.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.Memory.Data.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.Reflection.MetadataLoadContext.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.Runtime.Caching.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.Security.Cryptography.Pkcs.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.Security.Cryptography.ProtectedData.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.Security.Cryptography.Xml.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.Text.Encodings.Web.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/System.Text.Json.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/XLParser.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/af/Humanizer.resources.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/ar/Humanizer.resources.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/az/Humanizer.resources.dll
@@ -251,6 +266,7 @@
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/runtimes/win-x64/native/Microsoft.Data.SqlClient.SNI.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/runtimes/win-x86/native/Microsoft.Data.SqlClient.SNI.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Runtime.Caching.dll
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/runtimes/win/lib/net8.0/System.Security.Cryptography.Pkcs.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/runtimes/browser/lib/net8.0/System.Text.Encodings.Web.dll
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/BangLuong.csproj.AssemblyReference.cache
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/BangLuong.GeneratedMSBuildEditorConfig.editorconfig
@@ -260,6 +276,7 @@
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/BangLuong.MvcApplicationPartsAssemblyInfo.cache
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/BangLuong.RazorAssemblyInfo.cache
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/BangLuong.RazorAssemblyInfo.cs
+/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/BangLuong.sourcelink.json
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/staticwebassets.build.json
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/staticwebassets.development.json
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/staticwebassets/msbuild.BangLuong.Microsoft.AspNetCore.StaticWebAssets.props
@@ -276,5 +293,3 @@
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/BangLuong.pdb
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/BangLuong.genruntimeconfig.cache
 /Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/ref/BangLuong.dll
-/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/bin/Debug/net8.0/BCrypt.Net-Next.dll
-/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/obj/Debug/net8.0/BangLuong.sourcelink.json

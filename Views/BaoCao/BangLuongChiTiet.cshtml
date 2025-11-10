@@ -1,0 +1,210 @@
+@model List<BangLuong.ViewModels.BaoCaoBangLuongChiTietViewModel>
+
+@{
+    ViewData["Title"] = "Báo Cáo Bảng Lương Chi Tiết";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h4 class="m-0 font-weight-bold text-success">
+                <i class="fas fa-money-bill-wave"></i> Báo Cáo Bảng Lương Chi Tiết
+            </h4>
+        </div>
+        
+        <div class="card-body">
+            <!-- Bộ lọc -->
+            <form asp-action="BangLuongChiTiet" method="get" class="mb-4">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Tháng</label>
+                        <select name="thang" class="form-control">
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option value="@i" selected="@(i == ViewBag.Thang)">Tháng @i</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Năm</label>
+                        <select name="nam" class="form-control">
+                            @for (int i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@i" selected="@(i == ViewBag.Nam)">@i</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>&nbsp;</label><br />
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Xem Báo Cáo
+                        </button>
+                        
+                        @if (Model != null && Model.Any())
+                        {
+                            <button type="button" class="btn btn-success" onclick="exportExcel()">
+                                <i class="fas fa-file-excel"></i> Xuất Excel
+                            </button>
+                        }
+                    </div>
+                </div>
+            </form>
+
+            @if (Model != null && Model.Any())
+            {
+            
+                    var tongLuongThucTe = Model.Sum(x => x.LuongThucTe);
+                    var tongPhuCap = Model.Sum(x => x.TongPhuCap);
+                    var tongTangCa = Model.Sum(x => x.LuongTangCa);
+                    var tongThuNhap = Model.Sum(x => x.TongThuNhap);
+                    var tongKhauTru = Model.Sum(x => x.TongKhauTru);
+                    var tongThucLanh = Model.Sum(x => x.ThucLanh);
+        
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            <strong>Kỳ báo cáo:</strong> Tháng @ViewBag.Thang/@ViewBag.Nam
+                            <span class="float-right"><strong>Tổng số nhân viên:</strong> @Model.Count</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bảng tổng hợp -->
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title">Tổng Hợp</h5>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <strong>Tổng Lương Thực Tế:</strong> @tongLuongThucTe.ToString("N0") VNĐ
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Tổng Phụ Cấp:</strong> @tongPhuCap.ToString("N0") VNĐ
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Tổng Tăng Ca:</strong> @tongTangCa.ToString("N0") VNĐ
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-4">
+                                        <strong>Tổng Thu Nhập:</strong> <span class="text-success">@tongThuNhap.ToString("N0") VNĐ</span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Tổng Khấu Trừ:</strong> <span class="text-danger">@tongKhauTru.ToString("N0") VNĐ</span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Tổng Thực Lãnh:</strong> <span class="text-primary font-weight-bold">@tongThucLanh.ToString("N0") VNĐ</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bảng dữ liệu -->
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-sm" id="dataTable">
+                        <thead class="thead-light">
+                            <tr>
+                                <th rowspan="2">STT</th>
+                                <th rowspan="2">Phòng Ban</th>
+                                <th rowspan="2">Mã NV</th>
+                                <th rowspan="2">Họ Tên</th>
+                                <th rowspan="2">Chức Vụ</th>
+                                <th colspan="5" class="text-center bg-info text-white">Thu Nhập</th>
+                                <th colspan="2" class="text-center bg-danger text-white">Khấu Trừ</th>
+                            </tr>
+                            <tr>
+                                <th class="text-right">Lương CB</th>
+                                <th class="text-center">NC TT</th>
+                                <th class="text-right">Lương TT</th>
+                                <th class="text-right">Phụ Cấp</th>
+                                <th class="text-right">Tăng Ca</th>
+                                <th class="text-right">Khấu Trừ</th>
+                                <th class="text-right">Thực Lãnh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int stt = 1;
+                                string currentPhongBan = "";
+                            }
+                            @foreach (var item in Model)
+                            {
+                                @if (currentPhongBan != item.PhongBan && !string.IsNullOrEmpty(item.PhongBan))
+                                {
+                                    currentPhongBan = item.PhongBan;
+                                    <tr class="table-secondary font-weight-bold">
+                                        <td colspan="12">@currentPhongBan</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td>@stt</td>
+                                    <td>@item.PhongBan</td>
+                                    <td>@item.MaNV</td>
+                                    <td>@item.HoTen</td>
+                                    <td>@item.ChucVu</td>
+                                    <td class="text-right">@item.LuongCoBan.ToString("N0")</td>
+                                    <td class="text-center">@item.NgayCongThucTe</td>
+                                    <td class="text-right">@item.LuongThucTe.ToString("N0")</td>
+                                    <td class="text-right">@item.TongPhuCap.ToString("N0")</td>
+                                    <td class="text-right">@item.LuongTangCa.ToString("N0")</td>
+                                    <td class="text-right text-danger">@item.TongKhauTru.ToString("N0")</td>
+                                    <td class="text-right font-weight-bold text-success">@item.ThucLanh.ToString("N0")</td>
+                                </tr>
+                                stt++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i> Không có dữ liệu bảng lương cho kỳ này.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function exportExcel() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '@Url.Action("ExportBangLuong", "BaoCao")';
+            
+            const thangInput = document.createElement('input');
+            thangInput.type = 'hidden';
+            thangInput.name = 'thang';
+            thangInput.value = '@ViewBag.Thang';
+            form.appendChild(thangInput);
+            
+            const namInput = document.createElement('input');
+            namInput.type = 'hidden';
+            namInput.name = 'nam';
+            namInput.value = '@ViewBag.Nam';
+            form.appendChild(namInput);
+            
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+
+        $(document).ready(function() {
+            $('#dataTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json"
+                },
+                "pageLength": 25,
+                "order": [[1, "asc"], [3, "asc"]],
+                "columnDefs": [
+                    { "orderable": false, "targets": 0 }
+                ]
+            });
+        });
+    </script>
+}

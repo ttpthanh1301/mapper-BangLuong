@@ -37,9 +37,9 @@
                 <td>@Html.DisplayFor(modelItem => item.TenKhenThuong)</td>
                 <td>@Html.DisplayFor(modelItem => item.SoTien)</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.MaKT">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.MaKT">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.MaKT">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.MaKT" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i>Edit</a> 
+                    <a asp-action="Details" asp-route-id="@item.MaKT" class="btn btn-info btn-sm text-white" title="Details"><i class="fa fa-info-circle"></i>Detail</a> 
+                    <a asp-action="Delete" asp-route-id="@item.MaKT" class="btn btn-danger btn-sm" title="Delete"><i class="fa fa-trash-alt"></i>Delete</a>
                 </td>
             </tr>
         }

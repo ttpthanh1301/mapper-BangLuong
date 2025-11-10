@@ -1,77 +1,97 @@
 @using static BangLuong.ViewModels.TongHopCongViewModels
-
 @model PaginatedList<TongHopCongViewModel>
 
-@{
-    ViewData["Title"] = "Tổng Hợp Công";
-    var prevDisabledClass = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabledClass = !Model.HasNextPage ? "disabled" : "";
+<h1 class="mb-3">Tổng Hợp Công</h1>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
 }
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+<div class="mb-3 d-flex gap-2 justify-content-center">
+    <form asp-action="RunTongHopCong" method="post" class="d-flex gap-1 align-items-center">
+        <select name="kyLuongThang" class="form-select" required>
+            <option value="" disabled selected>Tháng</option>
+            @for (int i = 1; i <= 12; i++)
+            {
+                <option value="@i">@i</option>
+            }
+        </select>
+        <select name="kyLuongNam" class="form-select" required>
+            <option value="" disabled selected>Năm</option>
+            @for (int i = DateTime.Now.Year - 10; i <= DateTime.Now.Year; i++)
+            {
+                <option value="@i">@i</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-primary">Tổng hợp công</button>
+    </form>
+</div>
 
-<h1>Tổng Hợp Công</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
+<style>
+    .justify-content-center {
+        justify-content: center;
+    }
+    .align-items-center {
+        align-items: center;
+    }
+</style>
 
 <form asp-action="Index" method="get" class="mb-3">
     <div class="d-flex">
-        <input class="form-control me-2" placeholder="Search..." 
-               value="@ViewData["CurrentFilter"]" name="searchString" autocomplete="off" />
+        <input class="form-control me-2" placeholder="Tìm kiếm..." value="@ViewData["CurrentFilter"]" name="searchString" autocomplete="off" />
         <button type="submit" class="btn btn-secondary">Search</button>
     </div>
 </form>
 
-<table class="table table-bordered table-striped">
-    <thead>
+<table class="table table-bordered table-striped align-middle">
+    <thead class="table-light">
         <tr>
-            <th>@Html.DisplayNameFor(model => model[0].KyLuongThang)</th>
-            <th>@Html.DisplayNameFor(model => model[0].KyLuongNam)</th>
-            <th>@Html.DisplayNameFor(model => model[0].SoNgayCong)</th>
-            <th>@Html.DisplayNameFor(model => model[0].SoGioTangCaNgayThuong)</th>
-            <th>@Html.DisplayNameFor(model => model[0].SoGioTangCaCuoiTuan)</th>
-            <th>@Html.DisplayNameFor(model => model[0].SoGioTangCaNgayLe)</th>
-            <th>@Html.DisplayNameFor(model => model[0].SoNgayNghiPhep)</th>
-            <th>@Html.DisplayNameFor(model => model[0].MaNV)</th>
-            <th>Actions</th>
+            <th>Tháng</th>
+            <th>Năm</th>
+            <th>Số ngày công</th>
+            <th>OT ngày thường</th>
+            <th>OT cuối tuần</th>
+            <th>OT ngày lễ</th>
+            <th>Ngày nghỉ phép</th>
+            <th>Mã NV</th>
+            @* <th>Actions</th> *@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (Model.Any())
         {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.KyLuongThang)</td>
-                <td>@Html.DisplayFor(modelItem => item.KyLuongNam)</td>
-                <td>@Html.DisplayFor(modelItem => item.SoNgayCong)</td>
-                <td>@Html.DisplayFor(modelItem => item.SoGioTangCaNgayThuong)</td>
-                <td>@Html.DisplayFor(modelItem => item.SoGioTangCaCuoiTuan)</td>
-                <td>@Html.DisplayFor(modelItem => item.SoGioTangCaNgayLe)</td>
-                <td>@Html.DisplayFor(modelItem => item.SoNgayNghiPhep)</td>
-                <td>@Html.DisplayFor(modelItem => item.MaNV)</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.MaTHC">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.MaTHC">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.MaTHC">Delete</a>
-                </td>
-            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.KyLuongThang</td>
+                    <td>@item.KyLuongNam</td>
+                    <td>@item.SoNgayCong</td>
+                    <td>@item.SoGioTangCaNgayThuong</td>
+                    <td>@item.SoGioTangCaCuoiTuan</td>
+                    <td>@item.SoGioTangCaNgayLe</td>
+                    <td>@item.SoNgayNghiPhep</td>
+                    <td>@item.MaNV</td>
+                    @* <td>
+                        <a asp-action="Edit" asp-route-id="@item.MaTHC" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
+                        <a asp-action="Details" asp-route-id="@item.MaTHC" class="btn btn-info btn-sm text-white"><i class="fa fa-info-circle"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.MaTHC" class="btn btn-danger btn-sm"><i class="fa fa-trash-alt"></i></a>
+                    </td> *@
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="9" class="text-center text-muted">Không có dữ liệu</td></tr>
         }
     </tbody>
 </table>
 
 <div class="d-flex justify-content-between">
-    <a asp-action="Index" 
-       asp-route-pageNumber="@(Model.PageIndex - 1)" 
-       asp-route-currentFilter="@ViewData["CurrentFilter"]" 
-       class="btn btn-outline-primary @prevDisabledClass">
-        Previous
-    </a>
-
-    <span>Page @Model.PageIndex of @Model.TotalPages</span>
-
-    <a asp-action="Index" 
-       asp-route-pageNumber="@(Model.PageIndex + 1)" 
-       asp-route-currentFilter="@ViewData["CurrentFilter"]" 
-       class="btn btn-outline-primary @nextDisabledClass">
-        Next
-    </a>
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-searchString="@ViewData["CurrentFilter"]" class="btn btn-outline-primary @(Model.HasPreviousPage ? "" : "disabled")">Previous</a>
+    <span>Trang @Model.PageIndex / @Model.TotalPages</span>
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-searchString="@ViewData["CurrentFilter"]" class="btn btn-outline-primary @(Model.HasNextPage ? "" : "disabled")">Next</a>
 </div>

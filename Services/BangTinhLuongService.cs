@@ -16,12 +16,16 @@ namespace BangLuong.Services
             _context = context;
             _mapper = mapper;
         }
+
+        // ================================
+        // 1️⃣ Lấy danh sách có phân trang, tìm kiếm, sắp xếp
+        // ================================
         public async Task<PaginatedList<BangTinhLuongViewModel>> GetAllFilter(
-    string sortOrder,
-    string currentFilter,
-    string searchString,
-    int? pageNumber,
-    int pageSize)
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber,
+            int pageSize)
         {
             if (searchString != null)
                 pageNumber = 1;
@@ -49,14 +53,15 @@ namespace BangLuong.Services
                 _ => query.OrderBy(bl => bl.KyLuongNam).ThenBy(bl => bl.KyLuongThang)
             };
 
-            var list = await query.ToListAsync();
+            var list = await query.Include(x => x.NhanVien).ToListAsync();
             var viewModels = _mapper.Map<IEnumerable<BangTinhLuongViewModel>>(list);
 
             return PaginatedList<BangTinhLuongViewModel>.Create(viewModels, pageNumber ?? 1, pageSize);
         }
 
-
-        // Lấy tất cả bảng lương
+        // ================================
+        // 2️⃣ Lấy toàn bộ danh sách bảng lương
+        // ================================
         public async Task<IEnumerable<BangTinhLuongViewModel>> GetAllAsync()
         {
             var list = await _context.BangTinhLuong
@@ -66,7 +71,9 @@ namespace BangLuong.Services
             return _mapper.Map<IEnumerable<BangTinhLuongViewModel>>(list);
         }
 
-        // Lấy chi tiết theo id
+        // ================================
+        // 3️⃣ Lấy chi tiết theo ID
+        // ================================
         public async Task<BangTinhLuongViewModel?> GetByIdAsync(int id)
         {
             var entity = await _context.BangTinhLuong
@@ -76,7 +83,9 @@ namespace BangLuong.Services
             return _mapper.Map<BangTinhLuongViewModel>(entity);
         }
 
-        // Thêm mới
+        // ================================
+        // 4️⃣ Thêm mới bảng lương
+        // ================================
         public async Task<bool> CreateAsync(BangTinhLuongRequest request)
         {
             var entity = _mapper.Map<BangTinhLuong>(request);
@@ -84,7 +93,9 @@ namespace BangLuong.Services
             return await _context.SaveChangesAsync() > 0;
         }
 
-        // Cập nhật
+        // ================================
+        // 5️⃣ Cập nhật bảng lương
+        // ================================
         public async Task<bool> UpdateAsync(int id, BangTinhLuongViewModel request)
         {
             var existing = await _context.BangTinhLuong.FirstOrDefaultAsync(x => x.MaBL == id);
@@ -96,7 +107,9 @@ namespace BangLuong.Services
             return await _context.SaveChangesAsync() > 0;
         }
 
-        // Xóa
+        // ================================
+        // 6️⃣ Xóa bảng lương
+        // ================================
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await _context.BangTinhLuong.FindAsync(id);
@@ -105,6 +118,24 @@ namespace BangLuong.Services
 
             _context.BangTinhLuong.Remove(entity);
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        // ================================
+        // 7️⃣ Tính lương theo kỳ (gọi stored procedure)
+        // ================================
+        public async Task<bool> TinhLuongTheoKyAsync(int kyLuongThang, int kyLuongNam)
+        {
+            try
+            {
+                // Gọi thủ tục SQL: sp_TinhLuongThang
+                var sql = "EXEC dbo.sp_TinhLuongThang @KyLuongThang = {0}, @KyLuongNam = {1}";
+                await _context.Database.ExecuteSqlRawAsync(sql, kyLuongThang, kyLuongNam);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

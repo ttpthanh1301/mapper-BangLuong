@@ -1,6 +1,8 @@
+using System.Data;
 using AutoMapper;
 using BangLuong.Data;
 using BangLuong.Data.Entities;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using static BangLuong.ViewModels.TongHopCongViewModels;
 
@@ -15,8 +17,48 @@ namespace BangLuong.Services
         {
             _context = context;
             _mapper = mapper;
+        }   
+        // HELPER: Hàm dùng để gọi Stored Procedure trong database
+        // ==========================================================
+        private async Task ExecuteProcedureAsync(string procedureName, params SqlParameter[] parameters)
+        {
+            var conn = _context.Database.GetDbConnection();
+
+            await using (conn)
+            {
+                await conn.OpenAsync();
+                await using var transaction = await conn.BeginTransactionAsync();
+                await using var cmd = conn.CreateCommand();
+
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = procedureName;
+                cmd.Transaction = transaction;
+                cmd.Parameters.AddRange(parameters);
+
+                try
+                {
+                    await cmd.ExecuteNonQueryAsync();
+                    await transaction.CommitAsync();
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            }
         }
 
+        // ==========================================================
+        public async Task RunTongHopCongThangAsync(int kyLuongThang, int kyLuongNam)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("@KyLuongThang", SqlDbType.Int) { Value = kyLuongThang },
+                new SqlParameter("@KyLuongNam", SqlDbType.Int) { Value = kyLuongNam }
+            };
+
+            await ExecuteProcedureAsync("sp_TongHopCongThang", parameters);
+        }
         public async Task<PaginatedList<TongHopCongViewModel>> GetAllFilter(
             string sortOrder,
             string currentFilter,

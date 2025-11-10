@@ -2,6 +2,7 @@ using AutoMapper;
 using BangLuong.Data;
 using BangLuong.Data.Entities;
 using BangLuong.ViewModels;
+using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
 using static BangLuong.ViewModels.NhanVienViewModels;
 
@@ -112,5 +113,150 @@ public async Task<PaginatedList<NhanVienViewModel>> GetAllFilter(
     {
         return _context.NhanVien.Any(e => e.MaNV == id);
     }
+
+    public async Task<byte[]> ExportToExcel()
+    {
+        var nhanViens = await _context.NhanVien.ToListAsync();
+
+        using (var workbook = new XLWorkbook())
+        {
+            var worksheet = workbook.Worksheets.Add("NhanVien");
+
+            // Header
+            worksheet.Cell(1, 1).Value = "Mã NV";
+            worksheet.Cell(1, 2).Value = "Họ Tên";
+            worksheet.Cell(1, 3).Value = "Giới Tính";
+            worksheet.Cell(1, 4).Value = "Ngày Sinh";
+            worksheet.Cell(1, 5).Value = "Địa Chỉ";
+            worksheet.Cell(1, 6).Value = "SĐT";
+            worksheet.Cell(1, 7).Value = "Email";
+            worksheet.Cell(1, 8).Value = "CCCD";
+            worksheet.Cell(1, 9).Value = "Ngày Vào Làm";
+
+            // Style header
+            var headerRange = worksheet.Range(1, 1, 1, 9);
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor = XLColor.LightBlue;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // Data
+            int row = 2;
+            foreach (var nv in nhanViens)
+            {
+                worksheet.Cell(row, 1).Value = nv.MaNV;
+                worksheet.Cell(row, 2).Value = nv.HoTen;
+                worksheet.Cell(row, 3).Value = nv.GioiTinh;
+                worksheet.Cell(row, 4).Value = nv.NgaySinh?.ToString("dd/MM/yyyy");
+                worksheet.Cell(row, 5).Value = nv.DiaChi;
+                worksheet.Cell(row, 6).Value = nv.SoDienThoai;
+                worksheet.Cell(row, 7).Value = nv.Email;
+                worksheet.Cell(row, 8).Value = nv.CCCD;
+                worksheet.Cell(row, 9).Value = nv.NgayVaoLam.ToString("dd/MM/yyyy");
+                row++;
+            }
+
+            // Auto-fit columns
+            worksheet.Columns().AdjustToContents();
+
+            // Convert to byte array
+            using (var stream = new MemoryStream())
+            {
+                workbook.SaveAs(stream);
+                return stream.ToArray();
+            }
+        }
+    }
+          public async Task<(bool success, string message, int importedCount)> ImportFromExcel(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return (false, "File không hợp lệ", 0);
+            }
+            
+            if (!file.FileName.EndsWith(".xlsx") && !file.FileName.EndsWith(".xls"))
+            {
+                return (false, "Chỉ chấp nhận file Excel (.xlsx, .xls)", 0);
+            }
+            
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    using (var workbook = new XLWorkbook(stream))
+                    {
+                        var worksheet = workbook.Worksheet(1);
+                        var rows = worksheet.RangeUsed().RowsUsed().Skip(1); // Skip header
+                        
+                        int importedCount = 0;
+                        var errors = new List<string>();
+                        
+                        foreach (var row in rows)
+                        {
+                            try
+                            {
+                                var maNV = row.Cell(1).GetValue<string>();
+                                
+                                // Kiểm tra nếu mã NV đã tồn tại
+                                var existingNV = await _context.NhanVien.FindAsync(maNV);
+                                
+                                var nhanVien = existingNV ?? new NhanVien { MaNV = maNV };
+                                
+                                nhanVien.HoTen = row.Cell(2).GetValue<string>();
+                                nhanVien.GioiTinh = row.Cell(3).GetValue<string>();
+                                
+                                // Parse NgaySinh
+                                var ngaySinhStr = row.Cell(4).GetValue<string>();
+                                if (DateTime.TryParseExact(ngaySinhStr, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime ngaySinh))
+                                {
+                                    nhanVien.NgaySinh = ngaySinh;
+                                }
+                                
+                                nhanVien.DiaChi = row.Cell(5).GetValue<string>();
+                                nhanVien.SoDienThoai = row.Cell(6).GetValue<string>();
+                                nhanVien.Email = row.Cell(7).GetValue<string>();
+                                nhanVien.CCCD = row.Cell(8).GetValue<string>();
+                                
+                                // Parse NgayVaoLam
+                                var ngayVaoLamStr = row.Cell(9).GetValue<string>();
+                                if (DateTime.TryParseExact(ngayVaoLamStr, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime ngayVaoLam))
+                                {
+                                    nhanVien.NgayVaoLam = ngayVaoLam;
+                                }
+                                
+                                if (existingNV == null)
+                                {
+                                    _context.NhanVien.Add(nhanVien);
+                                }
+                                else
+                                {
+                                    _context.NhanVien.Update(nhanVien);
+                                }
+                                
+                                importedCount++;
+                            }
+                            catch (Exception ex)
+                            {
+                                errors.Add($"Lỗi dòng {row.RowNumber()}: {ex.Message}");
+                            }
+                        }
+                        
+                        await _context.SaveChangesAsync();
+                        
+                        if (errors.Any())
+                        {
+                            return (true, $"Import thành công {importedCount} nhân viên. Có {errors.Count} lỗi: {string.Join(", ", errors)}", importedCount);
+                        }
+                        
+                        return (true, $"Import thành công {importedCount} nhân viên", importedCount);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Lỗi khi import: {ex.Message}", 0);
+            }
+        }
+        
 }
 

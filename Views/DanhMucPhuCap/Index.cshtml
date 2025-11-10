@@ -37,9 +37,18 @@
                 <td>@Html.DisplayFor(modelItem => item.TenPhuCap)</td>
                 <td>@Html.DisplayFor(modelItem => item.SoTien)</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.MaPC">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.MaPC">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.MaPC">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.MaPC" class="btn btn-warning btn-sm" title="Edit">
+                        <i class="fa fa-edit"></i>
+                        Edit
+                    </a> 
+                    <a asp-action="Details" asp-route-id="@item.MaPC" class="btn btn-info btn-sm text-white" title="Details">
+                        <i class="fa fa-info-circle"></i>
+                        Detail
+                    </a> 
+                    <a asp-action="Delete" asp-route-id="@item.MaPC" class="btn btn-danger btn-sm" title="Delete">
+                        <i class="fa fa-trash-alt"></i>
+                        Delete
+                    </a>
                 </td>
             </tr>
         }

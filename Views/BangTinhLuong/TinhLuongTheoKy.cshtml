@@ -1,0 +1,173 @@
+@model BangLuong.ViewModels.BangTinhLuongViewModels.BangTinhLuongRequest
+@{
+    ViewData["Title"] = "Tính Lương Tự Động";
+    var currentMonth = ViewBag.CurrentMonth ?? DateTime.Now.Month;
+    var currentYear = ViewBag.CurrentYear ?? DateTime.Now.Year;
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-0">
+                <i class="fas fa-calculator text-primary"></i> 
+                @ViewData["Title"]
+            </h2>
+            <p class="text-muted">Tính lương tự động cho tất cả nhân viên theo kỳ lương</p>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="row">
+        <!-- Form nhập liệu -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calendar-alt"></i> Chọn Kỳ Lương
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="TinhLuongTheoKy" method="post">
+                        @Html.AntiForgeryToken()
+                        
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="KyLuongThang" class="form-label fw-bold">
+                                    <i class="fas fa-calendar"></i> Tháng <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="KyLuongThang" class="form-select form-select-lg" required>
+                                    @for (int i = 1; i <= 12; i++)
+                                    {
+                                        <option value="@i" selected="@(i == currentMonth)">
+                                            Tháng @i
+                                        </option>
+                                    }
+                                </select>
+                                <span asp-validation-for="KyLuongThang" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="KyLuongNam" class="form-label fw-bold">
+                                    <i class="fas fa-calendar-check"></i> Năm <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="KyLuongNam" 
+                                       class="form-control form-control-lg" 
+                                       min="2000" 
+                                       max="2100" 
+                                       value="@currentYear" 
+                                       required />
+                                <span asp-validation-for="KyLuongNam" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Lưu ý:</strong> Hệ thống sẽ tính lương cho <strong>TẤT CẢ</strong> nhân viên đang làm việc trong kỳ này.
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-calculator"></i> Tính Lương Ngay
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Quay lại danh sách
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thông tin hướng dẫn -->
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow-sm border-info mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> Hướng Dẫn Sử Dụng
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-3">
+                        <li>Chọn <strong>Tháng</strong> và <strong>Năm</strong> cần tính lương.</li>
+                        <li>Nhấn nút <strong>"Tính Lương Ngay"</strong>.</li>
+                        <li>Hệ thống sẽ tự động tính cho toàn bộ nhân viên có dữ liệu công.</li>
+                        <li>Kiểm tra kết quả tại trang <strong>Danh sách bảng lương</strong>.</li>
+                    </ol>
+
+                    <div class="alert alert-success mb-0">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-check-circle"></i> Hệ thống tự động tính toán:
+                        </h6>
+                        <ul class="mb-0 small">
+                            <li>Lương cơ bản theo hợp đồng</li>
+                            <li>Phụ cấp cố định (ăn trưa, xăng xe, điện thoại...)</li>
+                            <li>Số ngày công thực tế</li>
+                            <li>Lương tăng ca (ngày thường, cuối tuần, lễ)</li>
+                            <li>Thưởng, phụ cấp đột xuất</li>
+                            <li>Kỷ luật, trừ lương</li>
+                            <li>Khấu trừ bảo hiểm & thuế TNCN</li>
+                            <li>Giảm trừ gia cảnh</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle"></i> Lưu Ý Quan Trọng
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li>Đảm bảo đã cập nhật <strong>số ngày công chuẩn</strong> trong tham số hệ thống.</li>
+                        <li>Đã nhập đầy đủ dữ liệu <strong>chấm công</strong> của tháng.</li>
+                        <li>Đã kiểm tra <strong>hợp đồng lao động</strong> còn hiệu lực.</li>
+                        <li>Nếu tính lại cùng kỳ, dữ liệu cũ sẽ được <strong>ghi đè và cập nhật</strong>.</li>
+                        <li class="text-danger">
+                            <i class="fas fa-times"></i> Không thể tính lương cho kỳ trong tương lai.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function() {
+                var btn = $(this).find('button[type="submit"]');
+                btn.html('<i class="fas fa-spinner fa-spin"></i> Đang xử lý...');
+                btn.prop('disabled', true);
+            });
+        });
+    </script>
+
+    <style>
+        .card {
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .form-control-lg, .form-select-lg {
+            font-size: 1.1rem;
+            padding: 0.75rem;
+        }
+
+        .btn-lg {
+            font-size: 1.1rem;
+            border-radius: 8px;
+        }
+    </style>
+}

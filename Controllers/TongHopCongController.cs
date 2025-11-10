@@ -16,7 +16,21 @@ namespace BangLuong.Controllers
             _tongHopCongService = tongHopCongService;
             _nhanVienService = nhanVienService;
         }
+        [HttpPost]
+        public async Task<IActionResult> RunTongHopCong(int kyLuongThang, int kyLuongNam)
+        {
+            try
+            {
+                await _tongHopCongService.RunTongHopCongThangAsync(kyLuongThang, kyLuongNam);
+                TempData["Success"] = $"✅ Tổng hợp công tháng {kyLuongThang}/{kyLuongNam} hoàn tất!";
+            }
+            catch
+            {
+                TempData["Error"] = "❌ Lỗi khi chạy tổng hợp công.";
+            }
 
+            return RedirectToAction(nameof(Index));
+        }
         public async Task<IActionResult> Index(
             string sortOrder,
             string currentFilter,

@@ -16,8 +16,8 @@
 
 <form asp-action="Index" method="get" class="mb-3">
     <div class="d-flex">
-        <input class="form-control me-2" placeholder="Search..." 
-               value="@ViewData["CurrentFilter"]" name="searchString" autocomplete="off" />
+        <input class="form-control me-2" placeholder="Search..." value="@ViewData["CurrentFilter"]" name="searchString"
+            autocomplete="off" />
         <button type="submit" class="btn btn-secondary">Search</button>
     </div>
 </form>
@@ -41,29 +41,28 @@
                 <td>@Html.DisplayFor(modelItem => item.MaKL)</td>
                 <td>@Html.DisplayFor(modelItem => item.MaNV)</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.MaCTKL">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.MaCTKL">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.MaCTKL">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.MaCTKL" class="btn btn-warning btn-sm" title="Edit" data-bs-toggle="tooltip" data-bs-placement="top"><i class="fa fa-edit"></i>Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.MaCTKL" class="btn btn-info btn-sm text-white" title="Details" data-bs-toggle="tooltip" data-bs-placement="top"><i class="fa fa-info-circle"></i>
+                    Detail
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.MaCTKL" class="btn btn-danger btn-sm" title="Delete" data-bs-toggle="tooltip" data-bs-placement="top"><i class="fa fa-trash-alt"></i>Delete</a>
                 </td>
+
             </tr>
         }
     </tbody>
 </table>
 
 <div class="d-flex justify-content-between">
-    <a asp-action="Index" 
-       asp-route-pageNumber="@(Model.PageIndex - 1)" 
-       asp-route-currentFilter="@ViewData["CurrentFilter"]" 
-       class="btn btn-outline-primary @prevDisabledClass">
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)"
+        asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-outline-primary @prevDisabledClass">
         Previous
     </a>
 
     <span>Page @Model.PageIndex of @Model.TotalPages</span>
 
-    <a asp-action="Index" 
-       asp-route-pageNumber="@(Model.PageIndex + 1)" 
-       asp-route-currentFilter="@ViewData["CurrentFilter"]" 
-       class="btn btn-outline-primary @nextDisabledClass">
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)"
+        asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-outline-primary @nextDisabledClass">
         Next
     </a>
 </div>

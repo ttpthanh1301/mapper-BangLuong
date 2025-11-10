@@ -1,0 +1,195 @@
+@{
+    ViewData["Title"] = "Quản Lý Báo Cáo";
+}
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-chart-line"></i> Quản Lý Báo Cáo
+        </h1>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Báo cáo Nhân sự -->
+        <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Báo Cáo Nhân Sự
+                            </div>
+                            <div class="h5 mb-2 font-weight-bold text-gray-800">Danh Sách Nhân Viên</div>
+                            <p class="text-muted mb-3">
+                                Xem thông tin tổng hợp toàn bộ nhân viên trong công ty
+                            </p>
+                            <a asp-action="NhanSuTongHop" class="btn btn-info btn-sm">
+                                <i class="fas fa-eye"></i> Xem Báo Cáo
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-3x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Báo cáo Tổng hợp công -->
+        <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Báo Cáo Chấm Công
+                            </div>
+                            <div class="h5 mb-2 font-weight-bold text-gray-800">Tổng Hợp Công</div>
+                            <p class="text-muted mb-3">
+                                Xem chi tiết chấm công, ngày công, tăng ca theo tháng
+                            </p>
+                            <a asp-action="TongHopCong" class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye"></i> Xem Báo Cáo
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar-check fa-3x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Báo cáo Bảng lương -->
+        <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Báo Cáo Lương
+                            </div>
+                            <div class="h5 mb-2 font-weight-bold text-gray-800">Bảng Lương Chi Tiết</div>
+                            <p class="text-muted mb-3">
+                                Xem chi tiết bảng lương toàn bộ nhân viên theo tháng
+                            </p>
+                            <a asp-action="BangLuongChiTiet" class="btn btn-success btn-sm">
+                                <i class="fas fa-eye"></i> Xem Báo Cáo
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-money-bill-wave fa-3x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phiếu lương cá nhân -->
+        <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Phiếu Lương
+                            </div>
+                            <div class="h5 mb-2 font-weight-bold text-gray-800">Phiếu Lương Cá Nhân</div>
+                            <p class="text-muted mb-3">
+                                Xem chi tiết phiếu lương của từng nhân viên
+                            </p>
+                            <a asp-action="PhieuLuongCaNhan" class="btn btn-warning btn-sm text-white">
+                                <i class="fas fa-eye"></i> Xem Phiếu
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-file-invoice-dollar fa-3x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hướng dẫn -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-info-circle"></i> Hướng Dẫn Sử Dụng
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="font-weight-bold">📊 Các loại báo cáo:</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success"></i> 
+                                    <strong>Báo cáo Nhân sự:</strong> Danh sách toàn bộ nhân viên
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success"></i> 
+                                    <strong>Báo cáo Chấm công:</strong> Tổng hợp công theo tháng
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success"></i> 
+                                    <strong>Báo cáo Lương:</strong> Bảng lương chi tiết theo tháng
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success"></i> 
+                                    <strong>Phiếu lương:</strong> Phiếu lương cá nhân
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="font-weight-bold">⚙️ Tính năng:</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-filter text-primary"></i> 
+                                    Lọc dữ liệu theo tháng/năm
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-file-excel text-success"></i> 
+                                    Xuất báo cáo ra file Excel
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-print text-info"></i> 
+                                    In phiếu lương trực tiếp
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-search text-warning"></i> 
+                                    Tìm kiếm và sắp xếp dữ liệu
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .border-left-info {
+            border-left: 0.25rem solid #36b9cc !important;
+        }
+        
+        .border-left-success {
+            border-left: 0.25rem solid #1cc88a !important;
+        }
+        
+        .border-left-warning {
+            border-left: 0.25rem solid #f6c23e !important;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+    </style>
+}

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using BangLuong.Data.Entities;
 using System.Collections.Generic;
+using BangLuong.ViewModels;
 
 namespace BangLuong.Data
 {
@@ -15,11 +16,21 @@ namespace BangLuong.Data
         {
             modelBuilder.ApplyConfiguration(new PhongBanConfiguration());
             modelBuilder.ApplyConfiguration(new DanhMucKhenThuongConfiguration());
-            modelBuilder.ApplyConfiguration(new  DanhMucKyLuatConfiguration());
-            modelBuilder.ApplyConfiguration(new  DanhMucPhuCapConfiguration());
+            modelBuilder.ApplyConfiguration(new DanhMucKyLuatConfiguration());
+            modelBuilder.ApplyConfiguration(new DanhMucPhuCapConfiguration());
             modelBuilder.ApplyConfiguration(new ChucVuConfiguration());
             modelBuilder.ApplyConfiguration(new NhanVienConfiguration());
+            modelBuilder.Entity<BaoCaoNhanSuViewModel>().HasNoKey();
+            modelBuilder.Entity<BaoCaoTongHopCongViewModel>().HasNoKey();
+            modelBuilder.Entity<BaoCaoBangLuongChiTietViewModel>().HasNoKey().ToView(null);
+            modelBuilder.Entity<PhieuLuongCaNhanViewModel>().HasNoKey();
+
+
         }
+        public DbSet<BaoCaoNhanSuViewModel> BaoCaoNhanSuViewModels { get; set; }
+        public DbSet<BaoCaoTongHopCongViewModel> BaoCaoTongHopCongViewModels { get; set; }
+        public DbSet<BaoCaoBangLuongChiTietViewModel> BaoCaoBangLuongChiTietViewModels { get; set; }
+        public DbSet<PhieuLuongCaNhanViewModel> PhieuLuongCaNhanViewModels { get; set; }
 
         // 1.1 Phòng Ban
         public DbSet<PhongBan> PhongBan { get; set; } = null!;

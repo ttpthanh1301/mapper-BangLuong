@@ -11,6 +11,7 @@ using AutoMapper;
 using static BangLuong.ViewModels.NhanVienViewModels;
 using Microsoft.Build.Experimental.ProjectCache;
 using BangLuong.Services;
+using System.IO;
 
 namespace BangLuong.Controllers
 {
@@ -125,6 +126,92 @@ namespace BangLuong.Controllers
         {
             await _NhanVienservice.Delete(id);
             return RedirectToAction(nameof(Index));
+        }
+          public async Task<IActionResult> ExportToExcel()
+        {
+            try
+            {
+                var fileBytes = await _NhanVienservice.ExportToExcel();
+                var fileName = $"DanhSachNhanVien_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Lỗi khi export: {ex.Message}";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        // Import from Excel - GET
+        public IActionResult Import()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Import(IFormFile file)
+        {
+            if (file == null)
+            {
+                TempData["Error"] = "Vui lòng chọn file";
+                return View();
+            }
+
+            var result = await _NhanVienservice.ImportFromExcel(file);
+
+            if (result.success)
+            {
+                TempData["Success"] = result.message;
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                TempData["Error"] = result.message;
+                return View();
+            }
+        }
+           // Download Template
+        public IActionResult DownloadTemplate()
+        {
+            using (var workbook = new ClosedXML.Excel.XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("NhanVien");
+
+                // Header
+                worksheet.Cell(1, 1).Value = "Mã NV";
+                worksheet.Cell(1, 2).Value = "Họ Tên";
+                worksheet.Cell(1, 3).Value = "Giới Tính";
+                worksheet.Cell(1, 4).Value = "Ngày Sinh";
+                worksheet.Cell(1, 5).Value = "Địa Chỉ";
+                worksheet.Cell(1, 6).Value = "SĐT";
+                worksheet.Cell(1, 7).Value = "Email";
+                worksheet.Cell(1, 8).Value = "CCCD";
+                worksheet.Cell(1, 9).Value = "Ngày Vào Làm";
+
+                // Example data
+                worksheet.Cell(2, 1).Value = "NV001";
+                worksheet.Cell(2, 2).Value = "Nguyễn Văn A";
+                worksheet.Cell(2, 3).Value = "Nam";
+                worksheet.Cell(2, 4).Value = "01/01/1990";
+                worksheet.Cell(2, 5).Value = "Hà Nội";
+                worksheet.Cell(2, 6).Value = "0123456789";
+                worksheet.Cell(2, 7).Value = "nva@example.com";
+                worksheet.Cell(2, 8).Value = "001234567890";
+                worksheet.Cell(2, 9).Value = "01/01/2020";
+
+                // Style
+                var headerRange = worksheet.Range(1, 1, 1, 9);
+                headerRange.Style.Font.Bold = true;
+                headerRange.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightBlue;
+                worksheet.Columns().AdjustToContents();
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var fileName = "Template_NhanVien.xlsx";
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
         }
     }
 }

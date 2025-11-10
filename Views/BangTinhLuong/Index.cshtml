@@ -3,80 +3,88 @@
 
 @{
     ViewData["Title"] = "Bảng Tính Lương";
-    var prevDisabledClass = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabledClass = !Model.HasNextPage ? "disabled" : "";
 }
 
-<h1>Bảng Tính Lương</h1>
+<h1>@ViewData["Title"]</h1>
 
+<!-- Nút dẫn sang trang tính lương theo kỳ -->
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
+    <a asp-controller="BangTinhLuong" asp-action="TinhLuongTheoKy" class="btn btn-success mb-3">
+        <i class="fas fa-calculator"></i> Tính Lương Theo Kỳ
+    </a>
 </p>
 
+<!-- Thông báo sau khi tính lương -->
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> Tạo mới</a>
+</p>
+
+<!-- Form tìm kiếm -->
 <form asp-action="Index" method="get" class="mb-3">
-    <div class="d-flex">
-        <input class="form-control me-2" placeholder="Search..." value="@ViewData["CurrentFilter"]" 
-               name="searchString" autocomplete="off" />
-        <button type="submit" class="btn btn-secondary">Search</button>
+    <div class="input-group">
+        <input type="text" name="searchString" class="form-control" placeholder="Tìm kiếm..." 
+               value="@ViewData["CurrentFilter"]" autocomplete="off" />
+        <button class="btn btn-secondary" type="submit">Search</button>
     </div>
 </form>
 
-<table class="table table-bordered table-striped">
-    <thead>
+<!-- Bảng dữ liệu -->
+<table class="table table-bordered table-striped table-hover">
+    <thead class="table-light">
         <tr>
-            <th>@Html.DisplayNameFor(model => model[0].KyLuongThang)</th>
-            <th>@Html.DisplayNameFor(model => model[0].KyLuongNam)</th>
-            <th>@Html.DisplayNameFor(model => model[0].LuongCoBan)</th>
-            <th>@Html.DisplayNameFor(model => model[0].TongPhuCap)</th>
-            <th>@Html.DisplayNameFor(model => model[0].TongKhenThuong)</th>
-            <th>@Html.DisplayNameFor(model => model[0].LuongTangCa)</th>
-            <th>@Html.DisplayNameFor(model => model[0].TongThuNhap)</th>
-            <th>@Html.DisplayNameFor(model => model[0].GiamTruBHXH)</th>
-            <th>@Html.DisplayNameFor(model => model[0].GiamTruBHYT)</th>
-            <th>@Html.DisplayNameFor(model => model[0].GiamTruBHTN)</th>
-            <th>@Html.DisplayNameFor(model => model[0].TongGiamTruKyLuat)</th>
-            <th>@Html.DisplayNameFor(model => model[0].GiamTruThueTNCN)</th>
-            <th>@Html.DisplayNameFor(model => model[0].ThucLanh)</th>
-            <th>@Html.DisplayNameFor(model => model[0].TrangThai)</th>
-            <th>@Html.DisplayNameFor(model => model[0].MaNV)</th>
-            <th>Actions</th>
+            <th>Tháng</th>
+            <th>Năm</th>
+            <th>Lương cơ bản</th>
+            <th>Phụ cấp</th>
+            <th>Khen thưởng</th>
+            <th>Tiền tăng ca</th>
+            <th>Tổng thu nhập</th>
+            <th>BHXH</th>
+            <th>BHYT</th>
+            <th>BHTN</th>
+            <th>Khác giảm trừ</th>
+            <th>Thuế TNCN</th>
+            <th>Thực lĩnh</th>
+            <th>Trạng thái</th>
+            <th>Nhân viên</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.KyLuongThang)</td>
-                <td>@Html.DisplayFor(modelItem => item.KyLuongNam)</td>
-                <td>@Html.DisplayFor(modelItem => item.LuongCoBan)</td>
-                <td>@Html.DisplayFor(modelItem => item.TongPhuCap)</td>
-                <td>@Html.DisplayFor(modelItem => item.TongKhenThuong)</td>
-                <td>@Html.DisplayFor(modelItem => item.LuongTangCa)</td>
-                <td>@Html.DisplayFor(modelItem => item.TongThuNhap)</td>
-                <td>@Html.DisplayFor(modelItem => item.GiamTruBHXH)</td>
-                <td>@Html.DisplayFor(modelItem => item.GiamTruBHYT)</td>
-                <td>@Html.DisplayFor(modelItem => item.GiamTruBHTN)</td>
-                <td>@Html.DisplayFor(modelItem => item.TongGiamTruKyLuat)</td>
-                <td>@Html.DisplayFor(modelItem => item.GiamTruThueTNCN)</td>
-                <td>@Html.DisplayFor(modelItem => item.ThucLanh)</td>
-                <td>@Html.DisplayFor(modelItem => item.TrangThai)</td>
-                <td>@Html.DisplayFor(modelItem => item.MaNV)</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.MaBL">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.MaBL">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.MaBL">Delete</a>
-                </td>
+                <td>@item.KyLuongThang</td>
+                <td>@item.KyLuongNam</td>
+                <td>@item.LuongCoBan.ToString("N0")</td>
+                <td>@(item.TongPhuCap?.ToString("N0") ?? "0")</td>
+                <td>@(item.TongKhenThuong?.ToString("N0") ?? "0")</td>
+                <td>@(item.LuongTangCa?.ToString("N0") ?? "0")</td>
+                <td>@(item.TongThuNhap?.ToString("N0") ?? "0")</td>
+                <td>@(item.GiamTruBHXH?.ToString("N0") ?? "0")</td>
+                <td>@(item.GiamTruBHYT?.ToString("N0") ?? "0")</td>
+                <td>@(item.GiamTruBHTN?.ToString("N0") ?? "0")</td>
+                <td>@(item.TongGiamTruKyLuat?.ToString("N0") ?? "0")</td>
+                <td>@(item.GiamTruThueTNCN?.ToString("N0") ?? "0")</td>
+                <td>@item.ThucLanh.ToString("N0")</td>
+                <td>@item.TrangThai</td>
+                <td>@item.MaNV</td>
             </tr>
         }
     </tbody>
 </table>
 
-<div class="d-flex justify-content-between">
+<!-- Phân trang -->
+<div class="d-flex justify-content-between align-items-center mt-3">
     <a asp-action="Index" 
        asp-route-pageNumber="@(Model.PageIndex - 1)" 
        asp-route-currentFilter="@ViewData["CurrentFilter"]" 
-       class="btn btn-outline-primary @prevDisabledClass">
-        Previous
+       class="btn btn-outline-primary @(Model.HasPreviousPage ? "" : "disabled")">
+        &laquo; Previous
     </a>
 
     <span>Page @Model.PageIndex of @Model.TotalPages</span>
@@ -84,7 +92,7 @@
     <a asp-action="Index" 
        asp-route-pageNumber="@(Model.PageIndex + 1)" 
        asp-route-currentFilter="@ViewData["CurrentFilter"]" 
-       class="btn btn-outline-primary @nextDisabledClass">
-        Next
+       class="btn btn-outline-primary @(Model.HasNextPage ? "" : "disabled")">
+        Next &raquo;
     </a>
 </div>

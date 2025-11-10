@@ -1,0 +1,271 @@
+@model BangLuong.ViewModels.PhieuLuongCaNhanViewModel
+
+@{
+    ViewData["Title"] = "Phiếu Lương Cá Nhân";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h4 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-file-invoice-dollar"></i> Phiếu Lương Cá Nhân
+            </h4>
+        </div>
+        
+        <div class="card-body">
+            <!-- Bộ lọc -->
+            <form asp-action="PhieuLuongCaNhan" method="get" class="mb-4">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Mã Nhân Viên <span class="text-danger">*</span></label>
+                        <input type="text" name="maNV" class="form-control" value="@ViewBag.MaNV" 
+                               placeholder="Nhập mã NV..." required />
+                    </div>
+                    <div class="col-md-2">
+                        <label>Tháng</label>
+                        <select name="thang" class="form-control">
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option value="@i" selected="@(i == ViewBag.Thang)">Tháng @i</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Năm</label>
+                        <select name="nam" class="form-control">
+                            @for (int i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@i" selected="@(i == ViewBag.Nam)">@i</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label>&nbsp;</label><br />
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Xem Phiếu Lương
+                        </button>
+                        
+                        @if (Model != null)
+                        {
+                            <button type="button" class="btn btn-success" onclick="exportExcel()">
+                                <i class="fas fa-file-excel"></i> Xuất Excel
+                            </button>
+                            <button type="button" class="btn btn-info" onclick="window.print()">
+                                <i class="fas fa-print"></i> In Phiếu
+                            </button>
+                        }
+                    </div>
+                </div>
+            </form>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+                </div>
+            }
+
+            @if (Model != null)
+            {
+                <!-- Phiếu lương -->
+                <div id="phieuLuong" class="border rounded p-4 bg-white" style="max-width: 900px; margin: 0 auto;">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <h3 class="font-weight-bold">PHIẾU LƯƠNG (PAYSLIP)</h3>
+                        <h5>Kỳ lương: Tháng @Model.KyLuongThang năm @Model.KyLuongNam</h5>
+                    </div>
+
+                    <!-- Thông tin nhân viên -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <strong>THÔNG TIN NHÂN VIÊN</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Họ và tên:</strong> @Model.HoTen</p>
+                                    <p><strong>Mã NV:</strong> @Model.MaNV</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Phòng ban:</strong> @Model.PhongBan</p>
+                                    <p><strong>Chức vụ:</strong> @Model.ChucVu</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chi tiết lương -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-info text-white">
+                            <strong>CHI TIẾT LƯƠNG</strong>
+                        </div>
+                        <div class="card-body">
+                            <!-- 1. Lương & Phụ Cấp -->
+                            <h6 class="bg-light p-2"><strong>1. Lương & Phụ Cấp</strong></h6>
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td>Lương cơ bản HĐ:</td>
+                                    <td class="text-right"><strong>@Model.LuongCoBanHopDong.ToString("N0")</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Số ngày công thực tế:</td>
+                                    <td class="text-right"><strong>@Model.NgayCongThucTe</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Lương thực tế:</td>
+                                    <td class="text-right"><strong>@Model.LuongThucTe.ToString("N0")</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Phụ cấp (Ăn trưa, Xăng xe,...):</td>
+                                    <td class="text-right"><strong>@Model.TongPhuCap.ToString("N0")</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Lương tăng ca:</td>
+                                    <td class="text-right"><strong>@Model.LuongTangCa.ToString("N0")</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Khen thưởng/Phụ cấp khác:</td>
+                                    <td class="text-right"><strong>@Model.TongKhenThuong.ToString("N0")</strong></td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td class=" bg-success  p-2 mt-3"><strong>TỔNG THU NHẬP (GROSS):</strong></td>
+                                    <td class="text-right bg-success text-white p-2">
+                                        <strong>@Model.TongThuNhap_GROSS.ToString("N0")</strong>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- 2. Các khoản Khấu trừ -->
+                            <h6 class="bg-light p-2 mt-3"><strong>2. Các khoản Khấu trừ</strong></h6>
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td>BHXH (8%):</td>
+                                    <td class="text-right">@((Model.TongThuNhap_GROSS * 0.08m).ToString("N0"))</td>
+                                </tr>
+                                <tr>
+                                    <td>BHYT (1.5%):</td>
+                                    <td class="text-right">@((Model.TongThuNhap_GROSS * 0.015m).ToString("N0"))</td>
+                                </tr>
+                                <tr>
+                                    <td>BHTN (1%):</td>
+                                    <td class="text-right">@((Model.TongThuNhap_GROSS * 0.01m).ToString("N0"))</td>
+                                </tr>
+                            </table>
+
+                            <!-- 3. Thuế TNCN -->
+                            <h6 class="bg-light p-2 mt-3"><strong>3. Thuế Thu nhập Cá nhân (TNCN)</strong></h6>
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td>Thu nhập chịu thuế:</td>
+                                    <td class="text-right">@Model.TongThuNhap_GROSS.ToString("N0")</td>
+                                </tr>
+                                <tr>
+                                    <td>Giảm trừ (BHXH, BHYT, BHTN):</td>
+                                    <td class="text-right">@((Model.TongThuNhap_GROSS * 0.105m).ToString("N0"))</td>
+                                </tr>
+                                <tr>
+                                    <td>Giảm trừ gia cảnh (Bản thân):</td>
+                                    <td class="text-right">11,000,000</td>
+                                </tr>
+                                <tr>
+                                    <td><em>Thu nhập tính thuế:</em></td>
+                                    <td class="text-right"><em>@((Model.TongThuNhap_GROSS * 0.895m - 11000000).ToString("N0"))</em></td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td><strong>Thuế TNCN phải nộp:</strong></td>
+                                    <td class="text-right"><strong>@Model.ThueTNCNPhaiNop.ToString("N0")</strong></td>
+                                </tr>
+                            </table>
+
+                            <table class="table table-sm mb-0">
+                                <tr class="bg-warning">
+                                    <td><strong>TỔNG KHẤU TRỪ:</strong></td>
+                                    <td class="text-right"><strong>@Model.TongKhauTru.ToString("N0")</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Thực lãnh -->
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center">
+                            <h4 class="mb-0">
+                                <strong>THỰC LÃNH (Chuyển khoản): @Model.ThucLanh.ToString("N0") VNĐ</strong>
+                            </h4>
+                        </div>
+                    </div>
+
+                    <!-- Chữ ký -->
+                    <div class="row mt-5 text-center">
+                        <div class="col-6">
+                            <p><strong>Người lập phiếu</strong></p>
+                            <p class="mt-5">____________________</p>
+                        </div>
+                        <div class="col-6">
+                            <p><strong>Nhân viên</strong></p>
+                            <p class="mt-5">____________________</p>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(ViewBag.MaNV as string))
+            {
+                <div class="alert alert-info text-center py-5">
+                    <i class="fas fa-search fa-3x mb-3"></i>
+                    <h5>Vui lòng nhập mã nhân viên và chọn kỳ lương để xem phiếu</h5>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function exportExcel() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '@Url.Action("ExportPhieuLuong", "BaoCao")';
+            
+            const maNVInput = document.createElement('input');
+            maNVInput.type = 'hidden';
+            maNVInput.name = 'maNV';
+            maNVInput.value = '@ViewBag.MaNV';
+            form.appendChild(maNVInput);
+            
+            const thangInput = document.createElement('input');
+            thangInput.type = 'hidden';
+            thangInput.name = 'thang';
+            thangInput.value = '@ViewBag.Thang';
+            form.appendChild(thangInput);
+            
+            const namInput = document.createElement('input');
+            namInput.type = 'hidden';
+            namInput.name = 'nam';
+            namInput.value = '@ViewBag.Nam';
+            form.appendChild(namInput);
+            
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        @@media print {
+            .card-header, .btn, form, .no-print {
+                display: none !important;
+            }
+            
+            #phieuLuong {
+                border: none !important;
+                box-shadow: none !important;
+            }
+        }
+        
+        #phieuLuong table td:last-child {
+            min-width: 150px;
+        }
+    </style>
+}

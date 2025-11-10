@@ -45,9 +45,9 @@
                 <td>@Html.DisplayFor(modelItem => item.ThoiGianKetThucGiamTru)</td>
                 <td>@Html.DisplayFor(modelItem => item.MaNV)</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.MaNPT">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.MaNPT">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.MaNPT">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.MaNPT" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i>Edit</a> 
+                    <a asp-action="Details" asp-route-id="@item.MaNPT" class="btn btn-info btn-sm text-white" title="Details"><i class="fa fa-info-circle"></i><Details></Details></a> 
+                    <a asp-action="Delete" asp-route-id="@item.MaNPT" class="btn btn-danger btn-sm" title="Delete"><i class="fa fa-trash-alt"></i>Delete</a>
                 </td>
             </tr>
         }
