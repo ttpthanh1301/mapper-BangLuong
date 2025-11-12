@@ -2,6 +2,7 @@ using BangLuong.Data;
 using BangLuong.Services.Interfaces;
 using BangLuong.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using static BangLuong.ViewModels.NhanVienViewModels;
 
 namespace BangLuong.Services.Implementations
 {
@@ -14,6 +15,22 @@ namespace BangLuong.Services.Implementations
             _context = context;
         }
 
+
+ public async Task<List<NhanVienViewModel>> GetDanhSachNhanVienAsync()
+{
+    return await _context.NhanVien
+        .Where(nv => nv.TrangThai == "Đang làm việc") // Hoặc điều kiện phù hợp
+        .OrderBy(nv => nv.MaNV)
+        .Select(nv => new NhanVienViewModel
+        {
+            MaNV = nv.MaNV,
+            HoTen = nv.HoTen,
+            MaPB = nv.MaPB,
+            MaCV = nv.MaCV,
+            TrangThai = nv.TrangThai
+        })
+        .ToListAsync();
+}
         // 1. Báo cáo nhân sự tổng hợp (VIEW)
         public async Task<List<BaoCaoNhanSuViewModel>> GetBaoCaoNhanSuTongHopAsync()
         {

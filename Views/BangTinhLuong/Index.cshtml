@@ -46,7 +46,7 @@
             <th>Khác giảm trừ</th>
             <th>Thuế TNCN</th>
             <th>Thực lĩnh</th>
-            <th>Trạng thái</th>
+            @* <th>Trạng thái</th> *@
             <th>Nhân viên</th>
         </tr>
     </thead>
@@ -67,7 +67,7 @@
                 <td>@(item.TongGiamTruKyLuat?.ToString("N0") ?? "0")</td>
                 <td>@(item.GiamTruThueTNCN?.ToString("N0") ?? "0")</td>
                 <td>@item.ThucLanh.ToString("N0")</td>
-                <td>@item.TrangThai</td>
+                @* <td>@item.TrangThai</td> *@
                 <td>@item.MaNV</td>
             </tr>
         }

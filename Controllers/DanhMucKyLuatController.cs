@@ -9,7 +9,8 @@ namespace BangLuong.Controllers
     {
         private readonly IDanhMucKyLuatService _danhMucKyLuatService;
 
-        public DanhMucKyLuatController(IDanhMucKyLuatService danhMucKyLuatService)
+/*************  ✨ Windsurf Command ⭐  *************/
+/*******  0399808e-9ccd-4cf9-afef-f1a585cc68fe  *******/        public DanhMucKyLuatController(IDanhMucKyLuatService danhMucKyLuatService)
         {
             _danhMucKyLuatService = danhMucKyLuatService;
         }

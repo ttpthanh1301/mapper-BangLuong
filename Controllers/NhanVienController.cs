@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangLuong.Data;
 using BangLuong.Data.Entities;
+using BangLuong.Services;
 using AutoMapper;
 using static BangLuong.ViewModels.NhanVienViewModels;
-using Microsoft.Build.Experimental.ProjectCache;
-using BangLuong.Services;
-using System.IO;
+
 
 namespace BangLuong.Controllers
 {

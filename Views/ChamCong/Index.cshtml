@@ -7,10 +7,10 @@
     var nextDisabledClass = !Model.HasNextPage ? "disabled" : "";
 }
 
-<h1>Chấm Công</h1>
+<h1 class="text-center">Chấm Công</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
+<p >
+    <a asp-action="Create" class="btn btn-primary mx-auto d-block">Create New</a>
 </p>
 
 <form asp-action="Index" method="get" class="mb-3">
@@ -47,9 +47,6 @@
                     </a>
                     <a asp-action="Details" asp-route-id="@item.MaCC" class="btn btn-sm btn-info text-white">
                         <i class="fas fa-info-circle"></i> Details
-                    </a>
-                    <a asp-action="Delete" asp-route-id="@item.MaCC" class="btn btn-sm btn-danger text-white">
-                        <i class="fas fa-trash-alt"></i> Delete
                     </a>
                 </td>
 

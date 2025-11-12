@@ -1,6 +1,7 @@
 using BangLuong.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static BangLuong.ViewModels.NhanVienViewModels;
 
 namespace BangLuong.Services.Interfaces
 {
@@ -10,5 +11,6 @@ namespace BangLuong.Services.Interfaces
         Task<List<BaoCaoTongHopCongViewModel>> GetBaoCaoTongHopCongAsync(int thang, int nam);
         Task<List<BaoCaoBangLuongChiTietViewModel>> GetBaoCaoBangLuongChiTietAsync(int thang, int nam);
         Task<PhieuLuongCaNhanViewModel?> GetPhieuLuongCaNhanAsync(string maNV, int thang, int nam);
+        Task<List<NhanVienViewModel>> GetDanhSachNhanVienAsync();
     }
 }

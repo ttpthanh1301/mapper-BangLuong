@@ -1,5 +1,6 @@
 using BangLuong.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using static BangLuong.ViewModels.NhanVienViewModels;
 
 namespace BangLuong.Controllers
 {
@@ -84,7 +85,7 @@ namespace BangLuong.Controllers
                        $"BaoCao_BangLuong_{thang}_{nam}_{DateTime.Now:yyyyMMdd}.xlsx");
         }
 
-        // 4. Phiếu lương cá nhân
+        // 4. Phiếu lương cá nhân - CẬP NHẬT ĐỂ THÊM DROPDOWN
         public async Task<IActionResult> PhieuLuongCaNhan(string maNV = "", int thang = 0, int nam = 0)
         {
             // Set default values
@@ -94,6 +95,10 @@ namespace BangLuong.Controllers
             ViewBag.MaNV = maNV;
             ViewBag.Thang = thang;
             ViewBag.Nam = nam;
+
+            // Lấy danh sách nhân viên cho dropdown
+            var danhSachNhanVien = await _service.GetDanhSachNhanVienAsync();
+            ViewBag.DanhSachNhanVien = danhSachNhanVien;
 
             if (string.IsNullOrEmpty(maNV))
             {

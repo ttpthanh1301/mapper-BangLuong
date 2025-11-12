@@ -16,10 +16,20 @@
             <!-- Bộ lọc -->
             <form asp-action="PhieuLuongCaNhan" method="get" class="mb-4">
                 <div class="row">
-                    <div class="col-md-3">
-                        <label>Mã Nhân Viên <span class="text-danger">*</span></label>
-                        <input type="text" name="maNV" class="form-control" value="@ViewBag.MaNV" 
-                               placeholder="Nhập mã NV..." required />
+                    <div class="col-md-4">
+                        <label>Chọn Nhân Viên <span class="text-danger">*</span></label>
+                        <select name="maNV" class="form-control" id="selectNhanVien" required>
+                            <option value="">-- Chọn nhân viên --</option>
+                            @if (ViewBag.DanhSachNhanVien != null)
+                            {
+                                @foreach (BangLuong.ViewModels.NhanVienViewModels.NhanVienViewModel nv in ViewBag.DanhSachNhanVien)
+                                {
+                                    <option value="@nv.MaNV" selected="@(nv.MaNV == ViewBag.MaNV)">
+                                        @nv.MaNV: @nv.HoTen
+                                    </option>
+                                }
+                            }
+                        </select>
                     </div>
                     <div class="col-md-2">
                         <label>Tháng</label>
@@ -39,7 +49,7 @@
                             }
                         </select>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <label>&nbsp;</label><br />
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-search"></i> Xem Phiếu Lương
@@ -128,7 +138,7 @@
                                     <td class="text-right"><strong>@Model.TongKhenThuong.ToString("N0")</strong></td>
                                 </tr>
                                 <tr class="border-top">
-                                    <td class=" bg-success  p-2 mt-3"><strong>TỔNG THU NHẬP (GROSS):</strong></td>
+                                    <td class="bg-success text-white p-2 mt-3"><strong>TỔNG THU NHẬP (GROSS):</strong></td>
                                     <td class="text-right bg-success text-white p-2">
                                         <strong>@Model.TongThuNhap_GROSS.ToString("N0")</strong>
                                     </td>
@@ -212,7 +222,14 @@
             {
                 <div class="alert alert-info text-center py-5">
                     <i class="fas fa-search fa-3x mb-3"></i>
-                    <h5>Vui lòng nhập mã nhân viên và chọn kỳ lương để xem phiếu</h5>
+                    <h5>Không tìm thấy dữ liệu phiếu lương cho nhân viên này trong kỳ đã chọn</h5>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center py-5">
+                    <i class="fas fa-info-circle fa-3x mb-3"></i>
+                    <h5>Vui lòng chọn nhân viên và kỳ lương để xem phiếu</h5>
                 </div>
             }
         </div>
@@ -248,6 +265,17 @@
             form.submit();
             document.body.removeChild(form);
         }
+
+        // Thêm Select2 cho dropdown đẹp hơn (tùy chọn)
+        $(document).ready(function() {
+            if (typeof $.fn.select2 !== 'undefined') {
+                $('#selectNhanVien').select2({
+                    placeholder: "-- Chọn nhân viên --",
+                    allowClear: true,
+                    width: '100%'
+                });
+            }
+        });
     </script>
 }
 
@@ -266,6 +294,11 @@
         
         #phieuLuong table td:last-child {
             min-width: 150px;
+        }
+
+        /* Style cho select dropdown */
+        #selectNhanVien {
+            font-size: 14px;
         }
     </style>
 }

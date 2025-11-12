@@ -1,11 +1,12 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BangLuong.Data.Entities;
-using System.Collections.Generic;
 using BangLuong.ViewModels;
 
 namespace BangLuong.Data
 {
-    public class BangLuongDbContext : DbContext
+    public class BangLuongDbContext : IdentityDbContext<NguoiDung>
     {
         public BangLuongDbContext(DbContextOptions<BangLuongDbContext> options)
             : base(options)
@@ -14,70 +15,77 @@ namespace BangLuong.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // 1️⃣ Bắt buộc: gọi base để Identity cấu hình mặc định
+            base.OnModelCreating(modelBuilder);
+
+            // 2️⃣ Áp dụng cấu hình các entity khác
             modelBuilder.ApplyConfiguration(new PhongBanConfiguration());
             modelBuilder.ApplyConfiguration(new DanhMucKhenThuongConfiguration());
             modelBuilder.ApplyConfiguration(new DanhMucKyLuatConfiguration());
             modelBuilder.ApplyConfiguration(new DanhMucPhuCapConfiguration());
             modelBuilder.ApplyConfiguration(new ChucVuConfiguration());
             modelBuilder.ApplyConfiguration(new NhanVienConfiguration());
+
+            // 3️⃣ Keyless ViewModels
             modelBuilder.Entity<BaoCaoNhanSuViewModel>().HasNoKey();
             modelBuilder.Entity<BaoCaoTongHopCongViewModel>().HasNoKey();
             modelBuilder.Entity<BaoCaoBangLuongChiTietViewModel>().HasNoKey().ToView(null);
             modelBuilder.Entity<PhieuLuongCaNhanViewModel>().HasNoKey();
 
+            // 4️⃣ Customize Identity table names
+            modelBuilder.Entity<NguoiDung>().ToTable("NguoiDung");
+            modelBuilder.Entity<IdentityRole>().ToTable("Roles");
+            modelBuilder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
+            modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims");
+            modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins");
+            modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UserTokens");
+            modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims");
 
+            // 5️⃣ Primary key cho các entity phụ để tránh lỗi EF Core
+            modelBuilder.Entity<IdentityUserLogin<string>>()
+                .HasKey(l => new { l.LoginProvider, l.ProviderKey });
+
+            modelBuilder.Entity<IdentityUserRole<string>>()
+                .HasKey(r => new { r.UserId, r.RoleId });
+
+            modelBuilder.Entity<IdentityUserToken<string>>()
+                .HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
+
+            modelBuilder.Entity<IdentityRoleClaim<string>>()
+                .HasKey(rc => rc.Id);
+
+            modelBuilder.Entity<IdentityUserClaim<string>>()
+                .HasKey(uc => uc.Id);
+
+            // 6️⃣ Tùy chỉnh Id không Unicode và maxLength
+            modelBuilder.Entity<NguoiDung>()
+                .Property(u => u.Id).HasMaxLength(50).IsUnicode(false);
+
+            modelBuilder.Entity<IdentityRole>()
+                .Property(r => r.Id).HasMaxLength(50).IsUnicode(false);
         }
+
+        // 7️⃣ DbSet Keyless ViewModels
         public DbSet<BaoCaoNhanSuViewModel> BaoCaoNhanSuViewModels { get; set; }
         public DbSet<BaoCaoTongHopCongViewModel> BaoCaoTongHopCongViewModels { get; set; }
         public DbSet<BaoCaoBangLuongChiTietViewModel> BaoCaoBangLuongChiTietViewModels { get; set; }
         public DbSet<PhieuLuongCaNhanViewModel> PhieuLuongCaNhanViewModels { get; set; }
 
-        // 1.1 Phòng Ban
+        // 8️⃣ DbSet các bảng khác
         public DbSet<PhongBan> PhongBan { get; set; } = null!;
-
-        // 1.2 Chức Vụ
         public DbSet<ChucVu> ChucVu { get; set; } = null!;
-
-        // 1.3 Nhân Viên
         public DbSet<NhanVien> NhanVien { get; set; } = null!;
-
-        // 1.4 Hợp Đồng
         public DbSet<HopDong> HopDong { get; set; } = null!;
-
-        // 2.1 Chấm Công
         public DbSet<ChamCong> ChamCong { get; set; } = null!;
-
-        // 2.2 Tổng Hợp Công
         public DbSet<TongHopCong> TongHopCong { get; set; } = null!;
-
-        // 2.3.1 Danh Mục Phụ Cấp
         public DbSet<DanhMucPhuCap> DanhMucPhuCap { get; set; } = null!;
-
-        // 2.3.2 Chi Tiết Phụ Cấp
         public DbSet<ChiTietPhuCap> ChiTietPhuCap { get; set; } = null!;
-
-        // 2.4.1 Danh Mục Khen Thưởng
         public DbSet<DanhMucKhenThuong> DanhMucKhenThuong { get; set; } = null!;
-
-        // 2.4.2 Chi Tiết Khen Thưởng
         public DbSet<ChiTietKhenThuong> ChiTietKhenThuong { get; set; } = null!;
-
-        // 2.5.1 Danh Mục Kỷ Luật
         public DbSet<DanhMucKyLuat> DanhMucKyLuat { get; set; } = null!;
-
-        // 2.5.2 Chi Tiết Kỷ Luật
         public DbSet<ChiTietKyLuat> ChiTietKyLuat { get; set; } = null!;
-
-        // 3.1 Người Phụ Thuộc
         public DbSet<NguoiPhuThuoc> NguoiPhuThuoc { get; set; } = null!;
-
-        // 3.2 Bảng Tính Lương
         public DbSet<BangTinhLuong> BangTinhLuong { get; set; } = null!;
-
-        // 4.1 Người Dùng
-        public DbSet<NguoiDung> NguoiDung { get; set; } = null!;
-
-        // 4.2 Tham Số Hệ Thống
         public DbSet<ThamSoHeThong> ThamSoHeThong { get; set; } = null!;
     }
 }

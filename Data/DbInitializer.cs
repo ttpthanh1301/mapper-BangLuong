@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using BCrypt.Net;
+using Microsoft.AspNetCore.Identity;
 
 namespace BangLuong.Data
 {
@@ -164,42 +165,6 @@ namespace BangLuong.Data
                         MoiQuanHe = "Cha ruột",
                         ThoiGianBatDauGiamTru = new DateTime(2023, 5, 1),
                         MaNV = "NV004"
-                    }
-                );
-                context.SaveChanges();
-            }
-
-            // 🔐 NGƯỜI DÙNG
-            if (!context.NguoiDung.Any())
-            {
-                context.NguoiDung.AddRange(
-                    new NguoiDung
-                    {
-                        MaNV = "NV001",
-                        MatKhau = BCrypt.Net.BCrypt.HashPassword("123456", BCrypt.Net.BCrypt.GenerateSalt()),
-                        PhanQuyen = "Admin",
-                        TrangThai = "Hoạt động"
-                    },
-                    new NguoiDung
-                    {
-                        MaNV = "NV002",
-                        MatKhau = BCrypt.Net.BCrypt.HashPassword("123456", BCrypt.Net.BCrypt.GenerateSalt()),
-                        PhanQuyen = "Kế toán",
-                        TrangThai = "Hoạt động"
-                    },
-                    new NguoiDung
-                    {
-                        MaNV = "NV003",
-                        MatKhau = BCrypt.Net.BCrypt.HashPassword("123456", BCrypt.Net.BCrypt.GenerateSalt()),
-                        PhanQuyen = "Nhân viên",
-                        TrangThai = "Hoạt động"
-                    },
-                    new NguoiDung
-                    {
-                        MaNV = "NV004",
-                        MatKhau = BCrypt.Net.BCrypt.HashPassword("123456", BCrypt.Net.BCrypt.GenerateSalt()),
-                        PhanQuyen = "Thử việc",
-                        TrangThai = "Đang thử việc"
                     }
                 );
                 context.SaveChanges();
@@ -645,5 +610,59 @@ namespace BangLuong.Data
                 context.SaveChanges();
             }
         }
+
     }
+    public static class IdentitySeeder
+{
+    public static async Task SeedUsers(IServiceProvider serviceProvider)
+    {
+        var userManager = serviceProvider.GetRequiredService<UserManager<NguoiDung>>();
+        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+        // 1️⃣ Tạo Roles nếu chưa có
+        var roles = new[] { "Admin", "Kế toán", "Nhân viên", "Thử việc" };
+        foreach (var role in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
+
+        // 2️⃣ Danh sách người dùng cần seed
+        var users = new[]
+        {
+            new { MaNV = "NV001", Email = "an.nguyen@example.com", PhanQuyen = "Admin", TrangThai = "Hoạt động" },
+            new { MaNV = "NV002", Email = "binh.tran@example.com", PhanQuyen = "Kế toán", TrangThai = "Hoạt động" },
+            new { MaNV = "NV003", Email = "minh.le@example.com", PhanQuyen = "Nhân viên", TrangThai = "Hoạt động" },
+            new { MaNV = "NV004", Email = "ha.pham@example.com", PhanQuyen = "Thử việc", TrangThai = "Đang thử việc" }
+        };
+
+        foreach (var u in users)
+        {
+            // Dùng UserName thay cho MaNV
+            if (await userManager.FindByNameAsync(u.MaNV) == null)
+            {
+                var user = new NguoiDung
+                {
+                    Id = u.MaNV,           // Sử dụng Id = MaNV
+                    UserName = u.MaNV,     // Username = MaNV
+                    Email = u.Email,
+                    PhanQuyen = u.PhanQuyen,
+                    TrangThai = u.TrangThai,
+                    EmailConfirmed = true
+                };
+
+                var result = await userManager.CreateAsync(user, "Admin@123");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, u.PhanQuyen);
+                }
+            }
+        }
+    }
+}
+
+
+
 }

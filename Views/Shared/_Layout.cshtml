@@ -6,56 +6,215 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Quản Lý Tính Lương</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&family=Roboto:wght@400;700&display=swap"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
 
-    @* Đã thêm lệnh này để khắc phục lỗi 'Styles' section chưa được render *@
-    **@RenderSection("Styles", required: false)** <style>
+    @RenderSection("Styles", required: false)
+    
+    <style>
         body {
-            font-family: "Segoe UI", "Roboto", sans-serif;
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             background-color: #f4f6f9;
         }
 
+        /* ============================================
+           NAVBAR - Gradient sáng đẹp cho AdminLTE 3
+           ============================================ */
+        .main-header.navbar {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+            border-bottom: none;
+            box-shadow: 0 2px 10px rgba(79, 172, 254, 0.2);
+        }
+
+        .main-header .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.95) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .main-header .navbar-nav .nav-link:hover {
+            color: #ffffff !important;
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* ============================================
+           SIDEBAR - Tối màu nhưng hiện đại
+           ============================================ */
         .main-sidebar {
-            background-color: #1a237e !important;
-            /* Navy blue */
+            background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%) !important;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .brand-link {
-            border-bottom: 1px solid #3949ab;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-bottom: none;
+            padding: 0.9rem 1rem;
+            box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
         }
 
         .brand-link .brand-text {
-            color: #ffeb3b !important;
+            color: #ffffff !important;
             font-weight: 700;
+            font-size: 17px;
+            letter-spacing: 0.5px;
         }
 
+        /* User Panel */
+        .user-panel {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-panel .info a {
+            color: #ffffff !important;
+            font-weight: 500;
+        }
+
+        .user-panel .image img {
+            border: 2px solid #4facfe;
+        }
+
+        /* ============================================
+           NAVIGATION - Theo chuẩn AdminLTE 3
+           ============================================ */
         .nav-sidebar .nav-link {
-            transition: background-color 0.3s, color 0.3s;
+            color: rgba(255, 255, 255, 0.8) !important;
+            border-radius: 6px;
+            margin: 2px 8px;
+            padding: 10px 16px;
+            transition: all 0.3s ease;
             font-weight: 500;
         }
 
         .nav-sidebar .nav-link:hover {
-            background-color: #3949ab !important;
-            color: #fff !important;
+            background: rgba(79, 172, 254, 0.15) !important;
+            color: #4facfe !important;
         }
 
-        .nav-item.menu-open>.nav-link {
-            background-color: #283593 !important;
-            color: #fff;
+        .nav-sidebar .nav-link.active {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
         }
 
+        .nav-sidebar .nav-link.active .nav-icon {
+            color: #ffffff !important;
+        }
+
+        /* Menu mở */
+        .nav-item.menu-open > .nav-link {
+            background: rgba(79, 172, 254, 0.1) !important;
+            color: #4facfe !important;
+        }
+
+        /* Sub menu - Treeview */
+        .nav-treeview {
+            padding-left: 1rem;
+        }
+
+        .nav-treeview > .nav-item > .nav-link {
+            padding: 8px 16px 8px 35px;
+            font-size: 13px;
+        }
+
+        .nav-treeview .nav-treeview > .nav-item > .nav-link {
+            padding-left: 50px;
+            font-size: 13px;
+        }
+
+        .nav-treeview .nav-link:hover {
+            background: rgba(79, 172, 254, 0.1) !important;
+        }
+
+        /* Icons */
         .nav-icon {
             width: 22px;
+            margin-right: 10px;
         }
 
+        .right.fas {
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item.menu-open > .nav-link > .right {
+            transform: rotate(-90deg);
+        }
+
+        /* ============================================
+           CONTENT WRAPPER
+           ============================================ */
+        .content-wrapper {
+            background-color: #f4f6f9;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
         footer.main-footer {
+            background: #ffffff;
+            border-top: 1px solid #dee2e6;
             font-size: 14px;
-            color: #555;
+            color: #6c757d;
+            padding: 1rem;
+        }
+
+        footer.main-footer strong {
+            color: #4facfe;
+        }
+
+        /* ============================================
+           SCROLLBAR CUSTOM cho Sidebar
+           ============================================ */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(79, 172, 254, 0.3);
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(79, 172, 254, 0.5);
+        }
+
+        /* ============================================
+           HOVER EFFECTS
+           ============================================ */
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 0%;
+            width: 3px;
+            background: #4facfe;
+            transition: height 0.3s ease;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            height: 70%;
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @@media (max-width: 991.98px) {
+            .main-sidebar {
+                box-shadow: none;
+            }
         }
     </style>
 </head>
@@ -63,7 +222,9 @@
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
 
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light shadow-sm">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button">
@@ -73,8 +234,12 @@
                 <li class="nav-item d-none d-sm-inline-block">
                     <a asp-controller="Home" asp-action="Index" class="nav-link">Trang chủ</a>
                 </li>
+                  <li class="nav-item d-none d-sm-inline-block">
+                    <a  href="/swagger" class="nav-link">Explore APIs</a>
+                </li>
             </ul>
 
+            <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a class="nav-link" data-widget="fullscreen" href="#" role="button">
@@ -83,24 +248,32 @@
                 </li>
             </ul>
         </nav>
-        <aside class="main-sidebar elevation-4">
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
             <a href="~/" class="brand-link text-center">
-                <span class="brand-text">QUẢN LÝ LƯƠNG</span>
+                <span class="brand-text">CÔNG TY PROTON</span>
             </a>
 
+            <!-- Sidebar -->
             <div class="sidebar">
+                <!-- Sidebar user panel -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
                         <img src="~/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block" style="color:white">Xin chào, Admin</a>
+                        <a href="#" class="d-block">Xin chào, Admin</a>
                     </div>
                 </div>
 
+                <!-- Sidebar Menu -->
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
+                        <!-- Bảng điều khiển -->
                         <li class="nav-item">
                             <a asp-controller="Home" asp-action="Index" class="nav-link active">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -108,7 +281,8 @@
                             </a>
                         </li>
 
-                        <li class="nav-item has-treeview">
+                        <!-- Quản lý danh mục -->
+                        <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-users"></i>
                                 <p>
@@ -117,34 +291,47 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a asp-controller="NhanVien" asp-action="Index" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
+                                <li class="nav-item">
+                                    <a asp-controller="NhanVien" asp-action="Index" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Hồ sơ nhân viên</p>
-                                    </a></li>
-                                <li class="nav-item"><a asp-controller="HopDong" asp-action="Index" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="HopDong" asp-action="Index" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Hợp đồng</p>
-                                    </a></li>
-                                <li class="nav-item"><a asp-controller="PhongBan" asp-action="Index" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="PhongBan" asp-action="Index" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Phòng ban</p>
-                                    </a></li>
-                                <li class="nav-item"><a asp-controller="ChucVu" asp-action="Index" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="ChucVu" asp-action="Index" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Chức vụ</p>
-                                    </a></li>
-                                <li class="nav-item"><a asp-controller="NguoiPhuThuoc" asp-action="Index"
-                                        class="nav-link"><i class="far fa-circle nav-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="NguoiPhuThuoc" asp-action="Index" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Người phụ thuộc</p>
-                                    </a></li>
-                                <li class="nav-item"><a asp-controller="ThamSoHeThong" asp-action="Index"
-                                        class="nav-link"><i class="far fa-circle nav-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="ThamSoHeThong" asp-action="Index" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Tham số hệ thống</p>
-                                    </a></li>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
-                        <li class="nav-item has-treeview">
+                        <!-- Quản lý chấm công -->
+                        <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-clock"></i>
                                 <p>
@@ -153,18 +340,23 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a asp-controller="ChamCong" asp-action="Index" class="nav-link"><i
-                                            class="far fa-circle nav-icon"></i>
+                                <li class="nav-item">
+                                    <a asp-controller="ChamCong" asp-action="Index" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Giờ trình (Chấm công)</p>
-                                    </a></li>
-                                <li class="nav-item"><a asp-controller="TongHopCong" asp-action="Index"
-                                        class="nav-link"><i class="far fa-circle nav-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="TongHopCong" asp-action="Index" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Tổng hợp công</p>
-                                    </a></li>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
-                        <li class="nav-item has-treeview">
+                        <!-- Tính lương -->
+                        <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-calculator"></i>
                                 <p>
@@ -173,8 +365,9 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
+                                
                                 <!-- Phụ cấp -->
-                                <li class="nav-item has-treeview">
+                                <li class="nav-item">
                                     <a href="#" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>
@@ -199,7 +392,7 @@
                                 </li>
 
                                 <!-- Khen thưởng -->
-                                <li class="nav-item has-treeview">
+                                <li class="nav-item">
                                     <a href="#" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>
@@ -224,7 +417,7 @@
                                 </li>
 
                                 <!-- Kỷ luật -->
-                                <li class="nav-item has-treeview">
+                                <li class="nav-item">
                                     <a href="#" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>
@@ -255,11 +448,12 @@
                                         <p>Bảng lương</p>
                                     </a>
                                 </li>
+                                
                             </ul>
-
                         </li>
 
-                        <li class="nav-item has-treeview">
+                        <!-- Báo cáo -->
+                        <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-chart-bar"></i>
                                 <p>
@@ -268,26 +462,35 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a asp-controller="BaoCao" asp-action="NhanSuTongHop"
-                                        class="nav-link"><i class="far fa-circle nav-icon"></i>
+                                <li class="nav-item">
+                                    <a asp-controller="BaoCao" asp-action="NhanSuTongHop" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Báo cáo tổng hợp nhân sự</p>
-                                    </a></li>
-                                <li class="nav-item"><a asp-controller="BaoCao" asp-action="BaoCaoTongCong"
-                                        class="nav-link"><i class="far fa-circle nav-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="BaoCao" asp-action="BaoCaoTongCong" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Báo cáo tổng hợp chấm công</p>
-                                    </a></li>
-                                <li class="nav-item"><a asp-controller="BaoCao" asp-action="BangLuongChiTiet"
-                                        class="nav-link"><i class="far fa-circle nav-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="BaoCao" asp-action="BangLuongChiTiet" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Bảng lương chi tiết tháng</p>
-                                    </a></li>
-                                <li class="nav-item"><a asp-controller="BaoCao" asp-action="PhieuLuongCaNhan"
-                                        class="nav-link"><i class="far fa-circle nav-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="BaoCao" asp-action="PhieuLuongCaNhan" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Phiếu lương cá nhân</p>
-                                    </a></li>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
-                        <li class="nav-item has-treeview">
+                        <!-- Quản lý hệ thống -->
+                        <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
@@ -296,19 +499,23 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a asp-controller="NguoiDung" asp-action="Index"
-                                        class="nav-link"><i class="far fa-circle nav-icon"></i>
+                                <li class="nav-item">
+                                    <a asp-controller="NguoiDung" asp-action="Index" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Tài khoản người dùng</p>
-                                    </a></li>
-
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
                     </ul>
                 </nav>
+                <!-- /.sidebar-menu -->
             </div>
+            <!-- /.sidebar -->
         </aside>
 
+        <!-- Content Wrapper -->
         <div class="content-wrapper">
             <section class="content pt-3">
                 <div class="container-fluid">
@@ -316,16 +523,25 @@
                 </div>
             </section>
         </div>
+        <!-- /.content-wrapper -->
 
-        <footer class="main-footer text-sm text-center">
+        <!-- Footer -->
+        <footer class="main-footer text-center">
             <strong>© 2025 Hệ thống Quản lý Tính lương.</strong> All rights reserved.
         </footer>
 
     </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery -->
     <script src="~/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- overlayScrollbars -->
     <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <!-- AdminLTE App -->
     <script src="~/dist/js/adminlte.min.js"></script>
+    
     @RenderSection("Scripts", required: false)
 </body>
 

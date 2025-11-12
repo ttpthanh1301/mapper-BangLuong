@@ -1,0 +1,41 @@
+@model BangLuong.ViewModels.NguoiDungViewModels.NguoiDungRequest
+
+@{
+    ViewData["Title"] = "Đăng ký người dùng";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Register" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="MaNV"></label>
+        <input asp-for="MaNV" class="form-control"/>
+        <span asp-validation-for="MaNV" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password" class="form-control"/>
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PhanQuyen"></label>
+        <input asp-for="PhanQuyen" class="form-control"/>
+        <span asp-validation-for="PhanQuyen" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TrangThai"></label>
+        <input asp-for="TrangThai" class="form-control"/>
+        <span asp-validation-for="TrangThai" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Đăng ký</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}

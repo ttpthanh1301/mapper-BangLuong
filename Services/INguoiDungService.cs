@@ -1,17 +1,25 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using static BangLuong.ViewModels.NguoiDungViewModels;
+using BangLuong.ViewModels;
 
 namespace BangLuong.Services
 {
     public interface INguoiDungService
     {
-        Task<IEnumerable<NguoiDungViewModel>> GetAllAsync();
-        Task<NguoiDungViewModel?> GetByIdAsync(string id);
-        Task<bool> CreateAsync(NguoiDungRequest request);
-        Task<bool> UpdateAsync(string id, NguoiDungViewModel viewModel);
-        Task<bool> DeleteAsync(string id);
-        Task<IEnumerable<string>> GetAllNhanVienIdsAsync(); // dùng cho dropdown chọn nhân viên
-        Task<PaginatedList<NguoiDungViewModel>> GetAllFilter(string sortOrder, string currentFilter, string searchString, int? pageNumber, int pageSize);
+        // Đăng nhập và trả về JWT token
+        Task<string> Authenticate(NguoiDungViewModels.LoginRequest request);
+
+        // Đăng ký người dùng mới
+        Task<bool> Register(NguoiDungViewModels.NguoiDungRequest request);
+
+        // Lấy danh sách tất cả người dùng
+        Task<IEnumerable<NguoiDungViewModels.NguoiDungViewModel>> GetAll();
+
+        // Lấy thông tin người dùng theo MaNV
+        Task<NguoiDungViewModels.NguoiDungViewModel?> GetById(string maNV);
+
+        // Cập nhật thông tin người dùng
+        Task<bool> Update(NguoiDungViewModels.NguoiDungRequest request);
+
+        // Xóa người dùng
+        Task<bool> Delete(string maNV);
     }
 }

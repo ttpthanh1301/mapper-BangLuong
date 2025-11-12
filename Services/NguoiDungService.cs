@@ -1,112 +1,136 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using BangLuong.Data;
 using BangLuong.Data.Entities;
+using BangLuong.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
-using static BangLuong.ViewModels.NguoiDungViewModels;
 
 namespace BangLuong.Services
 {
     public class NguoiDungService : INguoiDungService
     {
-        private readonly BangLuongDbContext _context;
+        private readonly UserManager<NguoiDung> _userManager;
+        private readonly SignInManager<NguoiDung> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+        private readonly JwtOptions _jwtOptions;
 
-        public NguoiDungService(BangLuongDbContext context, IMapper mapper)
+        public NguoiDungService(UserManager<NguoiDung> userManager,
+                                 SignInManager<NguoiDung> signInManager,
+                                 RoleManager<IdentityRole> roleManager,
+                                 IConfiguration config,
+                                 IMapper mapper,
+                                 IOptions<JwtOptions> jwtOptions)
         {
-            _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
+            _config = config;
             _mapper = mapper;
+            _jwtOptions = jwtOptions.Value;
         }
-        public async Task<PaginatedList<NguoiDungViewModel>> GetAllFilter(
-            string sortOrder,
-            string currentFilter,
-            string searchString,
-            int? pageNumber,
-            int pageSize)
+
+        public async Task<string> Authenticate(NguoiDungViewModels.LoginRequest request)
         {
-            if (searchString != null)
-                pageNumber = 1;
-            else
-                searchString = currentFilter;
+            var user = await _userManager.FindByEmailAsync(request.Email!);
+            if (user == null)
+                throw new Exception($"Không tìm thấy người dùng với email {request.Email}");
 
-            var query = from nd in _context.NguoiDung
-                        select nd;
+            var result = await _signInManager.PasswordSignInAsync(user, request.Password!, request.RememberMe, true);
+            if (!result.Succeeded)
+                throw new Exception("Đăng nhập không thành công");
 
-            if (!string.IsNullOrEmpty(searchString))
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var claims = new[]
             {
-                query = query.Where(nd =>
-                    nd.MaNV.Contains(searchString) ||
-                    nd.PhanQuyen.Contains(searchString) ||
-                    nd.TrangThai.Contains(searchString)
-                );
+                new Claim(ClaimTypes.Email, user.Email!),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Role, string.Join(";", roles))
+            };
+            var keyBytes = _jwtOptions.SigningKey != null ? Encoding.UTF8.GetBytes(_jwtOptions.SigningKey) : throw new ArgumentNullException(nameof(_jwtOptions.SigningKey));
+            var key = new SymmetricSecurityKey(keyBytes);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _jwtOptions.Issuer,        // "https://api.vnLab.com"
+                audience: _jwtOptions.Audience,    // "https://api.vnLab.com"
+                claims: claims,
+                expires: DateTime.Now.AddHours(3), // token hết hạn sau 3 giờ
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public async Task<bool> Register(NguoiDungViewModels.NguoiDungRequest request)
+        {
+            var user = _mapper.Map<NguoiDung>(request);
+            user.UserName = request.MaNV;
+
+            var result = await _userManager.CreateAsync(user, request.Password!);
+            if (!result.Succeeded) return false;
+
+            // Thêm role nếu có
+            if (!string.IsNullOrEmpty(request.PhanQuyen))
+            {
+                if (!await _roleManager.RoleExistsAsync(request.PhanQuyen))
+                    await _roleManager.CreateAsync(new IdentityRole(request.PhanQuyen));
+
+                await _userManager.AddToRoleAsync(user, request.PhanQuyen);
             }
 
-            query = sortOrder switch
+            return true;
+        }
+
+        public async Task<IEnumerable<NguoiDungViewModels.NguoiDungViewModel>> GetAll()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            return _mapper.Map<IEnumerable<NguoiDungViewModels.NguoiDungViewModel>>(users);
+        }
+
+        public async Task<NguoiDungViewModels.NguoiDungViewModel?> GetById(string maNV)
+        {
+            var user = await _userManager.FindByIdAsync(maNV);
+            return user == null ? null : _mapper.Map<NguoiDungViewModels.NguoiDungViewModel>(user);
+        }
+
+        public async Task<bool> Update(NguoiDungViewModels.NguoiDungRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(request.MaNV);
+            if (user == null) return false;
+
+            user.PhanQuyen = request.PhanQuyen;
+            user.TrangThai = request.TrangThai;
+
+            if (!string.IsNullOrEmpty(request.Password))
             {
-                "ma_desc" => query.OrderByDescending(nd => nd.MaNV),
-                "role" => query.OrderBy(nd => nd.PhanQuyen),
-                "role_desc" => query.OrderByDescending(nd => nd.PhanQuyen),
-                _ => query.OrderBy(nd => nd.MaNV)
-            };
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var resultPass = await _userManager.ResetPasswordAsync(user, token, request.Password);
+                if (!resultPass.Succeeded) return false;
+            }
 
-            var list = await query.ToListAsync();
-            var viewModels = _mapper.Map<IEnumerable<NguoiDungViewModel>>(list);
-
-            return PaginatedList<NguoiDungViewModel>.Create(viewModels, pageNumber ?? 1, pageSize);
+            var result = await _userManager.UpdateAsync(user);
+            return result.Succeeded;
         }
 
-        public async Task<IEnumerable<NguoiDungViewModel>> GetAllAsync()
+        public async Task<bool> Delete(string maNV)
         {
-            var list = await _context.NguoiDung
-                .Include(x => x.NhanVien)
-                .ToListAsync();
-            return _mapper.Map<IEnumerable<NguoiDungViewModel>>(list);
-        }
+            var user = await _userManager.FindByIdAsync(maNV);
+            if (user == null) return false;
 
-        public async Task<NguoiDungViewModel?> GetByIdAsync(string id)
-        {
-            var entity = await _context.NguoiDung
-                .Include(x => x.NhanVien)
-                .FirstOrDefaultAsync(x => x.MaNV == id);
-            return entity == null ? null : _mapper.Map<NguoiDungViewModel>(entity);
-        }
+            // Xóa user khỏi tất cả role trước khi xóa user
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Any())
+                await _userManager.RemoveFromRolesAsync(user, roles);
 
-        public async Task<bool> CreateAsync(NguoiDungRequest request)
-        {
-            var entity = _mapper.Map<NguoiDung>(request);
-            _context.NguoiDung.Add(entity);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> UpdateAsync(string id, NguoiDungViewModel viewModel)
-        {
-            if (id != viewModel.MaNV) return false;
-
-            var entity = await _context.NguoiDung.FindAsync(id);
-            if (entity == null) return false;
-
-            _mapper.Map(viewModel, entity);
-            _context.Update(entity);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> DeleteAsync(string id)
-        {
-            var entity = await _context.NguoiDung.FindAsync(id);
-            if (entity == null) return false;
-
-            _context.NguoiDung.Remove(entity);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<IEnumerable<string>> GetAllNhanVienIdsAsync()
-        {
-            return await _context.NhanVien.Select(x => x.MaNV).ToListAsync();
+            var result = await _userManager.DeleteAsync(user);
+            return result.Succeeded;
         }
     }
 }

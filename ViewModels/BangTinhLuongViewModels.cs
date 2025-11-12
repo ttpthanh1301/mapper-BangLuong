@@ -62,22 +62,66 @@ namespace BangLuong.ViewModels
 
         public class BangTinhLuongViewModel
         {
+            [Display(Name = "Mã Bảng Lương")]
             public int MaBL { get; set; }
+
+            [Display(Name = "Kỳ Lương (Tháng)")]
             public int KyLuongThang { get; set; }
+
+            [Display(Name = "Kỳ Lương (Năm)")]
             public int KyLuongNam { get; set; }
+
+            [Display(Name = "Lương Cơ Bản")]
+            [DisplayFormat(DataFormatString = "{0:N0}")]
             public decimal LuongCoBan { get; set; }
+
+            [Display(Name = "Tổng Phụ Cấp")]
+            [DisplayFormat(DataFormatString = "{0:N0}")]
             public decimal? TongPhuCap { get; set; }
+
+            [Display(Name = "Tổng Khen Thưởng")]
+            [DisplayFormat(DataFormatString = "{0:N0}")]
             public decimal? TongKhenThuong { get; set; }
+
+            [Display(Name = "Lương Tăng Ca")]
+            [DisplayFormat(DataFormatString = "{0:N0}")]
             public decimal? LuongTangCa { get; set; }
+
+            [Display(Name = "Tổng Thu Nhập")]
+            [DisplayFormat(DataFormatString = "{0:N0}")]
             public decimal? TongThuNhap { get; set; }
+
+            [Display(Name = "Giảm Trừ BHXH")]
+            [DisplayFormat(DataFormatString = "{0:N0}")]
             public decimal? GiamTruBHXH { get; set; }
+
+            [Display(Name = "Giảm Trừ BHYT")]
+            [DisplayFormat(DataFormatString = "{0:N0}")]
             public decimal? GiamTruBHYT { get; set; }
+
+            [Display(Name = "Giảm Trừ BHTN")]
+            [DisplayFormat(DataFormatString = "{0:N0}")]
             public decimal? GiamTruBHTN { get; set; }
+
+            [Display(Name = "Tổng Giảm Trừ Kỷ Luật")]
+            [DisplayFormat(DataFormatString = "{0:N0}")]
             public decimal? TongGiamTruKyLuat { get; set; }
+
+            [Display(Name = "Giảm Trừ Thuế TNCN")]
+            [DisplayFormat(DataFormatString = "{0:N0}")]
             public decimal? GiamTruThueTNCN { get; set; }
+
+            [Display(Name = "Thực Lãnh")]
+            [DisplayFormat(DataFormatString = "{0:N0}")]
             public decimal ThucLanh { get; set; }
+
+            [Display(Name = "Trạng Thái")]
             public string TrangThai { get; set; } = null!;
+
+            [Display(Name = "Mã Nhân Viên")]
             public string MaNV { get; set; } = null!;
+
+            [Display(Name = "Tên Nhân Viên")]
             public string? TenNhanVien { get; set; }
         }
     }

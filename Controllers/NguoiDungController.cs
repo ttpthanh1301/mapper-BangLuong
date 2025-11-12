@@ -1,104 +1,128 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using BangLuong.Services;
-using System.Threading.Tasks;
-using static BangLuong.ViewModels.NguoiDungViewModels;
+using BangLuong.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BangLuong.Controllers
 {
     public class NguoiDungController : Controller
     {
-        private readonly INguoiDungService _service;
+        private readonly INguoiDungService _nguoiDungService;
 
-        public NguoiDungController(INguoiDungService service)
+        public NguoiDungController(INguoiDungService nguoiDungService)
         {
-            _service = service;
+            _nguoiDungService = nguoiDungService;
         }
 
-        public async Task<IActionResult> Index(
-          string sortOrder,
-          string currentFilter,
-          string searchString,
-          int? pageNumber)
+        // ======================= INDEX =======================
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 10; // Số bản ghi mỗi trang
-
-            var list = await _service.GetAllFilter(sortOrder, currentFilter, searchString, pageNumber, pageSize);
-
-            ViewData["CurrentSort"] = sortOrder;
-            ViewData["CurrentFilter"] = searchString;
-
-            return View(list);
+            var users = await _nguoiDungService.GetAll();
+            return View(users);
         }
 
-
-        public async Task<IActionResult> Details(string id)
+        // ======================= REGISTER =======================
+        public IActionResult Register()
         {
-            var item = await _service.GetByIdAsync(id);
-            if (item == null) return NotFound();
-            return View(item);
-        }
-
-        public async Task<IActionResult> Create()
-        {
-            var maNVList = await _service.GetAllNhanVienIdsAsync();
-            ViewData["MaNV"] = new SelectList(maNVList);
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(NguoiDungRequest request)
+        public async Task<IActionResult> Register(NguoiDungViewModels.NguoiDungRequest request)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) return View(request);
+
+            var result = await _nguoiDungService.Register(request);
+            if (!result)
             {
-                var maNVList = await _service.GetAllNhanVienIdsAsync();
-                ViewData["MaNV"] = new SelectList(maNVList, request.MaNV);
+                ModelState.AddModelError("", "Đăng ký thất bại");
                 return View(request);
             }
 
-            await _service.CreateAsync(request);
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(string id)
+        // ======================= LOGIN =======================
+        public IActionResult Login()
         {
-            var item = await _service.GetByIdAsync(id);
-            if (item == null) return NotFound();
-
-            var maNVList = await _service.GetAllNhanVienIdsAsync();
-            ViewData["MaNV"] = new SelectList(maNVList, item.MaNV);
-            return View(item);
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, NguoiDungViewModel viewModel)
+        public async Task<IActionResult> Login(NguoiDungViewModels.LoginRequest request)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) return View(request);
+
+            try
             {
-                var maNVList = await _service.GetAllNhanVienIdsAsync();
-                ViewData["MaNV"] = new SelectList(maNVList, viewModel.MaNV);
-                return View(viewModel);
+                var token = await _nguoiDungService.Authenticate(request);
+                // TODO: lưu token vào session hoặc cookie nếu cần
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(request);
+            }
+        }
+
+        // ======================= EDIT =======================
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return BadRequest();
+
+            var user = await _nguoiDungService.GetById(id);
+            if (user == null) return NotFound();
+
+            var editModel = new NguoiDungViewModels.NguoiDungRequest
+            {
+                MaNV = user.MaNV,
+                PhanQuyen = user.PhanQuyen,
+                TrangThai = user.TrangThai
+            };
+            return View(editModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(NguoiDungViewModels.NguoiDungRequest request)
+        {
+            if (!ModelState.IsValid) return View(request);
+
+            var result = await _nguoiDungService.Update(request);
+            if (!result)
+            {
+                ModelState.AddModelError("", "Cập nhật thất bại");
+                return View(request);
             }
 
-            var result = await _service.UpdateAsync(id, viewModel);
-            if (!result) return NotFound();
             return RedirectToAction(nameof(Index));
         }
 
+        // ======================= DELETE =======================
         public async Task<IActionResult> Delete(string id)
         {
-            var item = await _service.GetByIdAsync(id);
-            if (item == null) return NotFound();
-            return View(item);
+            if (string.IsNullOrEmpty(id)) return BadRequest();
+
+            var user = await _nguoiDungService.GetById(id);
+            if (user == null) return NotFound();
+
+            return View(user); // view confirm xóa
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            await _service.DeleteAsync(id);
+            var result = await _nguoiDungService.Delete(id);
+            if (!result)
+            {
+                ModelState.AddModelError("", "Xóa thất bại");
+                var user = await _nguoiDungService.GetById(id);
+                return View("Delete", user);
+            }
+
             return RedirectToAction(nameof(Index));
         }
     }
