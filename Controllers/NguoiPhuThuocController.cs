@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BangLuong.Services;
@@ -6,6 +7,7 @@ using static BangLuong.ViewModels.NguoiPhuThuocViewModels;
 
 namespace BangLuong.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")] // Áp dụng cho toàn bộ controller
     public class NguoiPhuThuocController : Controller
     {
         private readonly INguoiPhuThuocService _service;
@@ -15,22 +17,14 @@ namespace BangLuong.Controllers
             _service = service;
         }
 
-        public async Task<IActionResult> Index(
-            string sortOrder,
-            string currentFilter,
-            string searchString,
-            int? pageNumber)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            int pageSize = 10; // Số bản ghi mỗi trang
-
+            int pageSize = 10;
             var list = await _service.GetAllFilter(sortOrder, currentFilter, searchString, pageNumber, pageSize);
-
             ViewData["CurrentSort"] = sortOrder;
             ViewData["CurrentFilter"] = searchString;
-
             return View(list);
         }
-
 
         public async Task<IActionResult> Details(int id)
         {

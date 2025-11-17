@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using static BangLuong.ViewModels.DanhMucKhenThuongViewModels;
 
 namespace BangLuong.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")] 
     public class DanhMucKhenThuongController : Controller
     {
         private readonly IDanhMucKhenThuongService _service;

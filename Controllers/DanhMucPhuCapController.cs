@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using static BangLuong.ViewModels.DanhMucPhuCapViewModels;
 
 namespace BangLuong.Controllers
 {
+    [Authorize] // Bắt buộc đăng nhập mới dùng được các action
     public class DanhMucPhuCapController : Controller
     {
         private readonly IDanhMucPhuCapService _service;
@@ -28,7 +30,6 @@ namespace BangLuong.Controllers
 
             return View(list);
         }
-
 
         public async Task<IActionResult> Details(string id)
         {

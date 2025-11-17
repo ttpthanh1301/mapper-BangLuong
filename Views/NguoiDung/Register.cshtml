@@ -1,41 +1,83 @@
 @model BangLuong.ViewModels.NguoiDungViewModels.NguoiDungRequest
 
 @{
-    ViewData["Title"] = "Đăng ký người dùng";
+    ViewData["Title"] = "Đăng Ký Tài Khoản";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">Đăng Ký Tài Khoản</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Register" asp-controller="NguoiDung" method="post">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-<form asp-action="Register" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <!-- Mã Nhân Viên -->
+                        <div class="mb-3">
+                            <label asp-for="MaNV" class="form-label">Mã Nhân Viên <span class="text-danger">*</span></label>
+                            <input asp-for="MaNV" class="form-control" placeholder="VD: NV001" />
+                            <span asp-validation-for="MaNV" class="text-danger small"></span>
+                        </div>
 
-    <div class="form-group">
-        <label asp-for="MaNV"></label>
-        <input asp-for="MaNV" class="form-control"/>
-        <span asp-validation-for="MaNV" class="text-danger"></span>
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="example@email.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Mật Khẩu -->
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">Mật Khẩu <span class="text-danger">*</span></label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu (tối thiểu 8 ký tự)" />
+                            <small class="form-text text-muted">Mật khẩu phải có ít nhất 8 ký tự</small>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Phân Quyền -->
+                        <div class="mb-3">
+                            <label asp-for="PhanQuyen" class="form-label">Phân Quyền</label>
+                            <select asp-for="PhanQuyen" class="form-control">
+                                <option value="">-- Chọn quyền --</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Employee">Employee</option>
+                                <option value="HR">HR</option>
+                            </select>
+                            <span asp-validation-for="PhanQuyen" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Trạng Thái -->
+                        <div class="mb-3">
+                            <label asp-for="TrangThai" class="form-label">Trạng Thái</label>
+                            <select asp-for="TrangThai" class="form-control">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                            <span asp-validation-for="TrangThai" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary flex-grow-1">
+                                <i class="bi bi-person-plus"></i> Đăng Ký
+                            </button>
+                            <a href="@Url.Action("Login", "NguoiDung")" class="btn btn-secondary flex-grow-1">
+                                <i class="bi bi-box-arrow-in-right"></i> Đăng Nhập
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" class="form-control"/>
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PhanQuyen"></label>
-        <input asp-for="PhanQuyen" class="form-control"/>
-        <span asp-validation-for="PhanQuyen" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="TrangThai"></label>
-        <input asp-for="TrangThai" class="form-control"/>
-        <span asp-validation-for="TrangThai" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Đăng ký</button>
-</form>
+</div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial"/>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

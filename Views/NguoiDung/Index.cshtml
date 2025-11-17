@@ -1,34 +1,139 @@
 @model IEnumerable<BangLuong.ViewModels.NguoiDungViewModels.NguoiDungViewModel>
 
 @{
-    ViewData["Title"] = "Danh sách người dùng";
+    ViewData["Title"] = "Quản Lý Người Dùng";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-0">
+                <i class="bi bi-people"></i> Quản Lý Người Dùng
+            </h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="@Url.Action("Register", "NguoiDung")" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Thêm Người Dùng
+            </a>
+        </div>
+    </div>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Mã NV</th>
-            <th>Phân Quyền</th>
-            <th>Trạng Thái</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@user.MaNV</td>
-                <td>@user.PhanQuyen</td>
-                <td>@user.TrangThai</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@user.MaNV" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@user.MaNV" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <!-- Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
 
-<a class="btn btn-primary" asp-action="Register">Thêm người dùng mới</a>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Table -->
+    <div class="card shadow">
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 12%">Mã NV</th>
+                                <th style="width: 20%">Tên Đăng Nhập</th>
+                                <th style="width: 25%">Email</th>
+                                <th style="width: 15%">Phân Quyền</th>
+                                <th style="width: 12%">Trạng Thái</th>
+                                <th style="width: 16%">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-info">@user.MaNV</span>
+                                    </td>
+                                    <td>@user.UserName</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(user.Email))
+                                        {
+                                            <a href="mailto:@user.Email">@user.Email</a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @switch(user.PhanQuyen)
+                                        {
+                                            case "Admin":
+                                                <span class="badge bg-danger">@user.PhanQuyen</span>
+                                                break;
+                                            case "Manager":
+                                                <span class="badge bg-warning">@user.PhanQuyen</span>
+                                                break;
+                                            case "HR":
+                                                <span class="badge bg-primary">@user.PhanQuyen</span>
+                                                break;
+                                            default:
+                                                <span class="badge bg-secondary">@user.PhanQuyen</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (user.TrangThai == "Active")
+                                        {
+                                            <span class="badge bg-success">@user.TrangThai</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">@user.TrangThai</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("Edit", "NguoiDung", new { id = user.MaNV })" 
+                                           class="btn btn-sm btn-warning" title="Chỉnh sửa">
+                                            <i class="bi bi-pencil"></i> Sửa
+                                        </a>
+                                        <a href="@Url.Action("Delete", "NguoiDung", new { id = user.MaNV })" 
+                                           class="btn btn-sm btn-danger" title="Xóa">
+                                            <i class="bi bi-trash"></i> Xóa
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                    <p class="mt-3 text-muted">Không có dữ liệu người dùng</p>
+                    <a href="@Url.Action("Register", "NguoiDung")" class="btn btn-primary mt-2">
+                        <i class="bi bi-person-plus"></i> Thêm Người Dùng Mới
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="alert alert-light border" role="alert">
+                <i class="bi bi-info-circle"></i>
+                <strong>Tổng cộng:</strong> @Model.Count() người dùng
+            </div>
+        </div>
+    </div>
+</div>

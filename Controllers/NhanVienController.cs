@@ -1,218 +1,170 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using BangLuong.Data;
-using BangLuong.Data.Entities;
 using BangLuong.Services;
-using AutoMapper;
-using static BangLuong.ViewModels.NhanVienViewModels;
-
+using BangLuong.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BangLuong.Controllers
-{
 
+{
+    [Authorize(Roles = "Admin,Manager")]
     public class NhanVienController : Controller
     {
-        private readonly INhanVienService _NhanVienservice;
-        public NhanVienController(INhanVienService NhanVienservice)
-        {
+        private readonly INhanVienService _nhanVienService;
 
-            _NhanVienservice = NhanVienservice;
+        public NhanVienController(INhanVienService nhanVienService)
+        {
+            _nhanVienService = nhanVienService;
         }
 
-        // GET: NhanVien
-        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber, int pageSize = 10)
+        // ======================= INDEX WITH FILTER, SORT, PAGING =======================
+        [Authorize]
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) || sortOrder.Equals("name") ? "name_desc" : "name";
-            ViewData["GenderSortParm"] = String.IsNullOrEmpty(sortOrder) || sortOrder.Equals("gender") ? "gender_desc" : "gender";
-            ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) || sortOrder.Equals("date") ? "date_desc" : "date";
-            ViewData["CurrentFilter"] = searchString;
+            const int pageSize = 10;
+
+            var employees = await _nhanVienService.GetAllFilter(sortOrder, currentFilter ?? searchString, searchString, pageNumber, pageSize);
+
             ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["GenderSortParm"] = sortOrder == "gender" ? "gender_desc" : "gender";
+            ViewData["DateSortParm"] = sortOrder == "date" ? "date_desc" : "date";
+            ViewData["CurrentFilter"] = searchString;
 
-            var result = await _NhanVienservice.GetAllFilter(sortOrder, currentFilter, searchString, pageNumber, pageSize);
-            return View(result);
+            return View(employees);
         }
 
-        // GET: NhanVien/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var nhanVien = await _NhanVienservice.GetById(id);
-            if (nhanVien == null)
-            {
-                return NotFound();
-            }
-
-            return View(nhanVien);
-        }
-
-        // GET: NhanVien/Create
+        // ======================= CREATE =======================
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
-            return View();
+            return View(new NhanVienViewModels.NhanVienRequest());
         }
 
-        // POST: NhanVien/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(NhanVienRequest request)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create(NhanVienViewModels.NhanVienRequest request)
         {
             if (!ModelState.IsValid)
-            {
                 return View(request);
-            }
-            await _NhanVienservice.Create(request);
-            return RedirectToAction(nameof(Index));
-        }
 
-        // GET: NhanVien/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-
-            var nhanVien = await _NhanVienservice.GetById(id);
-            if (nhanVien == null)
-            {
-                return NotFound();
-            }
-            return View(nhanVien);
-        }
-
-        // POST: NhanVien/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, NhanVienViewModel nhanVien)
-        {
-            if (id != nhanVien.MaNV)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                await _NhanVienservice.Update(nhanVien);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(nhanVien);
-        }
-
-        // GET: NhanVien/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-
-            var nhanVien = await _NhanVienservice.GetById(id);
-            if (nhanVien == null)
-            {
-                return NotFound();
-            }
-            return View();
-        }
-
-        // POST: NhanVien/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            await _NhanVienservice.Delete(id);
-            return RedirectToAction(nameof(Index));
-        }
-          public async Task<IActionResult> ExportToExcel()
-        {
             try
             {
-                var fileBytes = await _NhanVienservice.ExportToExcel();
-                var fileName = $"DanhSachNhanVien_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
-                return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                var result = await _nhanVienService.Create(request);
+                if (result <= 0)
+                {
+                    ModelState.AddModelError("", "Thêm nhân viên thất bại!");
+                    return View(request);
+                }
+
+                TempData["SuccessMessage"] = "Thêm nhân viên thành công!";
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Lỗi khi export: {ex.Message}";
+                ModelState.AddModelError("", ex.Message);
+                return View(request);
+            }
+        }
+
+        // ======================= EDIT =======================
+        [Authorize]
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (String.IsNullOrEmpty(id))
+                return BadRequest("Mã nhân viên không được để trống.");
+
+            try
+            {
+                var employee = await _nhanVienService.GetById(id);
+                return View(employee);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction(nameof(Index));
             }
         }
 
-        // Import from Excel - GET
-        public IActionResult Import()
-        {
-            return View();
-        }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Import(IFormFile file)
+        [Authorize]
+        public async Task<IActionResult> Edit(NhanVienViewModels.NhanVienViewModel request)
         {
-            if (file == null)
-            {
-                TempData["Error"] = "Vui lòng chọn file";
-                return View();
-            }
+            if (!ModelState.IsValid)
+                return View(request);
 
-            var result = await _NhanVienservice.ImportFromExcel(file);
-
-            if (result.success)
+            try
             {
-                TempData["Success"] = result.message;
+                var result = await _nhanVienService.Update(request);
+                if (result <= 0)
+                {
+                    ModelState.AddModelError("", "Cập nhật thất bại!");
+                    return View(request);
+                }
+
+                TempData["SuccessMessage"] = "Cập nhật thông tin nhân viên thành công!";
                 return RedirectToAction(nameof(Index));
             }
-            else
+            catch (Exception ex)
             {
-                TempData["Error"] = result.message;
-                return View();
+                ModelState.AddModelError("", ex.Message);
+                return View(request);
             }
         }
-           // Download Template
-        public IActionResult DownloadTemplate()
+
+        // ======================= DELETE =======================
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(string id)
         {
-            using (var workbook = new ClosedXML.Excel.XLWorkbook())
+            if (String.IsNullOrEmpty(id))
+                return BadRequest("Mã nhân viên không được để trống.");
+
+            try
             {
-                var worksheet = workbook.Worksheets.Add("NhanVien");
-
-                // Header
-                worksheet.Cell(1, 1).Value = "Mã NV";
-                worksheet.Cell(1, 2).Value = "Họ Tên";
-                worksheet.Cell(1, 3).Value = "Giới Tính";
-                worksheet.Cell(1, 4).Value = "Ngày Sinh";
-                worksheet.Cell(1, 5).Value = "Địa Chỉ";
-                worksheet.Cell(1, 6).Value = "SĐT";
-                worksheet.Cell(1, 7).Value = "Email";
-                worksheet.Cell(1, 8).Value = "CCCD";
-                worksheet.Cell(1, 9).Value = "Ngày Vào Làm";
-
-                // Example data
-                worksheet.Cell(2, 1).Value = "NV001";
-                worksheet.Cell(2, 2).Value = "Nguyễn Văn A";
-                worksheet.Cell(2, 3).Value = "Nam";
-                worksheet.Cell(2, 4).Value = "01/01/1990";
-                worksheet.Cell(2, 5).Value = "Hà Nội";
-                worksheet.Cell(2, 6).Value = "0123456789";
-                worksheet.Cell(2, 7).Value = "nva@example.com";
-                worksheet.Cell(2, 8).Value = "001234567890";
-                worksheet.Cell(2, 9).Value = "01/01/2020";
-
-                // Style
-                var headerRange = worksheet.Range(1, 1, 1, 9);
-                headerRange.Style.Font.Bold = true;
-                headerRange.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightBlue;
-                worksheet.Columns().AdjustToContents();
-
-                using (var stream = new MemoryStream())
-                {
-                    workbook.SaveAs(stream);
-                    var fileName = "Template_NhanVien.xlsx";
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                }
+                var employee = await _nhanVienService.GetById(id);
+                return View(employee);
             }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            try
+            {
+                var result = await _nhanVienService.Delete(id);
+                TempData["SuccessMessage"] = "Xóa nhân viên thành công!";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        // ======================= EXPORT TO EXCEL =======================
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ExportToExcel()
+        {
+            var fileContent = await _nhanVienService.ExportToExcel();
+            return File(fileContent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DanhSachNhanVien.xlsx");
+        }
+
+        // ======================= IMPORT FROM EXCEL =======================
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ImportFromExcel(IFormFile file)
+        {
+            var (success, message, importedCount) = await _nhanVienService.ImportFromExcel(file);
+            TempData[success ? "SuccessMessage" : "ErrorMessage"] = message;
+            return RedirectToAction(nameof(Index));
         }
     }
 }
-

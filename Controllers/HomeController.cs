@@ -1,39 +1,50 @@
-using System.Diagnostics;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using BangLuong.Models;
 using BangLuong.Services;
-using BangLuong.ViewModels;
+using System.Threading.Tasks;
 
 namespace BangLuong.Controllers
 {
+    [Authorize] // Cho tất cả user đã login
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly UserManager<NguoiDung> _userManager;
         private readonly IDashboardService _dashboardService;
 
-        public HomeController(ILogger<HomeController> logger, IDashboardService dashboardService)
+        public HomeController(UserManager<NguoiDung> userManager, IDashboardService dashboardService)
         {
-            _logger = logger;
+            _userManager = userManager;
             _dashboardService = dashboardService;
         }
 
-        public async Task<IActionResult> Index()
+        [Authorize] // mọi role
+        public async Task<IActionResult> Welcome()
         {
-            var dashboardData = await _dashboardService.GetDashboardDataAsync();
-            return View(dashboardData); // Truyền dữ liệu sang view
-        }
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("Login", "NguoiDung");
 
-        public IActionResult Privacy()
-        {
+            var roles = await _userManager.GetRolesAsync(user);
+
+            ViewBag.UserName = user.UserName;
+            ViewBag.Email = user.Email;
+
+            // Admin/Manager redirect tới NguoiDung/Index
+            if (roles.Contains("Admin") || roles.Contains("Manager"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Employee xem Welcome
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> Index()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var data = await _dashboardService.GetDashboardDataAsync();
+            return View(data);
         }
     }
 }

@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BangLuong.Services;
 using static BangLuong.ViewModels.TongHopCongViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BangLuong.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")] 
     public class TongHopCongController : Controller
     {
         private readonly ITongHopCongService _tongHopCongService;

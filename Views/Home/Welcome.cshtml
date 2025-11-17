@@ -1,0 +1,84 @@
+@{
+    ViewData["Title"] = "Chào mừng";
+    // Nếu HomeController gửi ViewBag
+    var userName = ViewBag.UserName as string ?? User.Identity?.Name ?? "Người dùng";
+    var email = ViewBag.Email as string ?? "Chưa cập nhật";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body class="bg-light">
+
+    <div class="container vh-100 d-flex justify-content-center align-items-center">
+        <div class="card shadow p-4" style="max-width: 600px; width: 100%;">
+            
+            <div class="text-center mb-4">
+                <div class="display-1">👋</div>
+                <h1 class="h3">Chào mừng bạn!</h1>
+                <p class="text-primary mb-0">Đã đến với Hệ thống Quản lý Bảng Lương</p>
+            </div>
+
+            <p class="text-secondary text-center mb-4">
+                Chúng tôi rất vui được chào đón bạn. Bạn có thể truy cập phiếu lương cá nhân và xem các thông tin liên quan tại đây.
+            </p>
+
+            <!-- Thông tin user -->
+            <ul class="list-group mb-4">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-user-circle"></i> Tài khoản</span>
+                    <span class="text-primary fw-bold">@userName</span>
+                    <br>
+                    <span><i class="fas fa-envelope"></i> Email</span>
+                    <span class="text-primary fw-bold">@email</span>
+                </li>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-clock"></i> Thời gian</span>
+                    <span class="text-primary fw-bold" id="currentTime"></span>
+                </li>
+            </ul>
+
+            <!-- Quick Links -->
+            <div class="d-grid gap-2 mb-3">
+                <a href="@Url.Action("PhieuLuongCaNhan", "BaoCao")" class="btn btn-outline-primary">
+                    <i class="fas fa-file-invoice-dollar"></i> Phiếu Lương
+                </a>
+            </div>
+
+            <!-- Footer -->
+            <p class="text-center text-muted small mb-0">
+                <i class="fas fa-info-circle"></i> Nếu bạn có bất kỳ thắc mắc nào, vui lòng liên hệ bộ phận Nhân sự.
+            </p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Hiển thị thời gian hiện tại
+        function updateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+            };
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleDateString('vi-VN', options) + ' ' + 
+                now.toLocaleTimeString('vi-VN', { hour12: false });
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
+
+</body>
+</html>

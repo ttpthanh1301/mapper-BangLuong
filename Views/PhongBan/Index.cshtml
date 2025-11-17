@@ -25,6 +25,7 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
+               <th>Mã Phòng Ban</th>
             <th>Tên Phòng Ban</th>
             <th>Mô Tả</th>
             <th>Actions</th>
@@ -34,6 +35,7 @@
         @foreach (var item in Model)
         {
             <tr>
+                      <td>@item.MaPB</td>
                 <td>@item.TenPB</td>
                 <td>@item.MoTa</td>
                 <td>

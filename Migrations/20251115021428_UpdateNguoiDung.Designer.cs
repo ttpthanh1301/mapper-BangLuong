@@ -4,6 +4,7 @@ using BangLuong.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BangLuong.Migrations
 {
     [DbContext(typeof(BangLuongDbContext))]
-    partial class BangLuongDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251115021428_UpdateNguoiDung")]
+    partial class UpdateNguoiDung
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,7 +61,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<DateTime>("NgayBatDau")
                         .HasColumnType("datetime2");
@@ -103,8 +106,8 @@ namespace BangLuong.Migrations
             modelBuilder.Entity("BangLuong.Data.Entities.NhanVien", b =>
                 {
                     b.Property<string>("MaNV")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("CCCD")
                         .HasColumnType("nvarchar(max)");
@@ -137,9 +140,6 @@ namespace BangLuong.Migrations
                     b.Property<DateTime>("NgayVaoLam")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("NguoiDungId")
-                        .HasColumnType("varchar(50)");
-
                     b.Property<string>("SoDienThoai")
                         .HasColumnType("nvarchar(max)");
 
@@ -158,8 +158,6 @@ namespace BangLuong.Migrations
                     b.HasIndex("MaCV");
 
                     b.HasIndex("MaPB");
-
-                    b.HasIndex("NguoiDungId");
 
                     b.ToTable("NhanVien");
                 });
@@ -454,7 +452,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<decimal>("ThucLanh")
                         .HasPrecision(18, 2)
@@ -503,7 +501,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<DateTime>("NgayChamCong")
                         .HasColumnType("datetime2");
@@ -536,7 +534,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<DateTime>("NgayKhenThuong")
                         .HasColumnType("datetime2");
@@ -567,7 +565,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<DateTime>("NgayViPham")
                         .HasColumnType("datetime2");
@@ -594,7 +592,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("MaPC")
                         .IsRequired()
@@ -892,7 +890,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("MoiQuanHe")
                         .IsRequired()
@@ -951,7 +949,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<decimal?>("SoGioTangCaCuoiTuan")
                         .HasPrecision(18, 2)
@@ -1000,13 +998,7 @@ namespace BangLuong.Migrations
                         .WithMany("NhanVien")
                         .HasForeignKey("MaPB");
 
-                    b.HasOne("NguoiDung", "NguoiDung")
-                        .WithMany()
-                        .HasForeignKey("NguoiDungId");
-
                     b.Navigation("ChucVu");
-
-                    b.Navigation("NguoiDung");
 
                     b.Navigation("PhongBan");
                 });
@@ -1141,6 +1133,17 @@ namespace BangLuong.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("NguoiDung", b =>
+                {
+                    b.HasOne("BangLuong.Data.Entities.NhanVien", "NhanVien")
+                        .WithOne("NguoiDung")
+                        .HasForeignKey("NguoiDung", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NhanVien");
+                });
+
             modelBuilder.Entity("NguoiPhuThuoc", b =>
                 {
                     b.HasOne("BangLuong.Data.Entities.NhanVien", "NhanVien")
@@ -1181,6 +1184,8 @@ namespace BangLuong.Migrations
                     b.Navigation("ChiTietPhuCap");
 
                     b.Navigation("HopDong");
+
+                    b.Navigation("NguoiDung");
 
                     b.Navigation("NguoiPhuThuoc");
 

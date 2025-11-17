@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using BangLuong.Services;
 using System.Threading.Tasks;
 using static BangLuong.ViewModels.ChiTietPhuCapViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BangLuong.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")] // Chỉ Admin và Manager truy cập
     public class ChiTietPhuCapController : Controller
     {
         private readonly IChiTietPhuCapService _chiTietPhuCapService;
@@ -28,8 +30,7 @@ namespace BangLuong.Controllers
           string searchString,
           int? pageNumber)
         {
-            int pageSize = 10; // Số bản ghi mỗi trang
-
+            int pageSize = 10;
             var list = await _chiTietPhuCapService.GetAllFilter(sortOrder, currentFilter, searchString, pageNumber, pageSize);
 
             ViewData["CurrentSort"] = sortOrder;
@@ -37,7 +38,6 @@ namespace BangLuong.Controllers
 
             return View(list);
         }
-
 
         public async Task<IActionResult> Details(int id)
         {

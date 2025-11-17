@@ -1,28 +1,115 @@
 @model BangLuong.ViewModels.NguoiDungViewModels.NguoiDungViewModel
 
 @{
-    ViewData["Title"] = "Xóa người dùng";
+    ViewData["Title"] = "Xác Nhận Xóa Người Dùng";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Xác Nhận Xóa
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-warning mb-4" role="alert">
+                        <i class="bi bi-exclamation-circle"></i>
+                        <strong>Cảnh báo!</strong> Bạn sắp xóa người dùng này. Hành động này không thể hoàn tác.
+                    </div>
 
-<h4>Bạn có chắc muốn xóa người dùng này không?</h4>
+                    <!-- User Information -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">Thông Tin Người Dùng:</h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <th style="width: 35%;">Mã NV:</th>
+                                <td>
+                                    <span class="badge bg-info">@Model.MaNV</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Tên Đăng Nhập:</th>
+                                <td>@Model.UserName</td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(Model.Email))
+                                    {
+                                        <a href="mailto:@Model.Email">@Model.Email</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Phân Quyền:</th>
+                                <td>
+                                    @switch(Model.PhanQuyen)
+                                    {
+                                        case "Admin":
+                                            <span class="badge bg-danger">@Model.PhanQuyen</span>
+                                            break;
+                                        case "Manager":
+                                            <span class="badge bg-warning text-dark">@Model.PhanQuyen</span>
+                                            break;
+                                        case "HR":
+                                            <span class="badge bg-primary">@Model.PhanQuyen</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-secondary">@Model.PhanQuyen</span>
+                                            break;
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Trạng Thái:</th>
+                                <td>
+                                    @if (Model.TrangThai == "Active")
+                                    {
+                                        <span class="badge bg-success">@Model.TrangThai</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">@Model.TrangThai</span>
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
 
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">Mã NV</dt>
-        <dd class="col-sm-10">@Model.MaNV</dd>
+                    <!-- Confirmation Question -->
+                    <div class="mb-4 p-3 bg-light rounded">
+                        <p class="mb-0">
+                            <strong>Bạn có chắc chắn muốn xóa người dùng 
+                            <span class="text-danger">@Model.UserName</span> không?</strong>
+                        </p>
+                    </div>
 
-        <dt class="col-sm-2">Phân Quyền</dt>
-        <dd class="col-sm-10">@Model.PhanQuyen</dd>
+                    <!-- Buttons -->
+                    <form asp-action="Delete" asp-controller="NguoiDung" method="post">
+                        <input type="hidden" name="id" value="@Model.MaNV" />
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger flex-grow-1">
+                                <i class="bi bi-trash"></i> Xóa
+                            </button>
+                            <a href="@Url.Action("Index", "NguoiDung")" class="btn btn-secondary flex-grow-1">
+                                <i class="bi bi-x-circle"></i> Hủy
+                            </a>
+                        </div>
+                    </form>
 
-        <dt class="col-sm-2">Trạng Thái</dt>
-        <dd class="col-sm-10">@Model.TrangThai</dd>
-    </dl>
+                    <!-- Info Alert -->
+                    <div class="alert alert-info mt-4" role="alert">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Thông Tin:</strong> Xóa người dùng sẽ xóa tất cả dữ liệu liên quan đến tài khoản này khỏi hệ thống.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-<form asp-action="DeleteConfirmed" method="post">
-    <input type="hidden" asp-for="MaNV"/>
-    <button type="submit" class="btn btn-danger">Xóa</button>
-    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-</form>

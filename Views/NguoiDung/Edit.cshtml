@@ -1,38 +1,128 @@
 @model BangLuong.ViewModels.NguoiDungViewModels.NguoiDungRequest
 
 @{
-    ViewData["Title"] = "Chỉnh sửa người dùng";
+    ViewData["Title"] = "Chỉnh Sửa Thông Tin Người Dùng";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-pencil-square"></i> Chỉnh Sửa Thông Tin Người Dùng
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" asp-controller="NguoiDung" method="post">
+                        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
 
-<form asp-action="Edit" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <!-- Mã Nhân Viên (Read-only) -->
+                        <div class="mb-3">
+                            <label asp-for="MaNV" class="form-label fw-bold">Mã Nhân Viên</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-hash"></i>
+                                </span>
+                                <input asp-for="MaNV" class="form-control" readonly />
+                            </div>
+                            <small class="form-text text-muted">Không thể thay đổi</small>
+                        </div>
 
-    <input type="hidden" asp-for="MaNV"/>
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-envelope"></i>
+                                </span>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="example@email.com" />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
 
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" class="form-control"/>
-        <span asp-validation-for="Password" class="text-danger"></span>
+                        <!-- Mật Khẩu (Optional) -->
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label fw-bold">Mật Khẩu Mới</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-lock"></i>
+                                </span>
+                                <input asp-for="Password" 
+                                       type="password" 
+                                       class="form-control" 
+                                       placeholder="Để trống nếu không thay đổi" />
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="bi bi-eye-slash-fill"></i>
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">Để trống nếu không muốn thay đổi mật khẩu. Tối thiểu 8 ký tự</small>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+
+                    <!-- Phân Quyền -->
+                        <div class="mb-3">
+                            <label asp-for="PhanQuyen" class="form-label fw-bold">Phân Quyền</label>
+                            <select asp-for="PhanQuyen" 
+                                    asp-items="@(new SelectList(new[] { "Admin", "Manager", "Employee", "HR" }, Model.PhanQuyen))" 
+                                    class="form-select">
+                                <option value="">-- Chọn quyền --</option>
+                            </select>
+                            <span asp-validation-for="PhanQuyen" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Trạng Thái -->
+                        <div class="mb-4">
+                            <label asp-for="TrangThai" class="form-label fw-bold">Trạng Thái</label>
+                            <select asp-for="TrangThai" 
+                                    asp-items="@(new SelectList(new[] { "Active", "Inactive" }, Model.TrangThai))" 
+                                    class="form-select">
+                                <option value="">-- Chọn trạng thái --</option>
+                            </select>
+                            <span asp-validation-for="TrangThai" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-warning flex-grow-1">
+                                <i class="bi bi-check-circle"></i> Cập Nhật
+                            </button>
+                            <a href="@Url.Action("Index", "NguoiDung")" class="btn btn-secondary flex-grow-1">
+                                <i class="bi bi-x-circle"></i> Hủy
+                            </a>
+                        </div>
+                    </form>
+
+                    <!-- Info Alert -->
+                    <div class="alert alert-info mt-4" role="alert">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Lưu ý:</strong> Mã nhân viên không thể thay đổi. Nếu bạn để trống trường mật khẩu, mật khẩu hiện tại sẽ được giữ nguyên.
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="PhanQuyen"></label>
-        <input asp-for="PhanQuyen" class="form-control"/>
-        <span asp-validation-for="PhanQuyen" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="TrangThai"></label>
-        <input asp-for="TrangThai" class="form-control"/>
-        <span asp-validation-for="TrangThai" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Lưu</button>
-    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
-</form>
+</div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial"/>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.querySelector('input[name="Password"]');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+    </script>
 }

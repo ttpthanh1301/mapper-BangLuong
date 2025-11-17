@@ -1,102 +1,188 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using BangLuong.Services;
 using static BangLuong.ViewModels.PhongBanViewModels;
 
 namespace BangLuong.Controllers
 {
+    [Authorize] // Bắt buộc đăng nhập cho tất cả action
     public class PhongBanController : Controller
     {
         private readonly IPhongBanService _phongBanService;
+        private readonly UserManager<NguoiDung> _userManager;
 
-        public PhongBanController(IPhongBanService phongBanService)
+        public PhongBanController(
+            IPhongBanService phongBanService,
+            UserManager<NguoiDung> userManager)
         {
             _phongBanService = phongBanService;
+            _userManager = userManager;
         }
 
-        // GET: PhongBan
+        // ======================= INDEX =======================
+        // Chỉ Admin, Manager mới xem danh sách
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Index(
-        string sortOrder,
-        string currentFilter,
-        string searchString,
-        int? pageNumber)
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
-            int pageSize = 10;
-            var list = await _phongBanService.GetAllFilter(sortOrder, currentFilter, searchString, pageNumber, pageSize);
+            try
+            {
+                int pageSize = 10;
+                var list = await _phongBanService.GetAllFilter(sortOrder, currentFilter, searchString, pageNumber, pageSize);
 
-            ViewData["CurrentSort"] = sortOrder;
-            ViewData["CurrentFilter"] = searchString;
+                ViewData["CurrentSort"] = sortOrder;
+                ViewData["CurrentFilter"] = searchString;
 
-            return View(list);
+                return View(list);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Lỗi khi tải danh sách: {ex.Message}";
+                return View(new List<PhongBanViewModel>());
+            }
         }
 
-        // GET: PhongBan/Details/5
+        // ======================= DETAILS =======================
+        // Tất cả user đăng nhập đều xem được chi tiết
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+                return BadRequest("Mã phòng ban không được để trống");
 
-            var phongBan = await _phongBanService.GetById(id);
-            if (phongBan == null) return NotFound();
+            try
+            {
+                var phongBan = await _phongBanService.GetById(id);
+                if (phongBan == null)
+                    return NotFound("Không tìm thấy phòng ban");
 
-            return View(phongBan);
+                return View(phongBan);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
-        // GET: PhongBan/Create
-        public IActionResult Create() => View();
+        // ======================= CREATE GET =======================
+        [Authorize(Roles = "Admin,Manager")]
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-        // POST: PhongBan/Create
+        // ======================= CREATE POST =======================
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create(PhongBanRequest request)
         {
-            if (!ModelState.IsValid) return View(request);
+            if (!ModelState.IsValid)
+                return View(request);
 
-            await _phongBanService.Create(request);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _phongBanService.Create(request);
+                TempData["SuccessMessage"] = "Tạo phòng ban thành công!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(request);
+            }
         }
 
-        // GET: PhongBan/Edit/5
+        // ======================= EDIT GET =======================
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+                return BadRequest("Mã phòng ban không được để trống");
 
-            var phongBan = await _phongBanService.GetById(id);
-            if (phongBan == null) return NotFound();
+            try
+            {
+                var phongBan = await _phongBanService.GetById(id);
+                if (phongBan == null)
+                    return NotFound("Không tìm thấy phòng ban");
 
-            return View(phongBan);
+                return View(phongBan);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
-        // POST: PhongBan/Edit/5
+        // ======================= EDIT POST =======================
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(string id, PhongBanViewModel request)
         {
-            if (id != request.MaPB) return NotFound();
-            if (!ModelState.IsValid) return View(request);
+            if (id != request.MaPB)
+                return BadRequest("Mã phòng ban không khớp");
 
-            await _phongBanService.Update(request);
-            return RedirectToAction(nameof(Index));
+            if (!ModelState.IsValid)
+                return View(request);
+
+            try
+            {
+                await _phongBanService.Update(request);
+                TempData["SuccessMessage"] = "Cập nhật phòng ban thành công!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(request);
+            }
         }
 
-        // GET: PhongBan/Delete/5
+        // ======================= DELETE GET =======================
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+                return BadRequest("Mã phòng ban không được để trống");
 
-            var phongBan = await _phongBanService.GetById(id);
-            if (phongBan == null) return NotFound();
+            try
+            {
+                var phongBan = await _phongBanService.GetById(id);
+                if (phongBan == null)
+                    return NotFound("Không tìm thấy phòng ban");
 
-            return View(phongBan);
+                return View(phongBan);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
-        // POST: PhongBan/Delete/5
+        // ======================= DELETE POST =======================
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            await _phongBanService.Delete(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _phongBanService.Delete(id);
+                TempData["SuccessMessage"] = "Xóa phòng ban thành công!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

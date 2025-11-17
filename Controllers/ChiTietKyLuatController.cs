@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BangLuong.Services;
 using static BangLuong.ViewModels.ChiTietKyLuatViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BangLuong.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")] // Chỉ Admin và Manager mới được truy cập
     public class ChiTietKyLuatController : Controller
     {
         private readonly IChiTietKyLuatService _chiTietKyLuatService;
@@ -22,15 +24,14 @@ namespace BangLuong.Controllers
             _danhMucKyLuatService = danhMucKyLuatService;
         }
 
-        // GET: ChiTietKyLuat
+        // ======================= INDEX =======================
         public async Task<IActionResult> Index(
          string sortOrder,
          string currentFilter,
          string searchString,
          int? pageNumber)
         {
-            int pageSize = 10; // Số bản ghi mỗi trang
-
+            int pageSize = 10;
             var list = await _chiTietKyLuatService.GetAllFilter(sortOrder, currentFilter, searchString, pageNumber, pageSize);
 
             ViewData["CurrentSort"] = sortOrder;
@@ -39,8 +40,7 @@ namespace BangLuong.Controllers
             return View(list);
         }
 
-
-        // GET: ChiTietKyLuat/Details/5
+        // ======================= DETAILS =======================
         public async Task<IActionResult> Details(int id)
         {
             var item = await _chiTietKyLuatService.GetByIdAsync(id);
@@ -48,14 +48,13 @@ namespace BangLuong.Controllers
             return View(item);
         }
 
-        // GET: ChiTietKyLuat/Create
+        // ======================= CREATE =======================
         public async Task<IActionResult> Create()
         {
             await LoadDropdownDataAsync();
             return View();
         }
 
-        // POST: ChiTietKyLuat/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ChiTietKyLuatRequest request)
@@ -70,7 +69,7 @@ namespace BangLuong.Controllers
             return View(request);
         }
 
-        // GET: ChiTietKyLuat/Edit/5
+        // ======================= EDIT =======================
         public async Task<IActionResult> Edit(int id)
         {
             var item = await _chiTietKyLuatService.GetByIdAsync(id);
@@ -80,7 +79,6 @@ namespace BangLuong.Controllers
             return View(item);
         }
 
-        // POST: ChiTietKyLuat/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ChiTietKyLuatViewModel request)
@@ -95,7 +93,7 @@ namespace BangLuong.Controllers
             return View(request);
         }
 
-        // GET: ChiTietKyLuat/Delete/5
+        // ======================= DELETE =======================
         public async Task<IActionResult> Delete(int id)
         {
             var item = await _chiTietKyLuatService.GetByIdAsync(id);
@@ -103,7 +101,6 @@ namespace BangLuong.Controllers
             return View(item);
         }
 
-        // POST: ChiTietKyLuat/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -112,7 +109,7 @@ namespace BangLuong.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ✅ Hàm dùng để nạp dữ liệu dropdown list (dùng service, không dùng DbContext)
+        // ======================= LOAD DROPDOWN =======================
         private async Task LoadDropdownDataAsync(string? selectedMaKL = null, string? selectedMaNV = null)
         {
             var kyLuatList = await _danhMucKyLuatService.GetAllAsync();

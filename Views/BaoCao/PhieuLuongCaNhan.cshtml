@@ -16,21 +16,51 @@
             <!-- Bộ lọc -->
             <form asp-action="PhieuLuongCaNhan" method="get" class="mb-4">
                 <div class="row">
-                    <div class="col-md-4">
-                        <label>Chọn Nhân Viên <span class="text-danger">*</span></label>
-                        <select name="maNV" class="form-control" id="selectNhanVien" required>
-                            <option value="">-- Chọn nhân viên --</option>
-                            @if (ViewBag.DanhSachNhanVien != null)
-                            {
-                                @foreach (BangLuong.ViewModels.NhanVienViewModels.NhanVienViewModel nv in ViewBag.DanhSachNhanVien)
+                    <!-- ✅ Hiển thị Mã NV của người đăng nhập -->
+                    @{
+                        var userRoleClaims = User?.Claims
+                            .Where(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                            .Select(c => c.Value)
+                            .ToList() ?? new List<string>();
+                        
+                        bool isEmployeeOnly = userRoleClaims?.Contains("Employee") == true && 
+                                            userRoleClaims?.Contains("Admin") != true && 
+                                            userRoleClaims?.Contains("Manager") != true;
+                        
+                        string currentUserName = User?.Identity?.Name ?? "";
+                    }
+
+                    @if (isEmployeeOnly)
+                    {
+                        <!-- Employee: Hiển thị text Mã NV của chính mình -->
+                        <div class="col-md-4">
+                            <label>Mã Nhân Viên</label>
+                            <div class="form-control bg-light" style="cursor: default;">
+                                <strong>@currentUserName</strong>
+                            </div>
+                            <input type="hidden" name="maNV" value="@currentUserName" />
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Admin/Manager: Dropdown chọn nhân viên -->
+                        <div class="col-md-4">
+                            <label>Chọn Nhân Viên <span class="text-danger">*</span></label>
+                            <select name="maNV" class="form-control" id="selectNhanVien" required>
+                                <option value="">-- Chọn nhân viên --</option>
+                                @if (ViewBag.DanhSachNhanVien != null)
                                 {
-                                    <option value="@nv.MaNV" selected="@(nv.MaNV == ViewBag.MaNV)">
-                                        @nv.MaNV: @nv.HoTen
-                                    </option>
+                                    @foreach (BangLuong.ViewModels.NhanVienViewModels.NhanVienViewModel nv in ViewBag.DanhSachNhanVien)
+                                    {
+                                        <option value="@nv.MaNV" selected="@(nv.MaNV == ViewBag.MaNV)">
+                                            @nv.MaNV: @nv.HoTen
+                                        </option>
+                                    }
                                 }
-                            }
-                        </select>
-                    </div>
+                            </select>
+                        </div>
+                    }
+
                     <div class="col-md-2">
                         <label>Tháng</label>
                         <select name="thang" class="form-control">

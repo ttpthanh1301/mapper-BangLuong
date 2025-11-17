@@ -1,0 +1,51 @@
+@model string
+
+@{
+    ViewData["Title"] = "Trang Bảo Vệ";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-info text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-shield-check"></i> Trang Bảo Vệ
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <h1 class="bg-info text-white p-3 mb-4">Index</h1>
+                    
+                    <!-- Hiển thị thông điệp -->
+                    <div class="alert alert-success mb-4">
+                        <i class="bi bi-check-circle"></i> @Model
+                    </div>
+
+                    <!-- Thông tin user hiện tại -->
+                    @if (User?.Identity?.IsAuthenticated ?? false)
+                    {
+                        <div class="alert alert-info mb-4">
+                            <strong>Người dùng hiện tại:</strong> @User.Identity.Name
+                        </div>
+
+                        <!-- Logout Button -->
+                        <div class="mt-4">
+                            <a asp-controller="NguoiDung" 
+                               asp-action="Logout" 
+                               class="btn btn-danger">
+                                <i class="bi bi-box-arrow-right"></i> Đăng Xuất
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i> Bạn chưa đăng nhập. 
+                            <a href="@Url.Action("Login", "NguoiDungController")">Đăng nhập tại đây</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

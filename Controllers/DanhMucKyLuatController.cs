@@ -2,9 +2,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BangLuong.Services;
 using static BangLuong.ViewModels.DanhMucKyLuatViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BangLuong.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")] 
+
     public class DanhMucKyLuatController : Controller
     {
         private readonly IDanhMucKyLuatService _danhMucKyLuatService;

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BangLuong.Migrations
 {
     [DbContext(typeof(BangLuongDbContext))]
-    [Migration("20251112125018_dataupdate")]
-    partial class dataupdate
+    [Migration("20251114182058_UpdateTrangThaiToString")]
+    partial class UpdateTrangThaiToString
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

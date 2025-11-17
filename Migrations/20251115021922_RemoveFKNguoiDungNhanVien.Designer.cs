@@ -4,6 +4,7 @@ using BangLuong.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BangLuong.Migrations
 {
     [DbContext(typeof(BangLuongDbContext))]
-    partial class BangLuongDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251115021922_RemoveFKNguoiDungNhanVien")]
+    partial class RemoveFKNguoiDungNhanVien
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

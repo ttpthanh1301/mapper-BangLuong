@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BangLuong.Services;
 using static BangLuong.ViewModels.ChiTietKhenThuongViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BangLuong.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")] // Chỉ Admin và Manager mới được truy cập
     public class ChiTietKhenThuongController : Controller
     {
         private readonly IChiTietKhenThuongService _service;
@@ -22,15 +24,14 @@ namespace BangLuong.Controllers
             _khenThuongService = khenThuongService;
         }
 
-        // GET: ChiTietKhenThuong
+        // ======================= INDEX =======================
         public async Task<IActionResult> Index(
            string sortOrder,
            string currentFilter,
            string searchString,
            int? pageNumber)
         {
-            int pageSize = 10; // Số bản ghi mỗi trang
-
+            int pageSize = 10;
             var list = await _service.GetAllFilter(sortOrder, currentFilter, searchString, pageNumber, pageSize);
 
             ViewData["CurrentSort"] = sortOrder;
@@ -39,18 +40,15 @@ namespace BangLuong.Controllers
             return View(list);
         }
 
-
-        // GET: ChiTietKhenThuong/Details/5
+        // ======================= DETAILS =======================
         public async Task<IActionResult> Details(int id)
         {
             var item = await _service.GetByIdAsync(id);
-            if (item == null)
-                return NotFound();
-
+            if (item == null) return NotFound();
             return View(item);
         }
 
-        // GET: ChiTietKhenThuong/Create
+        // ======================= CREATE =======================
         public async Task<IActionResult> Create()
         {
             var nhanVienList = await _nhanVienService.GetAll();
@@ -62,7 +60,6 @@ namespace BangLuong.Controllers
             return View();
         }
 
-        // POST: ChiTietKhenThuong/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ChiTietKhenThuongRequest request)
@@ -82,12 +79,11 @@ namespace BangLuong.Controllers
             return View(request);
         }
 
-        // GET: ChiTietKhenThuong/Edit/5
+        // ======================= EDIT =======================
         public async Task<IActionResult> Edit(int id)
         {
             var item = await _service.GetByIdAsync(id);
-            if (item == null)
-                return NotFound();
+            if (item == null) return NotFound();
 
             var nhanVienList = await _nhanVienService.GetAll();
             var khenThuongList = await _khenThuongService.GetAllAsync();
@@ -98,7 +94,6 @@ namespace BangLuong.Controllers
             return View(item);
         }
 
-        // POST: ChiTietKhenThuong/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ChiTietKhenThuongViewModel request)
@@ -118,17 +113,15 @@ namespace BangLuong.Controllers
             return View(request);
         }
 
-        // GET: ChiTietKhenThuong/Delete/5
+        // ======================= DELETE =======================
         public async Task<IActionResult> Delete(int id)
         {
             var item = await _service.GetByIdAsync(id);
-            if (item == null)
-                return NotFound();
+            if (item == null) return NotFound();
 
             return View(item);
         }
 
-        // POST: ChiTietKhenThuong/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -2,9 +2,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BangLuong.Services;
 using static BangLuong.ViewModels.ThamSoHeThongViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BangLuong.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")] 
     public class ThamSoHeThongController : Controller
     {
         private readonly IThamSoHeThongService _service;

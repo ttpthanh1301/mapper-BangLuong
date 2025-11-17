@@ -209,6 +209,44 @@
         }
 
         /* ============================================
+           USER DROPDOWN MENU
+           ============================================ */
+        .dropdown-menu-right {
+            min-width: 220px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+        }
+
+        .dropdown-header {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+            padding: 12px 16px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .dropdown-item {
+            padding: 10px 16px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f8ff;
+            color: #4facfe;
+        }
+
+        .dropdown-item.logout {
+            color: #dc3545;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .dropdown-item.logout:hover {
+            background-color: #fff5f5;
+        }
+
+        /* ============================================
            RESPONSIVE
            ============================================ */
         @@media (max-width: 991.98px) {
@@ -231,12 +269,25 @@
                         <i class="fas fa-bars"></i>
                     </a>
                 </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a asp-controller="Home" asp-action="Index" class="nav-link">Trang chủ</a>
-                </li>
-                  <li class="nav-item d-none d-sm-inline-block">
-                    <a  href="/swagger" class="nav-link">Explore APIs</a>
-                </li>
+                <!-- ✅ Chỉ Admin/Manager xem Trang chủ, Secure, Explore APIs -->
+                @{
+                    var navRoleClaims = User?.Claims
+                        .Where(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                        .Select(c => c.Value)
+                        .ToList() ?? new List<string>();
+                    
+                    bool navIsAdminOrManager = navRoleClaims?.Contains("Admin") == true || navRoleClaims?.Contains("Manager") == true;
+                }
+
+                @if (navIsAdminOrManager)
+                {
+                    <li class="nav-item d-none d-sm-inline-block">
+                        <a asp-controller="Home" asp-action="Index" class="nav-link">Trang chủ</a>
+                    </li>
+                    <li class="nav-item d-none d-sm-inline-block">
+                        <a href="/swagger" class="nav-link">Explore APIs</a>
+                    </li>
+                }
             </ul>
 
             <!-- Right navbar links -->
@@ -246,6 +297,32 @@
                         <i class="fas fa-expand-arrows-alt"></i>
                     </a>
                 </li>
+
+                <!-- ✅ USER DROPDOWN MENU -->
+                @if (User?.Identity?.IsAuthenticated ?? false)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i> @User.Identity.Name
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            <div class="dropdown-header">
+                                Tài khoản
+                            </div>
+                            <!-- ✅ Chỉ Admin/Manager xem "Quản lý người dùng" -->
+                            @if (navIsAdminOrManager)
+                            {
+                                <a asp-controller="NguoiDung" asp-action="Index" class="dropdown-item">
+                                    <i class="fas fa-users"></i> Quản lý người dùng
+                                </a>
+                            }
+                            <div class="dropdown-divider"></div>
+                            <a asp-controller="NguoiDung" asp-action="Logout" class="dropdown-item logout">
+                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                            </a>
+                        </div>
+                    </li>
+                }
             </ul>
         </nav>
         <!-- /.navbar -->
@@ -259,13 +336,31 @@
 
             <!-- Sidebar -->
             <div class="sidebar">
+                <!-- ✅ Khai báo biến ở đầu để sử dụng toàn bộ sidebar -->
+                @{
+                    var roleClaims = User?.Claims
+                        .Where(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                        .Select(c => c.Value)
+                        .ToList() ?? new List<string>();
+                    
+                    bool isAdminOrManager = roleClaims?.Contains("Admin") == true || roleClaims?.Contains("Manager") == true;
+                    bool isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+                }
+
                 <!-- Sidebar user panel -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
                         <img src="~/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">Xin chào, Admin</a>
+                        @if (User?.Identity?.IsAuthenticated ?? false)
+                        {
+                            <a href="#" class="d-block">Xin chào, @User.Identity.Name</a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Login", "NguoiDung")" class="d-block">Đăng nhập</a>
+                        }
                     </div>
                 </div>
 
@@ -273,240 +368,245 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-                        <!-- Bảng điều khiển -->
-                        <li class="nav-item">
-                            <a asp-controller="Home" asp-action="Index" class="nav-link active">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>Bảng điều khiển</p>
-                            </a>
-                        </li>
+                        <!-- Bảng điều khiển - Chỉ Admin/Manager -->
+                        @if (isAdminOrManager)
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Home" asp-action="Index" class="nav-link active">
+                                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                                    <p>Bảng điều khiển</p>
+                                </a>
+                            </li>
+                        }
 
                         <!-- Quản lý danh mục -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-users"></i>
-                                <p>
-                                    Quản lý danh mục
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-controller="NhanVien" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Hồ sơ nhân viên</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="HopDong" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Hợp đồng</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="PhongBan" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Phòng ban</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="ChucVu" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Chức vụ</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="NguoiPhuThuoc" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Người phụ thuộc</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="ThamSoHeThong" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Tham số hệ thống</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                        @if (isAdminOrManager)
+                        {
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-users"></i>
+                                    <p>
+                                        Quản lý danh mục
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-controller="NhanVien" asp-action="Index" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Hồ sơ nhân viên</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="HopDong" asp-action="Index" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Hợp đồng</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="PhongBan" asp-action="Index" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Phòng ban</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="ChucVu" asp-action="Index" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Chức vụ</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="NguoiPhuThuoc" asp-action="Index" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Người phụ thuộc</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="ThamSoHeThong" asp-action="Index" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Tham số hệ thống</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
 
                         <!-- Quản lý chấm công -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-clock"></i>
-                                <p>
-                                    Quản lý chấm công
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-controller="ChamCong" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Giờ trình (Chấm công)</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="TongHopCong" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Tổng hợp công</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                        @if (isAdminOrManager)
+                        {
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-clock"></i>
+                                    <p>
+                                        Quản lý chấm công
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-controller="ChamCong" asp-action="Index" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Giờ trình (Chấm công)</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="TongHopCong" asp-action="Index" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Tổng hợp công</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
 
                         <!-- Tính lương -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-calculator"></i>
-                                <p>
-                                    Tính lương
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                
-                                <!-- Phụ cấp -->
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Phụ cấp
-                                            <i class="right fas fa-angle-left"></i>
-                                        </p>
-                                    </a>
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a asp-controller="DanhMucPhuCap" asp-action="Index" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Danh mục phụ cấp</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-controller="ChiTietPhuCap" asp-action="Index" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Chi tiết phụ cấp</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
+                        @if (isAdminOrManager)
+                        {
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-calculator"></i>
+                                    <p>
+                                        Tính lương
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    
+                                    <!-- Phụ cấp -->
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>
+                                                Phụ cấp
+                                                <i class="right fas fa-angle-left"></i>
+                                            </p>
+                                        </a>
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a asp-controller="DanhMucPhuCap" asp-action="Index" class="nav-link">
+                                                    <i class="far fa-dot-circle nav-icon"></i>
+                                                    <p>Danh mục phụ cấp</p>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a asp-controller="ChiTietPhuCap" asp-action="Index" class="nav-link">
+                                                    <i class="far fa-dot-circle nav-icon"></i>
+                                                    <p>Chi tiết phụ cấp</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
 
-                                <!-- Khen thưởng -->
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Khen thưởng
-                                            <i class="right fas fa-angle-left"></i>
-                                        </p>
-                                    </a>
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a asp-controller="DanhMucKhenThuong" asp-action="Index" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Danh mục khen thưởng</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-controller="ChiTietKhenThuong" asp-action="Index" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Chi tiết khen thưởng</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
+                                    <!-- Khen thưởng -->
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>
+                                                Khen thưởng
+                                                <i class="right fas fa-angle-left"></i>
+                                            </p>
+                                        </a>
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a asp-controller="DanhMucKhenThuong" asp-action="Index" class="nav-link">
+                                                    <i class="far fa-dot-circle nav-icon"></i>
+                                                    <p>Danh mục khen thưởng</p>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a asp-controller="ChiTietKhenThuong" asp-action="Index" class="nav-link">
+                                                    <i class="far fa-dot-circle nav-icon"></i>
+                                                    <p>Chi tiết khen thưởng</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
 
-                                <!-- Kỷ luật -->
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Kỷ luật
-                                            <i class="right fas fa-angle-left"></i>
-                                        </p>
-                                    </a>
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a asp-controller="DanhMucKyLuat" asp-action="Index" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Danh mục kỷ luật</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-controller="ChiTietKyLuat" asp-action="Index" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Chi tiết kỷ luật</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
+                                    <!-- Kỷ luật -->
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>
+                                                Kỷ luật
+                                                <i class="right fas fa-angle-left"></i>
+                                            </p>
+                                        </a>
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a asp-controller="DanhMucKyLuat" asp-action="Index" class="nav-link">
+                                                    <i class="far fa-dot-circle nav-icon"></i>
+                                                    <p>Danh mục kỷ luật</p>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a asp-controller="ChiTietKyLuat" asp-action="Index" class="nav-link">
+                                                    <i class="far fa-dot-circle nav-icon"></i>
+                                                    <p>Chi tiết kỷ luật</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
 
-                                <!-- Bảng lương -->
-                                <li class="nav-item">
-                                    <a asp-controller="BangTinhLuong" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Bảng lương</p>
-                                    </a>
-                                </li>
-                                
-                            </ul>
-                        </li>
+                                    <!-- Bảng lương -->
+                                    <li class="nav-item">
+                                        <a asp-controller="BangTinhLuong" asp-action="Index" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Bảng lương</p>
+                                        </a>
+                                    </li>
+                                    
+                                </ul>
+                            </li>
+                        }
 
                         <!-- Báo cáo -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-chart-bar"></i>
-                                <p>
-                                    Báo cáo
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-controller="BaoCao" asp-action="NhanSuTongHop" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Báo cáo tổng hợp nhân sự</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="BaoCao" asp-action="BaoCaoTongCong" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Báo cáo tổng hợp chấm công</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="BaoCao" asp-action="BangLuongChiTiet" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Bảng lương chi tiết tháng</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="BaoCao" asp-action="PhieuLuongCaNhan" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Phiếu lương cá nhân</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                        @if (isAdminOrManager || isAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-chart-bar"></i>
+                                    <p>
+                                        Báo cáo
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <!-- ✅ Chỉ Admin/Manager xem các báo cáo này -->
+                                    @if (isAdminOrManager)
+                                    {
+                                        <li class="nav-item">
+                                            <a asp-controller="BaoCao" asp-action="NhanSuTongHop" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Báo cáo tổng hợp nhân sự</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-controller="BaoCao" asp-action="BaoCaoTongCong" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Báo cáo tổng hợp chấm công</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-controller="BaoCao" asp-action="BangLuongChiTiet" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Bảng lương chi tiết tháng</p>
+                                            </a>
+                                        </li>
+                                    }
 
-                        <!-- Quản lý hệ thống -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-cogs"></i>
-                                <p>
-                                    Quản lý hệ thống
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-controller="NguoiDung" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Tài khoản người dùng</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                                    <!-- ✅ Tất cả user đăng nhập (Admin/Manager/Employee) -->
+                                    @if (isAuthenticated)
+                                    {
+                                        <li class="nav-item">
+                                            <a asp-controller="BaoCao" asp-action="PhieuLuongCaNhan" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Phiếu lương cá nhân</p>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
 
                     </ul>
                 </nav>

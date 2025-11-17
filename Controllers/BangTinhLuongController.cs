@@ -1,98 +1,177 @@
-using BangLuong.Services;
-using BangLuong.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using BangLuong.Services;
 using static BangLuong.ViewModels.BangTinhLuongViewModels;
+using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
-namespace BangLuong.Controllers.Api
+namespace BangLuong.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class BangTinhLuongApiController : ControllerBase
+    [Authorize]
+    public class BangTinhLuongController : Controller
     {
-        private readonly IBangTinhLuongService _service;
+        private readonly IBangTinhLuongService _bangTinhLuongService;
+        private readonly INhanVienService _nhanVienService;
 
-        public BangTinhLuongApiController(IBangTinhLuongService service)
+        public BangTinhLuongController(IBangTinhLuongService bangTinhLuongService, INhanVienService nhanVienService)
         {
-            _service = service;
+            _bangTinhLuongService = bangTinhLuongService;
+            _nhanVienService = nhanVienService;
         }
 
-        // GET: api/BangTinhLuong
-        [HttpGet]
-        public async Task<IActionResult> GetAll(
-            [FromQuery] string? sortOrder,
-            [FromQuery] string? currentFilter,
-            [FromQuery] string? searchString,
-            [FromQuery] int? pageNumber,
-            [FromQuery] int pageSize = 10)
+        // ======================= INDEX =======================
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            var list = await _service.GetAllFilter(
-                sortOrder ?? "",
-                currentFilter ?? "",
-                searchString ?? "",
-                pageNumber,
-                pageSize);
-            return Ok(list);
+            int pageSize = 10;
+            var list = await _bangTinhLuongService.GetAllFilter(sortOrder, currentFilter, searchString, pageNumber, pageSize);
+
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["CurrentFilter"] = searchString;
+
+            return View(list);
         }
 
-        // GET: api/BangTinhLuong/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        // ===================== TÍNH LƯƠNG THEO KỲ (GET) =====================
+        [Authorize(Roles = "Admin,Manager")]
+        public IActionResult TinhLuongTheoKy()
         {
-            var item = await _service.GetByIdAsync(id);
-            if (item == null) return NotFound();
-            return Ok(item);
+            ViewBag.CurrentMonth = DateTime.Now.Month;
+            ViewBag.CurrentYear = DateTime.Now.Year;
+            return View();
         }
 
-        // POST: api/BangTinhLuong
+        // ===================== TÍNH LƯƠNG THEO KỲ (POST) =====================
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] BangTinhLuongRequest request)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            await _service.CreateAsync(request);
-            return CreatedAtAction(nameof(GetById), new { id = request.MaBL }, request);
-        }
-
-        // PUT: api/BangTinhLuong/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] BangTinhLuongViewModel model)
-        {
-            if (id != model.MaBL) return BadRequest("Id không hợp lệ");
-
-            await _service.UpdateAsync(id, model);
-            return Ok(model);
-        }
-
-        // DELETE: api/BangTinhLuong/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _service.DeleteAsync(id);
-            return NoContent();
-        }
-
-        // POST: api/BangTinhLuong/TinhLuong?kyLuongThang=...&kyLuongNam=...
-        [HttpPost("TinhLuong")]
-        public async Task<IActionResult> TinhLuongTheoKy([FromQuery] int kyLuongThang, [FromQuery] int kyLuongNam)
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> TinhLuongTheoKy(int kyLuongThang, int kyLuongNam)
         {
             if (kyLuongThang < 1 || kyLuongThang > 12)
-                return BadRequest("Tháng phải từ 1 đến 12");
+            {
+                ModelState.AddModelError("kyLuongThang", "Tháng phải từ 1 đến 12");
+                return View();
+            }
 
             if (kyLuongNam < 2000 || kyLuongNam > 2100)
-                return BadRequest("Năm phải từ 2000 đến 2100");
+            {
+                ModelState.AddModelError("kyLuongNam", "Năm phải từ 2000 đến 2100");
+                return View();
+            }
+
+            var currentDate = DateTime.Now;
+            var kyLuongDate = new DateTime(kyLuongNam, kyLuongThang, 1);
+            if (kyLuongDate > currentDate.AddMonths(1))
+            {
+                ModelState.AddModelError("", $"Không thể tính lương cho kỳ tương lai (tháng {kyLuongThang}/{kyLuongNam})");
+                return View();
+            }
 
             try
             {
-                var success = await _service.TinhLuongTheoKyAsync(kyLuongThang, kyLuongNam);
-                if (success)
-                    return Ok(new { message = $"✓ Đã tính lương thành công cho kỳ {kyLuongThang}/{kyLuongNam}" });
-                else
-                    return StatusCode(500, new { message = "Có lỗi xảy ra khi tính lương. Vui lòng thử lại." });
+                var result = await _bangTinhLuongService.TinhLuongTheoKyAsync(kyLuongThang, kyLuongNam);
+
+                if (result)
+                {
+                    TempData["SuccessMessage"] = $"✓ Đã tính lương thành công cho kỳ {kyLuongThang}/{kyLuongNam}";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ModelState.AddModelError("", "Có lỗi xảy ra khi tính lương. Vui lòng thử lại.");
+                return View();
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = $"Lỗi: {ex.Message}" });
+                ModelState.AddModelError("", $"Lỗi: {ex.Message}");
+                return View();
             }
+        }
+
+        // ======================= DETAILS =======================
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> Details(int id)
+        {
+            var item = await _bangTinhLuongService.GetByIdAsync(id);
+            if (item == null) return NotFound();
+            return View(item);
+        }
+
+        // ======================= CREATE GET =======================
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> Create()
+        {
+            var nhanVienList = await _nhanVienService.GetAll();
+            ViewData["MaNV"] = new SelectList(nhanVienList, "MaNV", "TenNV");
+            return View();
+        }
+
+        // ======================= CREATE POST =======================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> Create(BangTinhLuongRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                await _bangTinhLuongService.CreateAsync(request);
+                TempData["SuccessMessage"] = "✓ Thêm mới bảng lương thành công";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var nhanVienList = await _nhanVienService.GetAll();
+            ViewData["MaNV"] = new SelectList(nhanVienList, "MaNV", "TenNV", request.MaNV);
+            return View(request);
+        }
+
+        // ======================= EDIT GET =======================
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var item = await _bangTinhLuongService.GetByIdAsync(id);
+            if (item == null) return NotFound();
+
+            var nhanVienList = await _nhanVienService.GetAll();
+            ViewData["MaNV"] = new SelectList(nhanVienList, "MaNV", "TenNV", item.MaNV);
+            return View(item);
+        }
+
+        // ======================= EDIT POST =======================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> Edit(int id, BangTinhLuongViewModel request)
+        {
+            if (ModelState.IsValid)
+            {
+                await _bangTinhLuongService.UpdateAsync(id, request);
+                TempData["SuccessMessage"] = "✓ Cập nhật bảng lương thành công";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var nhanVienList = await _nhanVienService.GetAll();
+            ViewData["MaNV"] = new SelectList(nhanVienList, "MaNV", "TenNV", request.MaNV);
+            return View(request);
+        }
+
+        // ======================= DELETE GET =======================
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _bangTinhLuongService.GetByIdAsync(id);
+            if (item == null) return NotFound();
+            return View(item);
+        }
+
+        // ======================= DELETE POST =======================
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            await _bangTinhLuongService.DeleteAsync(id);
+            TempData["SuccessMessage"] = "✓ Xóa bảng lương thành công";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -7,16 +7,20 @@ public class NguoiDung : IdentityUser
 {
     [Required]
     [MaxLength(50)]
-    public string PhanQuyen { get; set; } = null!;
+    public string PhanQuyen { get; set; } = "Employee";
 
     [Required]
     [MaxLength(50)]
-    public string TrangThai { get; set; } = null!;
+    public string TrangThai { get; set; } = "Active"; // "Active" hoặc "Inactive"
+
+    // XÓA thuộc tính Password - IdentityUser đã có PasswordHash
+    // [Required]
+    // public string Password { get; set; } = null!;
 
     [NotMapped]
     public string MaNV
     {
-        get => Id;   // Id của IdentityUser chính là MaNV
+        get => Id;
         set => Id = value;
     }
 
