@@ -20,19 +20,21 @@ namespace BangLuong.Services
             _mapper = mapper;
         }
         public async Task<PaginatedList<HopDongViewModel>> GetAllFilter(
-    string sortOrder,
-    string currentFilter,
-    string searchString,
-    int? pageNumber,
-    int pageSize)
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber,
+            int pageSize,
+            string? maNV = null) // giá trị mặc định null
         {
-            if (searchString != null)
-                pageNumber = 1;
-            else
-                searchString = currentFilter;
+            if (searchString != null) pageNumber = 1;
+            else searchString = currentFilter;
 
-            var query = from hd in _context.HopDong
-                        select hd;
+            var query = _context.HopDong.AsQueryable();
+
+            // Chỉ lọc theo maNV nếu nhân viên bình thường
+            if (!string.IsNullOrEmpty(maNV))
+                query = query.Where(h => h.MaNV == maNV);
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -57,8 +59,6 @@ namespace BangLuong.Services
 
             return PaginatedList<HopDongViewModel>.Create(viewModels, pageNumber ?? 1, pageSize);
         }
-
-
         public async Task<IEnumerable<HopDongViewModel>> GetAll()
         {
             var list = await _context.HopDong.Include(h => h.NhanVien).ToListAsync();

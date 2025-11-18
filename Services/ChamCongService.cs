@@ -19,21 +19,23 @@ namespace BangLuong.Services
             _context = context;
             _mapper = mapper;
         }
+
+        // ✅ SỬA LẠI LOGIC PHÂN TRANG ĐÚNG
         public async Task<PaginatedList<ChamCongViewModel>> GetAllFilter(
-    string sortOrder,
-    string currentFilter,
-    string searchString,
-    int? pageNumber,
-    int pageSize)
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber,
+            int pageSize)
         {
-            if (searchString != null)
-                pageNumber = 1;
-            else
-                searchString = currentFilter;
+            // ✅ BỎ LOGIC NÀY ĐI - Controller đã xử lý rồi
+            // Chỉ cần dùng searchString được truyền vào
+            
+            var query = _context.ChamCong
+                .Include(cc => cc.NhanVien) // ✅ Include để hiển thị thông tin nhân viên
+                .AsQueryable();
 
-            var query = from cc in _context.ChamCong
-                        select cc;
-
+            // ✅ Filter theo searchString
             if (!string.IsNullOrEmpty(searchString))
             {
                 query = query.Where(cc =>
@@ -42,20 +44,32 @@ namespace BangLuong.Services
                 );
             }
 
+            // ✅ Sorting
             query = sortOrder switch
             {
                 "date_desc" => query.OrderByDescending(cc => cc.NgayChamCong),
                 "date" => query.OrderBy(cc => cc.NgayChamCong),
                 "overtime_desc" => query.OrderByDescending(cc => cc.SoGioTangCa),
-                _ => query.OrderBy(cc => cc.NgayChamCong)
+                "overtime" => query.OrderBy(cc => cc.SoGioTangCa),
+                _ => query.OrderByDescending(cc => cc.NgayChamCong) // Mặc định: mới nhất lên đầu
             };
 
-            var list = await query.ToListAsync();
-            var viewModels = _mapper.Map<IEnumerable<ChamCongViewModel>>(list);
-
-            return PaginatedList<ChamCongViewModel>.Create(viewModels, pageNumber ?? 1, pageSize);
+            // ✅ QUAN TRỌNG: Dùng CreateAsync thay vì Create
+            // Để tận dụng IQueryable và phân trang hiệu quả
+            return await PaginatedList<ChamCongViewModel>.CreateAsync(
+                query.Select(cc => new ChamCongViewModel
+                {
+                    MaCC = cc.MaCC,
+                    MaNV = cc.MaNV,
+                    NgayChamCong = cc.NgayChamCong,
+                    GioVao = cc.GioVao,
+                    GioRa = cc.GioRa,
+                    SoGioTangCa = cc.SoGioTangCa
+                }),
+                pageNumber ?? 1,
+                pageSize
+            );
         }
-
 
         public async Task<IEnumerable<ChamCongViewModel>> GetAll()
         {

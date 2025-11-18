@@ -1,103 +1,225 @@
-@model BangLuong.ViewModels.NhanVienViewModels.NhanVienRequest;
+@model BangLuong.ViewModels.NhanVienViewModels.NhanVienRequest
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Thêm Nhân Viên";
 }
 
-<h1>Create</h1>
-
-<h4>NhanVien</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="MaNV" class="control-label"></label>
-                <input asp-for="MaNV" class="form-control" />
-                <span asp-validation-for="MaNV" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="HoTen" class="control-label"></label>
-                <input asp-for="HoTen" class="form-control" />
-                <span asp-validation-for="HoTen" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NgaySinh" class="control-label"></label>
-                <input asp-for="NgaySinh" class="form-control" />
-                <span asp-validation-for="NgaySinh" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="GioiTinh" class="control-label"></label>
-                <input asp-for="GioiTinh" class="form-control" />
-                <span asp-validation-for="GioiTinh" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CCCD" class="control-label"></label>
-                <input asp-for="CCCD" class="form-control" />
-                <span asp-validation-for="CCCD" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DiaChi" class="control-label"></label>
-                <input asp-for="DiaChi" class="form-control" />
-                <span asp-validation-for="DiaChi" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SoDienThoai" class="control-label"></label>
-                <input asp-for="SoDienThoai" class="form-control" />
-                <span asp-validation-for="SoDienThoai" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaSoThue" class="control-label"></label>
-                <input asp-for="MaSoThue" class="form-control" />
-                <span asp-validation-for="MaSoThue" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TaiKhoanNganHang" class="control-label"></label>
-                <input asp-for="TaiKhoanNganHang" class="form-control" />
-                <span asp-validation-for="TaiKhoanNganHang" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TenNganHang" class="control-label"></label>
-                <input asp-for="TenNganHang" class="form-control" />
-                <span asp-validation-for="TenNganHang" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NgayVaoLam" class="control-label"></label>
-                <input asp-for="NgayVaoLam" class="form-control" />
-                <span asp-validation-for="NgayVaoLam" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TrangThai" class="control-label"></label>
-                <input asp-for="TrangThai" class="form-control" />
-                <span asp-validation-for="TrangThai" class="text-danger"></span>
-            </div>
-              <div class="form-group">
-                <label asp-for="MaPB" class="control-label"></label>
-                <select asp-for="MaPB" class ="form-control" asp-items="ViewBag.MaPB">
-                    <option value="">-- Select Phong Ban --</option>
-                    </select>
-            </div>
-               <div class="form-group">
-                <label asp-for="MaCV" class="control-label"></label>
-                <select asp-for="MaCV" class ="form-control" asp-items="ViewBag.MaCV">
-                    <option value="">-- Select Chuc vu --</option>
-                    </select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-center">
+                <i class="fas fa-user-plus text-success"></i> Thêm Nhân Viên Mới
+            </h1>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <!-- Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> Thông tin nhân viên
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <!-- Row 1: Mã NV, Họ Tên, Giới Tính -->
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="MaNV" class="font-weight-bold">
+                                        <i class="fas fa-id-card text-primary"></i> @Html.DisplayNameFor(m => m.MaNV)
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="MaNV" class="form-control" placeholder="Ví dụ: NV001" />
+                                    <span asp-validation-for="MaNV" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label asp-for="HoTen" class="font-weight-bold">
+                                        <i class="fas fa-user text-primary"></i> @Html.DisplayNameFor(m => m.HoTen)
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="HoTen" class="form-control" placeholder="Nhập họ tên đầy đủ" />
+                                    <span asp-validation-for="HoTen" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="GioiTinh" class="font-weight-bold">
+                                        <i class="fas fa-venus-mars text-primary"></i> @Html.DisplayNameFor(m => m.GioiTinh)
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="GioiTinh" class="form-control">
+                                        <option value="">-- Chọn giới tính --</option>
+                                        <option value="Nam">Nam</option>
+                                        <option value="Nữ">Nữ</option>
+                                    </select>
+                                    <span asp-validation-for="GioiTinh" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Ngày Sinh, CCCD, SĐT -->
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="NgaySinh" class="font-weight-bold">
+                                        <i class="far fa-calendar-alt text-primary"></i> @Html.DisplayNameFor(m => m.NgaySinh)
+                                    </label>
+                                    <input asp-for="NgaySinh" type="date" class="form-control" />
+                                    <span asp-validation-for="NgaySinh" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="CCCD" class="font-weight-bold">
+                                        <i class="fas fa-id-card-alt text-primary"></i> @Html.DisplayNameFor(m => m.CCCD)
+                                    </label>
+                                    <input asp-for="CCCD" class="form-control" placeholder="Số CCCD" />
+                                    <span asp-validation-for="CCCD" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="SoDienThoai" class="font-weight-bold">
+                                        <i class="fas fa-phone text-primary"></i> @Html.DisplayNameFor(m => m.SoDienThoai)
+                                    </label>
+                                    <input asp-for="SoDienThoai" class="form-control" placeholder="Số điện thoại" />
+                                    <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Email, Địa Chỉ -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Email" class="font-weight-bold">
+                                        <i class="fas fa-envelope text-primary"></i> @Html.DisplayNameFor(m => m.Email)
+                                    </label>
+                                    <input asp-for="Email" type="email" class="form-control" placeholder="example@email.com" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="DiaChi" class="font-weight-bold">
+                                        <i class="fas fa-map-marker-alt text-primary"></i> @Html.DisplayNameFor(m => m.DiaChi)
+                                    </label>
+                                    <input asp-for="DiaChi" class="form-control" placeholder="Địa chỉ đầy đủ" />
+                                    <span asp-validation-for="DiaChi" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 4: Ngân Hàng -->
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="TenNganHang" class="font-weight-bold">
+                                        <i class="fas fa-university text-primary"></i> @Html.DisplayNameFor(m => m.TenNganHang)
+                                    </label>
+                                    <input asp-for="TenNganHang" class="form-control" placeholder="Tên ngân hàng" />
+                                    <span asp-validation-for="TenNganHang" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="TaiKhoanNganHang" class="font-weight-bold">
+                                        <i class="fas fa-credit-card text-primary"></i> @Html.DisplayNameFor(m => m.TaiKhoanNganHang)
+                                    </label>
+                                    <input asp-for="TaiKhoanNganHang" class="form-control" placeholder="Số tài khoản" />
+                                    <span asp-validation-for="TaiKhoanNganHang" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="MaSoThue" class="font-weight-bold">
+                                        <i class="fas fa-file-invoice text-primary"></i> @Html.DisplayNameFor(m => m.MaSoThue)
+                                    </label>
+                                    <input asp-for="MaSoThue" class="form-control" placeholder="Mã số thuế" />
+                                    <span asp-validation-for="MaSoThue" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 5: Ngày Vào Làm, Trạng Thái -->
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="NgayVaoLam" class="font-weight-bold">
+                                        <i class="far fa-calendar-check text-primary"></i> @Html.DisplayNameFor(m => m.NgayVaoLam)
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="NgayVaoLam" type="date" class="form-control" />
+                                    <span asp-validation-for="NgayVaoLam" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="TrangThai" class="font-weight-bold">
+                                        <i class="fas fa-toggle-on text-primary"></i> @Html.DisplayNameFor(m => m.TrangThai)
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="TrangThai" class="form-control">
+                                        <option value="">-- Chọn trạng thái --</option>
+                                        <option value="Đang làm việc">Đang làm việc</option>
+                                        <option value="Nghỉ việc">Nghỉ việc</option>
+                                        <option value="Tạm nghỉ">Tạm nghỉ</option>
+                                    </select>
+                                    <span asp-validation-for="TrangThai" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 6: Phòng Ban, Chức Vụ -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="MaPB" class="font-weight-bold">
+                                        <i class="fas fa-building text-primary"></i> Phòng ban
+                                    </label>
+                                    <select asp-for="MaPB" class="form-control" asp-items="ViewBag.MaPB">
+                                        <option value="">-- Chọn phòng ban --</option>
+                                    </select>
+                                    <span asp-validation-for="MaPB" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="MaCV" class="font-weight-bold">
+                                        <i class="fas fa-user-tie text-primary"></i> Chức vụ
+                                    </label>
+                                    <select asp-for="MaCV" class="form-control" asp-items="ViewBag.MaCV">
+                                        <option value="">-- Chọn chức vụ --</option>
+                                    </select>
+                                    <span asp-validation-for="MaCV" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Action Buttons -->
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-success btn-lg px-5">
+                                <i class="fas fa-save"></i> Lưu Thông Tin
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary btn-lg px-5 ml-2">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

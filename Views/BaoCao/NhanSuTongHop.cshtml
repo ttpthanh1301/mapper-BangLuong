@@ -2,15 +2,43 @@
 
 @{
     ViewData["Title"] = "Báo Cáo Nhân Sự Tổng Hợp";
+    var danhSachPhongBan = ViewBag.DanhSachPhongBan as List<string> ?? new List<string>();
+    var selectedPhongBan = ViewBag.PhongBan as string ?? "";
+    var thang = ViewBag.Thang ?? DateTime.Now.Month;
+    var nam = ViewBag.Nam ?? DateTime.Now.Year;
 }
 
+<!-- ================= FORM LỌC ================= -->
+<form method="get" asp-action="NhanSuTongHop" class="form-inline mb-3">
+    <div class="form-group mr-2">
+        <label for="phongBan" class="mr-2">Phòng ban:</label>
+        <select id="phongBan" name="phongBan" class="form-control">
+            <option value="">-- Tất cả --</option>
+            @foreach (var pb in danhSachPhongBan)
+            {
+                <option value="@pb" selected="@(pb == selectedPhongBan ? "selected" : null)">@pb</option>
+            }
+        </select>
+    </div>
+    <div class="form-group mr-2">
+        <label for="thang" class="mr-2">Tháng:</label>
+        <input type="number" id="thang" name="thang" class="form-control" value="@thang" min="1" max="12" />
+    </div>
+    <div class="form-group mr-2">
+        <label for="nam" class="mr-2">Năm:</label>
+        <input type="number" id="nam" name="nam" class="form-control" value="@nam" min="2000" max="2100" />
+    </div>
+    <button type="submit" class="btn btn-primary">Lọc</button>
+</form>
+
+<!-- ================= NỘI DUNG BÁO CÁO ================= -->
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h4 class="m-0 font-weight-bold text-info">
                 <i class="fas fa-users"></i> Báo Cáo Nhân Sự Tổng Hợp
             </h4>
-            @if (Model != null && Model.Any())
+            @if (Model?.Any() == true)
             {
                 <button type="button" class="btn btn-success" onclick="exportExcel()">
                     <i class="fas fa-file-excel"></i> Xuất Excel
@@ -19,8 +47,9 @@
         </div>
         
         <div class="card-body">
-            @if (Model != null && Model.Any())
+            @if (Model?.Any() == true)
             {
+                <!-- Tổng số nhân viên & ngày xuất -->
                 <div class="alert alert-info mb-3">
                     <div class="row">
                         <div class="col-md-6">
@@ -32,10 +61,11 @@
                     </div>
                 </div>
 
-                <!-- Thống kê nhanh -->
+                <!-- Thống kê nhanh theo phòng ban -->
                 <div class="row mb-3">
                     @{
-                        var thongKe = Model.GroupBy(x => x.PhongBan).Select(g => new { PhongBan = g.Key, SoLuong = g.Count() });
+                        var thongKe = Model.GroupBy(x => x.PhongBan)
+                                           .Select(g => new { PhongBan = g.Key ?? "Không xác định", SoLuong = g.Count() });
                     }
                     @foreach (var item in thongKe)
                     {
@@ -86,7 +116,7 @@
                             }
                             @foreach (var item in Model.OrderBy(x => x.PhongBan).ThenBy(x => x.HoTen))
                             {
-                                @if (currentPhongBan != item.PhongBan && !string.IsNullOrEmpty(item.PhongBan))
+                                if (currentPhongBan != item.PhongBan && !string.IsNullOrEmpty(item.PhongBan))
                                 {
                                     currentPhongBan = item.PhongBan;
                                     <tr class="table-info font-weight-bold">
@@ -105,14 +135,9 @@
                                     <td class="text-center">@item.ThamNienNam?.ToString("0.0")</td>
                                     <td>@item.LoaiHopDong</td>
                                     <td>
-                                        @if (item.TrangThaiHopDong == "Đang hiệu lực")
-                                        {
-                                            <span class="badge badge-success">@item.TrangThaiHopDong</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge badge-secondary">@item.TrangThaiHopDong</span>
-                                        }
+                                        <span class="badge @(item.TrangThaiHopDong == "Đang hiệu lực" ? "badge-success" : "badge-secondary")">
+                                            @item.TrangThaiHopDong
+                                        </span>
                                     </td>
                                     <td>@item.Email</td>
                                     <td>@item.SoDienThoai</td>
@@ -139,7 +164,19 @@
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = '@Url.Action("ExportNhanSu", "BaoCao")';
-            
+
+            const phongBan = document.getElementById('phongBan').value;
+            const thang = document.getElementById('thang').value;
+            const nam = document.getElementById('nam').value;
+
+            ['phongBan', 'thang', 'nam'].forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = id;
+                input.value = (id === 'phongBan') ? phongBan : (id === 'thang' ? thang : nam);
+                form.appendChild(input);
+            });
+
             document.body.appendChild(form);
             form.submit();
             document.body.removeChild(form);

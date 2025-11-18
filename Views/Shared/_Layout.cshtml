@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
 
     @RenderSection("Styles", required: false)
-    
+
     <style>
         body {
             font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -103,7 +103,7 @@
         }
 
         /* Menu mở */
-        .nav-item.menu-open > .nav-link {
+        .nav-item.menu-open>.nav-link {
             background: rgba(79, 172, 254, 0.1) !important;
             color: #4facfe !important;
         }
@@ -113,12 +113,12 @@
             padding-left: 1rem;
         }
 
-        .nav-treeview > .nav-item > .nav-link {
+        .nav-treeview>.nav-item>.nav-link {
             padding: 8px 16px 8px 35px;
             font-size: 13px;
         }
 
-        .nav-treeview .nav-treeview > .nav-item > .nav-link {
+        .nav-treeview .nav-treeview>.nav-item>.nav-link {
             padding-left: 50px;
             font-size: 13px;
         }
@@ -137,7 +137,7 @@
             transition: transform 0.3s ease;
         }
 
-        .nav-item.menu-open > .nav-link > .right {
+        .nav-item.menu-open>.nav-link>.right {
             transform: rotate(-90deg);
         }
 
@@ -272,11 +272,12 @@
                 <!-- ✅ Chỉ Admin/Manager xem Trang chủ, Secure, Explore APIs -->
                 @{
                     var navRoleClaims = User?.Claims
-                        .Where(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
-                        .Select(c => c.Value)
-                        .ToList() ?? new List<string>();
-                    
-                    bool navIsAdminOrManager = navRoleClaims?.Contains("Admin") == true || navRoleClaims?.Contains("Manager") == true;
+                    .Where(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                    .Select(c => c.Value)
+                    .ToList() ?? new List<string>();
+
+                    bool navIsAdminOrManager = navRoleClaims?.Contains("Admin") == true ||
+                    navRoleClaims?.Contains("Manager") == true;
                 }
 
                 @if (navIsAdminOrManager)
@@ -302,7 +303,8 @@
                 @if (User?.Identity?.IsAuthenticated ?? false)
                 {
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-user-circle"></i> @User.Identity.Name
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
@@ -339,11 +341,12 @@
                 <!-- ✅ Khai báo biến ở đầu để sử dụng toàn bộ sidebar -->
                 @{
                     var roleClaims = User?.Claims
-                        .Where(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
-                        .Select(c => c.Value)
-                        .ToList() ?? new List<string>();
-                    
-                    bool isAdminOrManager = roleClaims?.Contains("Admin") == true || roleClaims?.Contains("Manager") == true;
+                    .Where(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                    .Select(c => c.Value)
+                    .ToList() ?? new List<string>();
+
+                    bool isAdminOrManager = roleClaims?.Contains("Admin") == true || roleClaims?.Contains("Manager") ==
+                    true;
                     bool isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
                 }
 
@@ -366,7 +369,8 @@
 
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
 
                         <!-- Bảng điều khiển - Chỉ Admin/Manager -->
                         @if (isAdminOrManager)
@@ -379,84 +383,119 @@
                             </li>
                         }
 
-                        <!-- Quản lý danh mục -->
-                        @if (isAdminOrManager)
+                        <!-- Hồ sơ của bạn hoặc Quản lý danh mục cho Admin/Manager -->
+                        @if (isAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-users"></i>
-                                    <p>
-                                        Quản lý danh mục
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a asp-controller="NhanVien" asp-action="Index" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Hồ sơ nhân viên</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a asp-controller="HopDong" asp-action="Index" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Hợp đồng</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a asp-controller="PhongBan" asp-action="Index" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Phòng ban</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a asp-controller="ChucVu" asp-action="Index" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Chức vụ</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a asp-controller="NguoiPhuThuoc" asp-action="Index" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Người phụ thuộc</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a asp-controller="ThamSoHeThong" asp-action="Index" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Tham số hệ thống</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            @if (User!.IsInRole("Employee"))
+                            {
+                                <!-- Chỉ nhân viên bình thường -->
+                                <li class="nav-item">
+                                    <a asp-controller="NhanVien" asp-action="Index" class="nav-link">
+                                        <i class="nav-icon fas fa-user"></i>
+                                        <p>Thông tin của bạn</p>
+                                    </a>
+                                </li>
+                                          <!-- Chỉ nhân viên bình thường -->
+                                <li class="nav-item">
+                                    <a asp-controller="HopDong" asp-action="Index" class="nav-link">
+                                        <i class="nav-icon fas fa-file-contract"></i>
+                                        <p>Hợp đồng của bạn</p>
+                                    </a>
+                                </li>
+                            }
+                            else if (isAdminOrManager)
+                            {
+                                <!-- Admin/Manager vẫn hiển thị toàn bộ Quản lý danh mục -->
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-users"></i>
+                                        <p>
+                                            Quản lý danh mục
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a asp-controller="NhanVien" asp-action="Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Hồ sơ nhân viên</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-controller="HopDong" asp-action="Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Hợp đồng</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-controller="PhongBan" asp-action="Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Phòng ban</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-controller="ChucVu" asp-action="Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Chức vụ</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-controller="NguoiPhuThuoc" asp-action="Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Người phụ thuộc</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-controller="ThamSoHeThong" asp-action="Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Tham số hệ thống</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
                         }
 
-                        <!-- Quản lý chấm công -->
-                        @if (isAdminOrManager)
+                        <!-- ✅ Quản lý chấm công -->
+                        @if (isAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-clock"></i>
-                                    <p>
-                                        Quản lý chấm công
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a asp-controller="ChamCong" asp-action="Index" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Giờ trình (Chấm công)</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a asp-controller="TongHopCong" asp-action="Index" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Tổng hợp công</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            @if (isAdminOrManager)
+                            {
+                                <!-- Admin/Manager: Hiển thị menu đầy đủ -->
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-clock"></i>
+                                        <p>
+                                            Quản lý chấm công
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a asp-controller="ChamCong" asp-action="Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Giờ trình (Chấm công)</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-controller="TongHopCong" asp-action="Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Tổng hợp công</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                <!-- Nhân viên: chỉ thấy lịch sử chấm công -->
+                                <li class="nav-item">
+                                    <a asp-controller="ChamCong" asp-action="Index" class="nav-link">
+                                        <i class="nav-icon fas fa-clock"></i>
+                                        <p>Lịch sử chấm công</p>
+                                    </a>
+                                </li>
+                            }
                         }
 
                         <!-- Tính lương -->
@@ -471,7 +510,7 @@
                                     </p>
                                 </a>
                                 <ul class="nav nav-treeview">
-                                    
+
                                     <!-- Phụ cấp -->
                                     <li class="nav-item">
                                         <a href="#" class="nav-link">
@@ -554,26 +593,25 @@
                                             <p>Bảng lương</p>
                                         </a>
                                     </li>
-                                    
+
                                 </ul>
                             </li>
                         }
-
                         <!-- Báo cáo -->
-                        @if (isAdminOrManager || isAuthenticated)
+                        @if (isAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-chart-bar"></i>
-                                    <p>
-                                        Báo cáo
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <!-- ✅ Chỉ Admin/Manager xem các báo cáo này -->
-                                    @if (isAdminOrManager)
-                                    {
+                            @if (isAdminOrManager)
+                            {
+                                <!-- Admin/Manager: Hiển thị toàn bộ menu Báo cáo -->
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-chart-bar"></i>
+                                        <p>
+                                            Báo cáo
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
                                         <li class="nav-item">
                                             <a asp-controller="BaoCao" asp-action="NhanSuTongHop" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
@@ -592,20 +630,25 @@
                                                 <p>Bảng lương chi tiết tháng</p>
                                             </a>
                                         </li>
-                                    }
-
-                                    <!-- ✅ Tất cả user đăng nhập (Admin/Manager/Employee) -->
-                                    @if (isAuthenticated)
-                                    {
                                         <li class="nav-item">
                                             <a asp-controller="BaoCao" asp-action="PhieuLuongCaNhan" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Phiếu lương cá nhân</p>
                                             </a>
                                         </li>
-                                    }
-                                </ul>
-                            </li>
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                <!-- Nhân viên: chỉ thấy phiếu lương cá nhân -->
+                                <li class="nav-item">
+                                    <a asp-controller="BaoCao" asp-action="PhieuLuongCaNhan" class="nav-link">
+                                        <i class="nav-icon fas fa-chart-bar"></i>
+                                        <p>Phiếu lương cá nhân</p>
+                                    </a>
+                                </li>
+                            }
                         }
 
                     </ul>
@@ -641,7 +684,7 @@
     <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
     <!-- AdminLTE App -->
     <script src="~/dist/js/adminlte.min.js"></script>
-    
+
     @RenderSection("Scripts", required: false)
 </body>
 

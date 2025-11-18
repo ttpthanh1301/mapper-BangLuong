@@ -122,7 +122,15 @@ namespace BangLuong.ViewModels
 
             [DisplayName("Mã Chức Vụ")]
             public string? MaCV { get; set; }
+
+            // ✅ THÊM 2 THUỘC TÍNH NÀY
+            [DisplayName("Tên Phòng Ban")]
+            public string? TenPhongBan { get; set; }
+
+            [DisplayName("Tên Chức Vụ")]
+            public string? TenChucVu { get; set; }
         }
+
         public class ImportNhanVienRequest
         {
             public IFormFile? File { get; set; }

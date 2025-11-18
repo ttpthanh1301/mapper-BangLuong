@@ -32,12 +32,34 @@ namespace BangLuong.Controllers
             return View();
         }
 
-        // ======================= 1. Báo cáo nhân sự tổng hợp =======================
+        // ======================= Báo cáo nhân sự tổng hợp =======================
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> NhanSuTongHop()
+        public async Task<IActionResult> NhanSuTongHop(string phongBan = "", int thang = 0, int nam = 0)
         {
-            var model = await _service.GetBaoCaoNhanSuTongHopAsync();
-            return View(model);
+            if (thang == 0) thang = DateTime.Now.Month;
+            if (nam == 0) nam = DateTime.Now.Year;
+
+            ViewBag.Thang = thang;
+            ViewBag.Nam = nam;
+            ViewBag.PhongBan = phongBan;
+
+            // Lấy danh sách phòng ban để dropdown
+            ViewBag.DanhSachPhongBan = await _service.GetDanhSachPhongBanAsync();
+
+            // Lấy dữ liệu báo cáo, filter phòng ban nếu có
+            var data = await _service.GetBaoCaoNhanSuTongHopAsync(phongBan);
+
+            return View(data);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> ExportNhanSu(string phongBan = "", int thang = 0, int nam = 0)
+        {
+            var data = await _service.GetBaoCaoNhanSuTongHopAsync(phongBan);
+            var fileBytes = _excelService.ExportBaoCaoNhanSu(data);
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        $"BaoCao_DanhSachNhanVien_{DateTime.Now:yyyyMMdd}.xlsx");
         }
 
         [HttpPost]

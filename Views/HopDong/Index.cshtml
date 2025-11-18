@@ -1,18 +1,21 @@
 @using static BangLuong.ViewModels.HopDongViewModels
-
 @model PaginatedList<HopDongViewModel>
 
 @{
     ViewData["Title"] = "Hợp Đồng";
     var prevDisabledClass = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabledClass = !Model.HasNextPage ? "disabled" : "";
+    bool isAdminOrManager = ViewBag.IsAdminOrManager ?? false;
 }
 
-<h1  class="text-center">Hợp Đồng</h1>
+<h1 class="text-center">Hợp Đồng</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
+@if (isAdminOrManager)
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+}
 
 <form asp-action="Index" method="get" class="mb-3">
     <div class="d-flex">
@@ -22,60 +25,55 @@
     </div>
 </form>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model[0].SoHopDong)</th>
-            <th>@Html.DisplayNameFor(model => model[0].LoaiHD)</th>
-            <th>@Html.DisplayNameFor(model => model[0].NgayBatDau)</th>
-            <th>@Html.DisplayNameFor(model => model[0].NgayKetThuc)</th>
-            <th>@Html.DisplayNameFor(model => model[0].LuongCoBan)</th>
-            <th>@Html.DisplayNameFor(model => model[0].PhuCapAnTrua)</th>
-            <th>@Html.DisplayNameFor(model => model[0].PhuCapXangXe)</th>
-            <th>@Html.DisplayNameFor(model => model[0].PhuCapDienThoai)</th>
-            <th>@Html.DisplayNameFor(model => model[0].PhuCapTrachNhiem)</th>
-            <th>@Html.DisplayNameFor(model => model[0].PhuCapKhac)</th>
-            <th>@Html.DisplayNameFor(model => model[0].TrangThai)</th>
-            <th>@Html.DisplayNameFor(model => model[0].MaNV)</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+@if (Model.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead>
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.SoHopDong)</td>
-                <td>@Html.DisplayFor(modelItem => item.LoaiHD)</td>
-                <td>@Html.DisplayFor(modelItem => item.NgayBatDau)</td>
-                <td>@Html.DisplayFor(modelItem => item.NgayKetThuc)</td>
-                <td>@Html.DisplayFor(modelItem => item.LuongCoBan)</td>
-                <td>@Html.DisplayFor(modelItem => item.PhuCapAnTrua)</td>
-                <td>@Html.DisplayFor(modelItem => item.PhuCapXangXe)</td>
-                <td>@Html.DisplayFor(modelItem => item.PhuCapDienThoai)</td>
-                <td>@Html.DisplayFor(modelItem => item.PhuCapTrachNhiem)</td>
-                <td>@Html.DisplayFor(modelItem => item.PhuCapKhac)</td>
-                <td>@Html.DisplayFor(modelItem => item.TrangThai)</td>
-                <td>@Html.DisplayFor(modelItem => item.MaNV)</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.MaHD" class="btn btn-warning btn-sm" title="Edit">
-                        <i class="fa fa-edit"></i>
-                        Edit
-                    </a> 
-                    <a asp-action="Details" asp-route-id="@item.MaHD" class="btn btn-info btn-sm text-white" title="Details">
-                        <i class="fa fa-info-circle"></i>
-                        Detail
-                    </a> 
-                    <a asp-action="Delete" asp-route-id="@item.MaHD" class="btn btn-danger btn-sm" title="Delete">
-                        <i class="fa fa-trash-alt"></i>
-                        Delete
-                    </a>
-                </td>
+                <th>@Html.DisplayNameFor(model => model[0].SoHopDong)</th>
+                <th>@Html.DisplayNameFor(model => model[0].LoaiHD)</th>
+                <th>@Html.DisplayNameFor(model => model[0].NgayBatDau)</th>
+                <th>@Html.DisplayNameFor(model => model[0].NgayKetThuc)</th>
+                <th>@Html.DisplayNameFor(model => model[0].LuongCoBan)</th>
+                <th>@Html.DisplayNameFor(model => model[0].TrangThai)</th>
+                <th>@Html.DisplayNameFor(model => model[0].MaNV)</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.SoHopDong)</td>
+                    <td>@Html.DisplayFor(modelItem => item.LoaiHD)</td>
+                    <td>@Html.DisplayFor(modelItem => item.NgayBatDau)</td>
+                    <td>@Html.DisplayFor(modelItem => item.NgayKetThuc)</td>
+                    <td>@Html.DisplayFor(modelItem => item.LuongCoBan)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TrangThai)</td>
+                    <td>@Html.DisplayFor(modelItem => item.MaNV)</td>
+                    <td>
+                        <!-- Detail luôn hiện, nhân viên chỉ xem hợp đồng của mình trong Controller -->
+                        <a asp-action="Details" asp-route-id="@item.MaHD" class="btn btn-info btn-sm text-white">Detail</a>
 
-<div class="d-flex justify-content-between">
+                        @if (isAdminOrManager)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.MaHD" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.MaHD" class="btn btn-danger btn-sm">Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info text-center">
+        Không có hợp đồng nào để hiển thị.
+    </div>
+}
+
+<div class="d-flex justify-content-between mt-3">
     <a asp-action="Index" 
        asp-route-pageNumber="@(Model.PageIndex - 1)" 
        asp-route-currentFilter="@ViewData["CurrentFilter"]" 
@@ -83,7 +81,7 @@
         Previous
     </a>
 
-    <span>Page @Model.PageIndex of @Model.TotalPages</span>
+    <span class="align-self-center">Page @Model.PageIndex of @Model.TotalPages</span>
 
     <a asp-action="Index" 
        asp-route-pageNumber="@(Model.PageIndex + 1)" 
