@@ -8,69 +8,98 @@
     var nextDisabledClass = !Model.HasNextPage ? "disabled" : "";
 }
 
-<h1  class="text-center">Danh sách Phòng Ban</h1>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top-4">
+            <h3 class="mb-0"><i class="fa fa-building"></i> Danh sách Phòng Ban</h3>
+            <a asp-action="Create" class="btn btn-success">
+                <i class="fa fa-plus-circle"></i> Thêm mới
+            </a>
+        </div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="SearchString" class="form-control"
+                           placeholder="Tìm kiếm phòng ban..." value="@ViewData["CurrentFilter"]" autocomplete="off" />
+                    <button class="btn btn-secondary" type="submit">
+                        <i class="fa fa-search"></i> Tìm kiếm
+                    </button>
+                </div>
+            </form>
 
-<form asp-action="Index" method="get" class="mb-3">
-    <div class="d-flex">
-        <input class="form-control me-2" placeholder="Search..." 
-               value="@ViewData["CurrentFilter"]" name="SearchString" autocomplete="off" />
-        <button type="submit" class="btn btn-secondary">Search</button>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle">
+                    <thead class="table-primary text-center">
+                        <tr>
+                                 <th style="width: 15%">Mã phòng ban</th> <!-- ✅ Thêm dòng này -->
+                <th style="width: 25%">Tên phòng ban</th>
+                <th style="width: 45%">Mô tả</th>
+                <th style="width: 15%">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">Không có dữ liệu phòng ban.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.MaPB</td>
+                                    <td>@item.TenPB</td>
+                                    <td>@item.MoTa</td>
+                                    <td class="text-center">
+                                        <a asp-action="Edit" asp-route-id="@item.MaPB" 
+                                           class="btn btn-warning btn-sm me-1" title="Sửa">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.MaPB" 
+                                           class="btn btn-info btn-sm me-1 text-white" title="Chi tiết">
+                                            <i class="fa fa-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.MaPB" 
+                                           class="btn btn-danger btn-sm" title="Xóa"
+                                           onclick="return confirm('Bạn có chắc muốn xóa phòng ban này không?');">
+                                            <i class="fa fa-trash-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <a asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   class="btn btn-outline-primary @prevDisabledClass">
+                    <i class="fa fa-chevron-left"></i> Trước
+                </a>
+
+                <span class="fw-semibold">Trang @Model.PageIndex / @Model.TotalPages</span>
+
+                <a asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   class="btn btn-outline-primary @nextDisabledClass">
+                    Sau <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
     </div>
-</form>
-
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-               <th>Mã Phòng Ban</th>
-            <th>Tên Phòng Ban</th>
-            <th>Mô Tả</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                      <td>@item.MaPB</td>
-                <td>@item.TenPB</td>
-                <td>@item.MoTa</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.MaPB" class="btn btn-warning btn-sm" title="Sửa">
-                        <i class="fa fa-edit"></i>
-                        Edit
-                    </a> 
-                    <a asp-action="Details" asp-route-id="@item.MaPB" class="btn btn-info btn-sm text-white" title="Chi tiết">
-                        <i class="fa fa-info-circle"></i>
-                        Detail
-                    </a> 
-                    <a asp-action="Delete" asp-route-id="@item.MaPB" class="btn btn-danger btn-sm" title="Xóa">
-                        <i class="fa fa-trash-alt"></i>
-                        Delete
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<div class="d-flex justify-content-between">
-    <a asp-action="Index" 
-       asp-route-pageNumber="@(Model.PageIndex - 1)" 
-       asp-route-currentFilter="@ViewData["CurrentFilter"]" 
-       class="btn btn-outline-primary @prevDisabledClass">
-        Previous
-    </a>
-
-    <span>Page @Model.PageIndex of @Model.TotalPages</span>
-
-    <a asp-action="Index" 
-       asp-route-pageNumber="@(Model.PageIndex + 1)" 
-       asp-route-currentFilter="@ViewData["CurrentFilter"]" 
-       class="btn btn-outline-primary @nextDisabledClass">
-        Next
-    </a>
 </div>
+
+@section Scripts {
+    <script>
+        // Tooltip Bootstrap 5
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
+    </script>
+}

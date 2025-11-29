@@ -1,99 +1,152 @@
-@model BangLuong.ViewModels.NhanVienViewModels.NhanVienViewModel;
+@model BangLuong.ViewModels.NhanVienViewModels.NhanVienViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh sửa nhân viên";
 }
 
-<h1>Edit</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center rounded-top-4">
+                    <h3 class="mb-0"><i class="fa fa-user-edit"></i> @ViewData["Title"]</h3>
+                </div>
 
-<h4>NhanVien</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="MaNV" />
-            <div class="form-group">
-                <label asp-for="HoTen" class="control-label"></label>
-                <input asp-for="HoTen" class="form-control" />
-                <span asp-validation-for="HoTen" class="text-danger"></span>
+                <div class="card-body p-4">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        @* Trường ẩn MaNV là bắt buộc để POST form Edit *@
+                        <input type="hidden" asp-for="MaNV" />
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label asp-for="MaNV" class="form-label fw-semibold"></label>
+                                @* Hiển thị MaNV nhưng không cho sửa *@
+                                <input asp-for="MaNV" class="form-control" readonly />
+                                <span asp-validation-for="MaNV" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-8">
+                                <label asp-for="HoTen" class="form-label fw-semibold"></label>
+                                <input asp-for="HoTen" class="form-control" placeholder="Nhập họ tên..." />
+                                <span asp-validation-for="HoTen" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="NgaySinh" class="form-label fw-semibold"></label>
+                                @* ✅ Format ngày đúng chuẩn yyyy-MM-dd cho input type="date" *@
+                                <input asp-for="NgaySinh" 
+                                       type="date" 
+                                       class="form-control"
+                                       value="@(Model.NgaySinh?.ToString("yyyy-MM-dd"))" />
+                                <span asp-validation-for="NgaySinh" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="GioiTinh" class="form-label fw-semibold"></label>
+                                <select asp-for="GioiTinh" class="form-select">
+                                    <option value="">-- Chọn giới tính --</option>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                                <span asp-validation-for="GioiTinh" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="CCCD" class="form-label fw-semibold"></label>
+                                <input asp-for="CCCD" class="form-control" placeholder="Nhập CCCD..." />
+                                <span asp-validation-for="CCCD" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="DiaChi" class="form-label fw-semibold"></label>
+                                <input asp-for="DiaChi" class="form-control" placeholder="Nhập địa chỉ..." />
+                                <span asp-validation-for="DiaChi" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label asp-for="SoDienThoai" class="form-label fw-semibold"></label>
+                                <input asp-for="SoDienThoai" class="form-control" placeholder="Số điện thoại..." />
+                                <span asp-validation-for="SoDienThoai" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label asp-for="Email" class="form-label fw-semibold"></label>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="Email..." />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="MaSoThue" class="form-label fw-semibold"></label>
+                                <input asp-for="MaSoThue" class="form-control" placeholder="Mã số thuế..." />
+                                <span asp-validation-for="MaSoThue" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="TaiKhoanNganHang" class="form-label fw-semibold"></label>
+                                <input asp-for="TaiKhoanNganHang" class="form-control" placeholder="Số tài khoản..." />
+                                <span asp-validation-for="TaiKhoanNganHang" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="TenNganHang" class="form-label fw-semibold"></label>
+                                <input asp-for="TenNganHang" class="form-control" placeholder="Tên ngân hàng..." />
+                                <span asp-validation-for="TenNganHang" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="NgayVaoLam" class="form-label fw-semibold"></label>
+                                @* ✅ Format ngày đúng chuẩn yyyy-MM-dd cho input type="date" *@
+                                <input asp-for="NgayVaoLam" 
+                                       type="date" 
+                                       class="form-control"
+                                       value="@(Model.NgayVaoLam.ToString("yyyy-MM-dd"))" />
+                                <span asp-validation-for="NgayVaoLam" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="TrangThai" class="form-label fw-semibold"></label>
+                                <select asp-for="TrangThai" class="form-select">
+                                    <option value="">-- Chọn trạng thái --</option>
+                                    <option value="Đang làm việc">Đang làm việc</option>
+                                    <option value="Nghỉ việc">Nghỉ việc</option>
+                                </select>
+                                <span asp-validation-for="TrangThai" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Phòng Ban</label>
+                                <select asp-for="MaPB" class="form-select" asp-items="ViewBag.MaPB">
+                                    <option value="">-- Chọn phòng ban --</option>
+                                </select>
+                                <span asp-validation-for="MaPB" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Chức Vụ</label>
+                                <select asp-for="MaCV" class="form-select" asp-items="ViewBag.MaCV">
+                                    <option value="">-- Chọn chức vụ --</option>
+                                </select>
+                                <span asp-validation-for="MaCV" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                                <i class="fa fa-arrow-left"></i> Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fa fa-save"></i> Lưu
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="NgaySinh" class="control-label"></label>
-                <input asp-for="NgaySinh" class="form-control" />
-                <span asp-validation-for="NgaySinh" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="GioiTinh" class="control-label"></label>
-                <input asp-for="GioiTinh" class="form-control" />
-                <span asp-validation-for="GioiTinh" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CCCD" class="control-label"></label>
-                <input asp-for="CCCD" class="form-control" />
-                <span asp-validation-for="CCCD" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DiaChi" class="control-label"></label>
-                <input asp-for="DiaChi" class="form-control" />
-                <span asp-validation-for="DiaChi" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SoDienThoai" class="control-label"></label>
-                <input asp-for="SoDienThoai" class="form-control" />
-                <span asp-validation-for="SoDienThoai" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaSoThue" class="control-label"></label>
-                <input asp-for="MaSoThue" class="form-control" />
-                <span asp-validation-for="MaSoThue" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TaiKhoanNganHang" class="control-label"></label>
-                <input asp-for="TaiKhoanNganHang" class="form-control" />
-                <span asp-validation-for="TaiKhoanNganHang" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TenNganHang" class="control-label"></label>
-                <input asp-for="TenNganHang" class="form-control" />
-                <span asp-validation-for="TenNganHang" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NgayVaoLam" class="control-label"></label>
-                <input asp-for="NgayVaoLam" class="form-control" />
-                <span asp-validation-for="NgayVaoLam" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TrangThai" class="control-label"></label>
-                <input asp-for="TrangThai" class="form-control" />
-                <span asp-validation-for="TrangThai" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaPB" class="control-label"></label>
-                <input asp-for="MaPB" class="form-control" />
-                <span asp-validation-for="MaPB" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaCV" class="control-label"></label>
-                <input asp-for="MaCV" class="form-control" />
-                <span asp-validation-for="MaCV" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

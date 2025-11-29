@@ -4,11 +4,10 @@ using BangLuong.Services;
 using static BangLuong.ViewModels.HopDongViewModels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 
 namespace BangLuong.Controllers
 {
-    [Authorize] // Tất cả phải đăng nhập
+    [Authorize]
     public class HopDongController : Controller
     {
         private readonly IHopDongService _hopDongService;
@@ -25,9 +24,8 @@ namespace BangLuong.Controllers
         {
             int pageSize = 10;
             bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
-            string? currentUserMaNV = User.Identity?.Name; // UserName chính là MaNV
+            string? currentUserMaNV = User.Identity?.Name;
 
-            // Nhân viên bình thường mà không có UserName -> không cho xem
             if (!isAdminOrManager && string.IsNullOrEmpty(currentUserMaNV))
                 return Forbid();
 
@@ -41,11 +39,13 @@ namespace BangLuong.Controllers
 
             return View(list);
         }
+
         // ======================= CREATE =======================
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create()
         {
-            ViewData["MaNV"] = new SelectList(await _nhanVienService.GetAll(), "MaNV", "MaNV");
+            var nhanViens = await _nhanVienService.GetAll();
+            ViewData["MaNV"] = new SelectList(nhanViens, "MaNV", "HoTen");
             return View();
         }
 
@@ -56,7 +56,8 @@ namespace BangLuong.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["MaNV"] = new SelectList(await _nhanVienService.GetAll(), "MaNV", "MaNV", request.MaNV);
+                var nhanViens = await _nhanVienService.GetAll();
+                ViewData["MaNV"] = new SelectList(nhanViens, "MaNV", "HoTen", request.MaNV);
                 return View(request);
             }
 
@@ -72,7 +73,26 @@ namespace BangLuong.Controllers
             var item = await _hopDongService.GetById(id);
             if (item == null) return NotFound();
 
-            ViewData["MaNV"] = new SelectList(await _nhanVienService.GetAll(), "MaNV", "MaNV", item.MaNV);
+            // Dropdown Nhân viên
+            var nhanViens = await _nhanVienService.GetAll();
+            ViewData["MaNV"] = new SelectList(nhanViens, "MaNV", "HoTen", item.MaNV);
+
+            // Dropdown Loại hợp đồng
+            ViewBag.ListLoaiHD = new SelectList(new[]
+            {
+        "Thử việc",
+        "Có thời hạn",
+        "Chính thức"
+    }, item.LoaiHD);
+
+            // Dropdown Trạng thái
+            ViewBag.ListTrangThai = new SelectList(new[]
+            {
+        "Đang hiệu lực",
+        "Hết hiệu lực",
+        "Hủy"
+    }, item.TrangThai);
+
             return View(item);
         }
 
@@ -83,7 +103,23 @@ namespace BangLuong.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["MaNV"] = new SelectList(await _nhanVienService.GetAll(), "MaNV", "MaNV", model.MaNV);
+                var nhanViens = await _nhanVienService.GetAll();
+                ViewData["MaNV"] = new SelectList(nhanViens, "MaNV", "HoTen", model.MaNV);
+
+                ViewBag.ListLoaiHD = new SelectList(new[]
+                {
+            "Thử việc",
+            "Có thời hạn",
+            "Chính thức"
+        }, model.LoaiHD);
+
+                ViewBag.ListTrangThai = new SelectList(new[]
+                {
+            "Đang hiệu lực",
+            "Hết hiệu lực",
+            "Hủy"
+        }, model.TrangThai);
+
                 return View(model);
             }
 
@@ -106,8 +142,15 @@ namespace BangLuong.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _hopDongService.Delete(id);
-            TempData["SuccessMessage"] = "Xóa hợp đồng thành công!";
+            try
+            {
+                await _hopDongService.Delete(id);
+                TempData["SuccessMessage"] = "Xóa hợp đồng thành công!";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -119,7 +162,7 @@ namespace BangLuong.Controllers
 
             string? currentUserMaNV = User.Identity?.Name;
             if (!User.IsInRole("Admin") && !User.IsInRole("Manager") && item.MaNV != currentUserMaNV)
-                return Forbid(); // Nhân viên chỉ xem hợp đồng của mình
+                return Forbid();
 
             return View(item);
         }

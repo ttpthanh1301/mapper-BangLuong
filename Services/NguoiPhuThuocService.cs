@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BangLuong.Data;
 using BangLuong.Data.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using static BangLuong.ViewModels.NguoiPhuThuocViewModels;
 
@@ -103,9 +104,23 @@ namespace BangLuong.Services
             return true;
         }
 
+        // Phương thức cũ - trả về string
         public async Task<IEnumerable<string>> GetAllNhanVienIdsAsync()
         {
             return await _context.NhanVien.Select(x => x.MaNV).ToListAsync();
+        }
+
+        // Phương thức mới - trả về SelectListItem với cả tên và mã
+        public async Task<IEnumerable<SelectListItem>> GetAllNhanVienSelectListAsync()
+        {
+            return await _context.NhanVien
+                .Select(x => new SelectListItem
+                {
+                    Value = x.MaNV,
+                    Text = x.HoTen // Hoặc kết hợp: $"{x.HoTen} ({x.MaNV})"
+                })
+                .OrderBy(x => x.Text)
+                .ToListAsync();
         }
     }
 }

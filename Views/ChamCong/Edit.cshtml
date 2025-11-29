@@ -1,52 +1,77 @@
-@model ChamCongViewModels.ChamCongViewModel;
+@model ChamCongViewModels.ChamCongViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh sửa Chấm Công";
 }
 
-<h1>Edit</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-lg border-0 rounded-4">
 
-<h4>ChamCong</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="MaCC" />
-            <div class="form-group">
-                <label asp-for="NgayChamCong" class="control-label"></label>
-                <input asp-for="NgayChamCong" class="form-control" />
-                <span asp-validation-for="NgayChamCong" class="text-danger"></span>
+                <div class="card-header bg-primary text-white text-center rounded-top-4">
+                    <h3 class="mb-0"><i class="fa fa-user-edit"></i> @ViewData["Title"]</h3>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <input type="hidden" asp-for="MaCC" />
+
+                        <div class="mb-3">
+                            <label asp-for="MaCC" class="form-label fw-semibold"></label>
+                            <input asp-for="MaCC" class="form-control" readonly />
+                            <span asp-validation-for="MaCC" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="MaNV" class="form-label fw-semibold"></label>
+                            <input type="hidden" asp-for="MaNV" /> @* Giữ lại trường ẩn này *@
+                            <select asp-for="MaNV" class="form-select" asp-items="ViewBag.MaNV" disabled></select>
+                            <span asp-validation-for="MaNV" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="NgayChamCong" class="form-label fw-semibold"></label>
+                            <input asp-for="NgayChamCong" class="form-control" type="date"/>
+                            <span asp-validation-for="NgayChamCong" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GioVao" class="form-label fw-semibold"></label>
+                                <input asp-for="GioVao" class="form-control" type="time"/>
+                                <span asp-validation-for="GioVao" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GioRa" class="form-label fw-semibold"></label>
+                                <input asp-for="GioRa" class="form-control" type="time"/>
+                                <span asp-validation-for="GioRa" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        @* === SỬA LẠI: BỎ "readonly" VÀ CHÚ THÍCH === *@
+                        <div class="mb-3">
+                            <label asp-for="SoGioTangCa" class="form-label fw-semibold"></label>
+                            <input asp-for="SoGioTangCa" class="form-control" type="number" step="0.5" />
+                            <div class="form-text">Nhập số giờ tăng ca đã được duyệt.</div>
+                            <span asp-validation-for="SoGioTangCa" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                <i class="fa fa-arrow-left"></i> Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fa fa-save"></i> Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="GioVao" class="control-label"></label>
-                <input asp-for="GioVao" class="form-control" />
-                <span asp-validation-for="GioVao" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="GioRa" class="control-label"></label>
-                <input asp-for="GioRa" class="form-control" />
-                <span asp-validation-for="GioRa" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SoGioTangCa" class="control-label"></label>
-                <input asp-for="SoGioTangCa" class="form-control" />
-                <span asp-validation-for="SoGioTangCa" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaNV" class="control-label"></label>
-                <select asp-for="MaNV" class="form-control" asp-items="ViewBag.MaNV"></select>
-                <span asp-validation-for="MaNV" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

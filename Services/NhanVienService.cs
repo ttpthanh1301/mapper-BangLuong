@@ -20,72 +20,93 @@ public class NhanVienService : INhanVienService
     }
     
     // ✅ SỬA LẠI: Dùng IQueryable để phân trang hiệu quả
-public async Task<PaginatedList<NhanVienViewModel>> GetAllFilter(
-    string sortOrder,
-    string currentFilter,
-    string searchString,
-    int? pageNumber,
-    int pageSize)
-{
-    // Join với PhongBan và ChucVu để lấy tên
-    var query = from nv in _context.NhanVien
-                join pb in _context.PhongBan on nv.MaPB equals pb.MaPB into pbGroup
-                from pb in pbGroup.DefaultIfEmpty()
-                join cv in _context.ChucVu on nv.MaCV equals cv.MaCV into cvGroup
-                from cv in cvGroup.DefaultIfEmpty()
-                select new NhanVienViewModel
-                {
-                    MaNV = nv.MaNV,
-                    HoTen = nv.HoTen,
-                    NgaySinh = nv.NgaySinh,
-                    GioiTinh = nv.GioiTinh,
-                    DiaChi = nv.DiaChi,
-                    SoDienThoai = nv.SoDienThoai,
-                    Email = nv.Email,
-                    CCCD = nv.CCCD,
-                    MaSoThue = nv.MaSoThue,
-                    TaiKhoanNganHang = nv.TaiKhoanNganHang,
-                    TenNganHang = nv.TenNganHang,
-                    NgayVaoLam = nv.NgayVaoLam,
-                    TrangThai = nv.TrangThai,
-                    MaPB = nv.MaPB,
-                    TenPhongBan = pb != null ? pb.TenPB : null,
-                    MaCV = nv.MaCV,
-                    TenChucVu = cv != null ? cv.TenCV : null
-                };
-
-    // Filter
-    if (!string.IsNullOrEmpty(searchString))
+    public async Task<PaginatedList<NhanVienViewModel>> GetAllFilter(
+        string sortOrder,
+        string currentFilter,
+        string searchString,
+        int? pageNumber,
+        int pageSize)
     {
-        query = query.Where(s =>
-            s.HoTen.Contains(searchString) ||
-            s.MaNV.Contains(searchString) ||
-            (s.CCCD != null && s.CCCD.Contains(searchString))
+        var query = from nv in _context.NhanVien
+                    join pb in _context.PhongBan on nv.MaPB equals pb.MaPB into pbGroup
+                    from pb in pbGroup.DefaultIfEmpty()
+                    join cv in _context.ChucVu on nv.MaCV equals cv.MaCV into cvGroup
+                    from cv in cvGroup.DefaultIfEmpty()
+                    select new NhanVienViewModel
+                    {
+                        MaNV = nv.MaNV,
+                        HoTen = nv.HoTen,
+                        NgaySinh = nv.NgaySinh,
+                        GioiTinh = nv.GioiTinh,
+                        DiaChi = nv.DiaChi,
+                        SoDienThoai = nv.SoDienThoai,
+                        Email = nv.Email,
+                        CCCD = nv.CCCD,
+                        MaSoThue = nv.MaSoThue,
+                        TaiKhoanNganHang = nv.TaiKhoanNganHang,
+                        TenNganHang = nv.TenNganHang,
+                        NgayVaoLam = nv.NgayVaoLam,
+                        TrangThai = nv.TrangThai,
+                        MaPB = nv.MaPB,
+                        TenPhongBan = pb != null ? pb.TenPB : null,
+                        MaCV = nv.MaCV,
+                        TenChucVu = cv != null ? cv.TenCV : null
+                    };
+
+        // Filter
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            query = query.Where(s =>
+                s.HoTen.Contains(searchString) ||
+                s.MaNV.Contains(searchString) ||
+                (s.CCCD != null && s.CCCD.Contains(searchString))
+            );
+        }
+
+        // ✅ Sorting - Mặc định sắp xếp theo MaNV tăng dần
+        query = sortOrder switch
+        {
+            "manv" => query.OrderBy(s => s.MaNV),
+            "manv_desc" => query.OrderByDescending(s => s.MaNV),
+            "name_desc" => query.OrderByDescending(s => s.HoTen),
+            "date" => query.OrderBy(s => s.NgayVaoLam),
+            "date_desc" => query.OrderByDescending(s => s.NgayVaoLam),
+            _ => query.OrderBy(s => s.MaNV),
+        };
+
+        return await PaginatedList<NhanVienViewModel>.CreateAsync(
+            query.AsQueryable(),
+            pageNumber ?? 1,
+            pageSize
         );
     }
-
-    // Sorting
-    query = sortOrder switch
-    {
-        "name_desc" => query.OrderByDescending(s => s.HoTen),
-        "gender" => query.OrderBy(s => s.GioiTinh),
-        "gender_desc" => query.OrderByDescending(s => s.GioiTinh),
-        "date" => query.OrderBy(s => s.NgayVaoLam),
-        "date_desc" => query.OrderByDescending(s => s.NgayVaoLam),
-        _ => query.OrderBy(s => s.HoTen),
-    };
-
-    // Phân trang
-    return await PaginatedList<NhanVienViewModel>.CreateAsync(
-        query.AsQueryable(),
-        pageNumber ?? 1,
-        pageSize
-    );
-}
-
-
+    
     public async Task<int> Create(NhanVienViewModels.NhanVienRequest request)
     {
+        // ✅ Kiểm tra trùng CCCD
+        if (!string.IsNullOrEmpty(request.CCCD))
+        {
+            var existingCCCD = await _context.NhanVien
+                .AnyAsync(nv => nv.CCCD == request.CCCD);
+            
+            if (existingCCCD)
+            {
+                throw new Exception($"CCCD '{request.CCCD}' đã tồn tại trong hệ thống!");
+            }
+        }
+        
+        // ✅ Kiểm tra trùng Mã số thuế
+        if (!string.IsNullOrEmpty(request.MaSoThue))
+        {
+            var existingMST = await _context.NhanVien
+                .AnyAsync(nv => nv.MaSoThue == request.MaSoThue);
+            
+            if (existingMST)
+            {
+                throw new Exception($"Mã số thuế '{request.MaSoThue}' đã tồn tại trong hệ thống!");
+            }
+        }
+
         var nhanVien = _mapper.Map<NhanVien>(request);
         _context.NhanVien.Add(nhanVien);
         return await _context.SaveChangesAsync();
@@ -125,6 +146,31 @@ public async Task<PaginatedList<NhanVienViewModel>> GetAllFilter(
         {
             throw new Exception("Nhân viên không tồn tại");
         }
+        
+        // ✅ Kiểm tra trùng CCCD (loại trừ chính nhân viên đang sửa)
+        if (!string.IsNullOrEmpty(request.CCCD))
+        {
+            var existingCCCD = await _context.NhanVien
+                .AnyAsync(nv => nv.CCCD == request.CCCD && nv.MaNV != request.MaNV);
+            
+            if (existingCCCD)
+            {
+                throw new Exception($"CCCD '{request.CCCD}' đã được sử dụng bởi nhân viên khác!");
+            }
+        }
+        
+        // ✅ Kiểm tra trùng Mã số thuế (loại trừ chính nhân viên đang sửa)
+        if (!string.IsNullOrEmpty(request.MaSoThue))
+        {
+            var existingMST = await _context.NhanVien
+                .AnyAsync(nv => nv.MaSoThue == request.MaSoThue && nv.MaNV != request.MaNV);
+            
+            if (existingMST)
+            {
+                throw new Exception($"Mã số thuế '{request.MaSoThue}' đã được sử dụng bởi nhân viên khác!");
+            }
+        }
+        
         _context.NhanVien.Update(_mapper.Map<NhanVien>(request));
         return await _context.SaveChangesAsync();
     }

@@ -98,10 +98,10 @@
                                     <td>@item.ChucVu</td>
                                     <td class="text-center">@item.NgayCongChuan.ToString("0.##")</td>
                                     <td class="text-center">@item.NgayCongThucTe?.ToString("0.##")</td>
-                                    <td class="text-center">@item.SoNgayNghiPhep?.ToString("0.##")</td>
-                                    <td class="text-center">@item.SoGioTangCaNgayThuong?.ToString("0.##")</td>
-                                    <td class="text-center">@item.SoGioTangCaCuoiTuan?.ToString("0.##")</td>
-                                    <td class="text-center">@item.SoGioTangCaNgayLe?.ToString("0.##")</td>
+                                    <td class="text-center">@((item.SoNgayNghiPhep == null) ? "0.00" : item.SoNgayNghiPhep.Value.ToString("0.##"))</td>
+                                    <td class="text-center">@((item.SoGioTangCaNgayThuong == null) ? "0.00" : item.SoGioTangCaNgayThuong.Value.ToString("0.##"))</td>
+                                    <td class="text-center">@((item.SoGioTangCaCuoiTuan == null) ? "0.00" : item.SoGioTangCaCuoiTuan.Value.ToString("0.##"))</td>
+                                    <td class="text-center">@((item.SoGioTangCaNgayLe == null) ? "0.00" : item.SoGioTangCaNgayLe.Value.ToString("0.##"))</td>
                                 </tr>
                                 stt++;
                             }

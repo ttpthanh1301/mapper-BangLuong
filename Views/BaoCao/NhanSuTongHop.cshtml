@@ -103,8 +103,6 @@
                                 <th>Chức Vụ</th>
                                 <th>Ngày Vào Làm</th>
                                 <th>Thâm Niên (Năm)</th>
-                                <th>Loại HĐ</th>
-                                <th>Trạng Thái</th>
                                 <th>Email</th>
                                 <th>SĐT</th>
                             </tr>
@@ -133,12 +131,6 @@
                                     <td>@item.ChucVu</td>
                                     <td class="text-center">@item.NgayVaoLam?.ToString("dd/MM/yyyy")</td>
                                     <td class="text-center">@item.ThamNienNam?.ToString("0.0")</td>
-                                    <td>@item.LoaiHopDong</td>
-                                    <td>
-                                        <span class="badge @(item.TrangThaiHopDong == "Đang hiệu lực" ? "badge-success" : "badge-secondary")">
-                                            @item.TrangThaiHopDong
-                                        </span>
-                                    </td>
                                     <td>@item.Email</td>
                                     <td>@item.SoDienThoai</td>
                                 </tr>

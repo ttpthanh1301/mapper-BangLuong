@@ -1,55 +1,80 @@
 @model NguoiPhuThuocViewModels.NguoiPhuThuocRequest
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Thêm mới Người Phụ Thuộc";
 }
 
-<h1>Create</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-lg border-0 rounded-4">
 
-<h4>NguoiPhuThuoc</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="HoTen" class="control-label"></label>
-                <input asp-for="HoTen" class="form-control" />
-                <span asp-validation-for="HoTen" class="text-danger"></span>
+                <div class="card-header bg-primary text-white text-center rounded-top-4">
+                    <h3 class="mb-0"><i class="fa fa-user-plus"></i> @ViewData["Title"]</h3>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        @* === THÊM TRƯỜNG MaNPT VÀO ĐÂY === *@
+                        <div class="mb-3">
+                            <label asp-for="MaNPT" class="form-label fw-semibold"></label>
+                            <input asp-for="MaNPT" class="form-control" placeholder="Nhập mã người phụ thuộc..."/>
+                            <span asp-validation-for="MaNPT" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="MaNV" class="form-label fw-semibold"></label>
+                            <select asp-for="MaNV" class="form-select" asp-items="ViewBag.MaNV">
+                                <option value="">-- Chọn nhân viên --</option>
+                            </select>
+                            <span asp-validation-for="MaNV" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="HoTen" class="form-label fw-semibold"></label>
+                            <input asp-for="HoTen" class="form-control" placeholder="Nhập họ tên người phụ thuộc..."/>
+                            <span asp-validation-for="HoTen" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="NgaySinh" class="form-label fw-semibold"></label>
+                            <input asp-for="NgaySinh" class="form-control" type="date"/>
+                            <span asp-validation-for="NgaySinh" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="MoiQuanHe" class="form-label fw-semibold"></label>
+                            <input asp-for="MoiQuanHe" class="form-control" placeholder="Con, vợ, chồng, cha, mẹ..."/>
+                            <span asp-validation-for="MoiQuanHe" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ThoiGianBatDauGiamTru" class="form-label fw-semibold"></label>
+                            <input asp-for="ThoiGianBatDauGiamTru" class="form-control" type="date"/>
+                            <span asp-validation-for="ThoiGianBatDauGiamTru" class="text-danger small"></span>
+                        </div>
+
+                        <div class_ ="mb-3">
+                            <label asp-for="ThoiGianKetThucGiamTru" class="form-label fw-semibold"></label>
+                            <input asp-for="ThoiGianKetThucGiamTru" class="form-control" type="date"/>
+                            <span asp-validation-for="ThoiGianKetThucGiamTru" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                <i class="fa fa-arrow-left"></i> Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fa fa-save"></i> Lưu lại
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="NgaySinh" class="control-label"></label>
-                <input asp-for="NgaySinh" class="form-control" />
-                <span asp-validation-for="NgaySinh" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MoiQuanHe" class="control-label"></label>
-                <input asp-for="MoiQuanHe" class="form-control" />
-                <span asp-validation-for="MoiQuanHe" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ThoiGianBatDauGiamTru" class="control-label"></label>
-                <input asp-for="ThoiGianBatDauGiamTru" class="form-control" />
-                <span asp-validation-for="ThoiGianBatDauGiamTru" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ThoiGianKetThucGiamTru" class="control-label"></label>
-                <input asp-for="ThoiGianKetThucGiamTru" class="form-control" />
-                <span asp-validation-for="ThoiGianKetThucGiamTru" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaNV" class="control-label"></label>
-                <select asp-for="MaNV" class ="form-control" asp-items="ViewBag.MaNV"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
