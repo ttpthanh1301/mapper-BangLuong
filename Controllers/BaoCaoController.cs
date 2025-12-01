@@ -34,13 +34,8 @@ namespace BangLuong.Controllers
 
         // ======================= Báo cáo nhân sự tổng hợp =======================
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> NhanSuTongHop(string phongBan = "", int thang = 0, int nam = 0)
+        public async Task<IActionResult> NhanSuTongHop(string phongBan = "")
         {
-            if (thang == 0) thang = DateTime.Now.Month;
-            if (nam == 0) nam = DateTime.Now.Year;
-
-            ViewBag.Thang = thang;
-            ViewBag.Nam = nam;
             ViewBag.PhongBan = phongBan;
 
             // Lấy danh sách phòng ban để dropdown
@@ -54,22 +49,16 @@ namespace BangLuong.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> ExportNhanSu(string phongBan = "", int thang = 0, int nam = 0)
+        public async Task<IActionResult> ExportNhanSu(string phongBan = "")
         {
             var data = await _service.GetBaoCaoNhanSuTongHopAsync(phongBan);
             var fileBytes = _excelService.ExportBaoCaoNhanSu(data);
-            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        $"BaoCao_DanhSachNhanVien_{DateTime.Now:yyyyMMdd}.xlsx");
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> ExportNhanSu()
-        {
-            var data = await _service.GetBaoCaoNhanSuTongHopAsync();
-            var fileBytes = _excelService.ExportBaoCaoNhanSu(data);
-            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                       $"BaoCao_DanhSachNhanVien_{DateTime.Now:yyyyMMdd}.xlsx");
+            
+            var fileName = string.IsNullOrEmpty(phongBan) 
+                ? $"BaoCao_DanhSachNhanVien_{DateTime.Now:yyyyMMdd}.xlsx"
+                : $"BaoCao_DanhSachNhanVien_{phongBan}_{DateTime.Now:yyyyMMdd}.xlsx";
+            
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
 
         // ======================= 2. Báo cáo tổng hợp chấm công =======================

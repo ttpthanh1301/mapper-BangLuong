@@ -87,5 +87,7 @@ namespace BangLuong.Data
         public DbSet<NguoiPhuThuoc> NguoiPhuThuoc { get; set; } = null!;
         public DbSet<BangTinhLuong> BangTinhLuong { get; set; } = null!;
         public DbSet<ThamSoHeThong> ThamSoHeThong { get; set; } = null!;
+        public DbSet<BaoHiem> BaoHiem { get; set; } = null!;
+
     }
 }

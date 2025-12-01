@@ -9,7 +9,7 @@ namespace BangLuong.Services.Implementations
         public byte[] ExportBaoCaoNhanSu(List<BaoCaoNhanSuViewModel> data)
         {
             using var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add("Danh Sách Nhân Viên");
+            var worksheet = workbook.Worksheets.Add("TỔNG HỢP NHÂN SỰ");
 
             // Header - Tên công ty
             worksheet.Cell(1, 1).Value = "CÔNG TY CỔ PHẦN CÔNG NGHỆ PROTON";
@@ -18,14 +18,14 @@ namespace BangLuong.Services.Implementations
                 .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
             // Tiêu đề báo cáo
-            worksheet.Cell(3, 1).Value = "DANH SÁCH NHÂN VIÊN";
+            worksheet.Cell(3, 1).Value = "TỔNG HỢP NHÂN SỰ";
             worksheet.Range(3, 1, 3, 12).Merge().Style
                 .Font.SetBold().Font.SetFontSize(16)
                 .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
             // Ngày xuất
-            worksheet.Cell(1, 12).Value = $"Ngày xuất: {DateTime.Now:dd/MM/yyyy}";
-            worksheet.Cell(1, 12).Style
+            worksheet.Cell(4, 1).Value = $"Ngày xuất: {DateTime.Now:dd/MM/yyyy}";
+            worksheet.Cell(4, 1).Style
                 .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
             // Column headers
@@ -94,8 +94,8 @@ namespace BangLuong.Services.Implementations
                 .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
             // Ngày xuất
-            worksheet.Cell(1, 11).Value = $"Ngày xuất: {DateTime.Now:dd/MM/yyyy}";
-            worksheet.Cell(1, 11).Style
+            worksheet.Cell(4, 1).Value = $"Ngày xuất: {DateTime.Now:dd/MM/yyyy}";
+            worksheet.Cell(4, 1).Style
                 .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
             // Tiêu đề báo cáo
@@ -130,7 +130,6 @@ namespace BangLuong.Services.Implementations
             int stt = 1;
 
             // Tính tổng
-            decimal tongNgayCongChuan = 0;
             decimal tongNgayCongThucTe = 0;
             decimal tongNghiPhep = 0;
             decimal tongTCNgayThuong = 0;
@@ -143,6 +142,7 @@ namespace BangLuong.Services.Implementations
                 worksheet.Cell(row, 2).Value = item.MaNV;
                 worksheet.Cell(row, 3).Value = item.HoTen;
                 worksheet.Cell(row, 4).Value = item.ChucVu;
+                worksheet.Cell(row, 5).Value = item.NgayCongChuan;
 
                 // FIX: Thêm .GetValueOrDefault(0) khi gán giá trị vào ô Excel
                 worksheet.Cell(row, 6).Value = item.NgayCongThucTe.GetValueOrDefault(0);     // SỬA
@@ -156,8 +156,6 @@ namespace BangLuong.Services.Implementations
                 worksheet.Range(row, 1, row, 11).Style
                     .Border.SetOutsideBorder(XLBorderStyleValues.Thin)
                     .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-
-                // FIX: Thêm .GetValueOrDefault(0) khi tính tổng       // SỬA
                 tongNgayCongThucTe += item.NgayCongThucTe.GetValueOrDefault(0);      // SỬA
                 tongNghiPhep += item.SoNgayNghiPhep.GetValueOrDefault(0);            // SỬA
                 tongTCNgayThuong += item.SoGioTangCaNgayThuong.GetValueOrDefault(0); // SỬA
@@ -171,7 +169,7 @@ namespace BangLuong.Services.Implementations
             // Dòng tổng
             worksheet.Cell(row, 1).Value = "Tổng";
             worksheet.Range(row, 1, row, 4).Merge();
-            worksheet.Cell(row, 5).Value = tongNgayCongChuan;
+            worksheet.Cell(row, 5).Value = "";
             worksheet.Cell(row, 6).Value = tongNgayCongThucTe;
             worksheet.Cell(row, 7).Value = tongNghiPhep;
             worksheet.Cell(row, 8).Value = tongTCNgayThuong;
@@ -204,50 +202,35 @@ namespace BangLuong.Services.Implementations
 
             // Header - Tên công ty
             worksheet.Cell(1, 1).Value = "CÔNG TY CỔ PHẦN CÔNG NGHỆ PROTON";
-            worksheet.Range(1, 1, 1, 16).Merge().Style
+            worksheet.Range(1, 1, 1, 14).Merge().Style
                 .Font.SetBold().Font.SetFontSize(13)
                 .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
             // Tiêu đề báo cáo
-            worksheet.Cell(2, 1).Value = $"BẢNG LƯƠNG CHI TIẾT THÁNG {thang} NĂM {nam}";
-            worksheet.Range(2, 1, 2, 16).Merge().Style
+            worksheet.Cell(2, 1).Value = $"BẢNG LƯƠNG THÁNG {thang} NĂM {nam}";
+            worksheet.Range(2, 1, 2, 14).Merge().Style
                 .Font.SetBold().Font.SetFontSize(16)
                 .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
             // Ngày xuất
-            worksheet.Cell(1, 16).Value = $"Ngày xuất: {DateTime.Now:dd/MM/yyyy}";
-            worksheet.Cell(1, 16).Style
+            worksheet.Cell(4, 1).Value = $"Ngày xuất: {DateTime.Now:dd/MM/yyyy}";
+            worksheet.Range(4, 1, 4, 14).Merge().Style
                 .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
-            // Column headers
-            int headerRow = 4;
+            // Header row
+            int headerRow = 5;
             var headers = new[] {
-                "STT", "Mã NV", "Họ Tên", "Chức vụ",
-                "Lương CB Hợp đồng", "Ngày công chuẩn", "Ngày công thực tế",
-                "Lương Thực tế (A)", "Tổng Phụ Cấp (B)", "Lương Tăng Ca (C)",
-                "Khen Thưởng (D)", "Tổng Thu Nhập (Gross) (E = A+B+C+D)",
-                "BHXH (8%)", "BHYT (1.5%)", "BHTN (1%)", "Thuế TNCN"
-            };
+        "STT", "Mã NV", "Họ Tên", "Chức vụ",
+        "Lương CB Hợp đồng", "Ngày công chuẩn", "Ngày công thực tế",
+        "Lương Thực tế (A)", "Tổng Phụ Cấp (B)", "Lương Tăng Ca (C)",
+        "Khen Thưởng (D)", "Tổng Thu Nhập (Gross) (E = A+B+C+D)",
+        "Tổng Khấu Trừ (F)", "Thực Lãnh (E - F)"
+    };
 
             for (int i = 0; i < headers.Length; i++)
             {
                 var cell = worksheet.Cell(headerRow, i + 1);
                 cell.Value = headers[i];
-                cell.Style
-                    .Font.SetBold().Font.SetFontSize(9)
-                    .Fill.SetBackgroundColor(XLColor.LightGray)
-                    .Border.SetOutsideBorder(XLBorderStyleValues.Thin)
-                    .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
-                    .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
-                    .Alignment.SetWrapText();
-            }
-
-            // Tiếp tục header row 2
-            var headers2 = new[] { "Kỷ luật", "Tổng Khấu Trừ (F)", "Thực Lãnh (E - F)" };
-            for (int i = 0; i < headers2.Length; i++)
-            {
-                var cell = worksheet.Cell(headerRow, 17 + i);
-                cell.Value = headers2[i];
                 cell.Style
                     .Font.SetBold().Font.SetFontSize(9)
                     .Fill.SetBackgroundColor(XLColor.LightGray)
@@ -265,50 +248,42 @@ namespace BangLuong.Services.Implementations
             // Biến tổng
             decimal tongLuongCB = 0, tongNgayCong = 0, tongLuongThucTe = 0;
             decimal tongPhuCap = 0, tongTangCa = 0, tongKhenThuong = 0, tongThuNhap = 0;
-            decimal tongBHXH = 0, tongBHYT = 0, tongBHTN = 0, tongThue = 0;
-            decimal tongKyLuat = 0, tongKhauTru = 0, tongThucLanh = 0;
+            decimal tongKhauTru = 0, tongThucLanh = 0;
 
             foreach (var item in data)
             {
-                // Thêm dòng phòng ban
+                // Nếu đổi phòng ban → tạo dòng header phòng ban
                 if (currentPhongBan != item.PhongBan && !string.IsNullOrEmpty(item.PhongBan))
                 {
                     currentPhongBan = item.PhongBan;
-                    worksheet.Range(row, 1, row, 19).Merge();
+                    worksheet.Range(row, 1, row, 14).Merge();
                     worksheet.Cell(row, 1).Value = currentPhongBan;
-                    worksheet.Range(row, 1, row, 19).Style
+                    worksheet.Range(row, 1, row, 14).Style
                         .Font.SetBold()
                         .Fill.SetBackgroundColor(XLColor.LightBlue);
                     row++;
                 }
 
+                // Ghi dữ liệu
                 worksheet.Cell(row, 1).Value = stt;
                 worksheet.Cell(row, 2).Value = item.MaNV;
                 worksheet.Cell(row, 3).Value = item.HoTen;
                 worksheet.Cell(row, 4).Value = item.ChucVu;
                 worksheet.Cell(row, 5).Value = item.LuongCoBan;
-                worksheet.Cell(row, 6).Value = 21.5; // Ngày công chuẩn
+                worksheet.Cell(row, 6).Value = 21.5; // ngày công chuẩn
                 worksheet.Cell(row, 7).Value = item.NgayCongThucTe;
                 worksheet.Cell(row, 8).Value = item.LuongThucTe;
                 worksheet.Cell(row, 9).Value = item.TongPhuCap;
                 worksheet.Cell(row, 10).Value = item.LuongTangCa;
                 worksheet.Cell(row, 11).Value = 0; // Khen thưởng
                 worksheet.Cell(row, 12).Value = item.TongThuNhap;
-                worksheet.Cell(row, 13).Value = 0; // BHXH
-                worksheet.Cell(row, 14).Value = 0; // BHYT
-                worksheet.Cell(row, 15).Value = 0; // BHTN
-                worksheet.Cell(row, 16).Value = 0; // Thuế
-                worksheet.Cell(row, 17).Value = 0; // Kỷ luật
-                worksheet.Cell(row, 18).Value = item.TongKhauTru;
-                worksheet.Cell(row, 19).Value = item.ThucLanh;
+                worksheet.Cell(row, 13).Value = item.TongKhauTru;
+                worksheet.Cell(row, 14).Value = item.ThucLanh;
 
                 // Format số
-                worksheet.Range(row, 5, row, 19).Style
-                    .NumberFormat.SetFormat("#,##0");
-                worksheet.Range(row, 5, row, 19).Style
-                    .Border.SetOutsideBorder(XLBorderStyleValues.Thin);
-                worksheet.Range(row, 5, row, 19).Style
-                    .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                worksheet.Range(row, 5, row, 14).Style.NumberFormat.SetFormat("#,##0");
+                worksheet.Range(row, 1, row, 14).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                worksheet.Range(row, 5, row, 14).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                 // Tính tổng
                 tongLuongCB += item.LuongCoBan;
@@ -316,6 +291,7 @@ namespace BangLuong.Services.Implementations
                 tongLuongThucTe += item.LuongThucTe;
                 tongPhuCap += item.TongPhuCap;
                 tongTangCa += item.LuongTangCa;
+                tongKhenThuong += 0;
                 tongThuNhap += item.TongThuNhap;
                 tongKhauTru += item.TongKhauTru;
                 tongThucLanh += item.ThucLanh;
@@ -324,9 +300,10 @@ namespace BangLuong.Services.Implementations
                 stt++;
             }
 
-            // Dòng tổng PHCTH
-            worksheet.Cell(row, 1).Value = "Tổng PHCTH";
+            // Dòng tổng
             worksheet.Range(row, 1, row, 4).Merge();
+            worksheet.Cell(row, 1).Value = "Tổng PHCTH";
+
             worksheet.Cell(row, 5).Value = tongLuongCB;
             worksheet.Cell(row, 7).Value = tongNgayCong;
             worksheet.Cell(row, 8).Value = tongLuongThucTe;
@@ -334,31 +311,25 @@ namespace BangLuong.Services.Implementations
             worksheet.Cell(row, 10).Value = tongTangCa;
             worksheet.Cell(row, 11).Value = tongKhenThuong;
             worksheet.Cell(row, 12).Value = tongThuNhap;
-            worksheet.Cell(row, 13).Value = tongBHXH;
-            worksheet.Cell(row, 14).Value = tongBHYT;
-            worksheet.Cell(row, 15).Value = tongBHTN;
-            worksheet.Cell(row, 16).Value = tongThue;
-            worksheet.Cell(row, 17).Value = tongKyLuat;
-            worksheet.Cell(row, 18).Value = tongKhauTru;
-            worksheet.Cell(row, 19).Value = tongThucLanh;
+            worksheet.Cell(row, 13).Value = tongKhauTru;
+            worksheet.Cell(row, 14).Value = tongThucLanh;
 
-            worksheet.Range(row, 1, row, 19).Style
-                .Font.SetBold();
-            worksheet.Range(row, 1, row, 19).Style
-                .Fill.SetBackgroundColor(XLColor.Yellow);
-            worksheet.Range(row, 1, row, 19).Style
-                .Border.SetOutsideBorder(XLBorderStyleValues.Medium);
-            worksheet.Range(row, 1, row, 19).Style
+            worksheet.Range(row, 1, row, 14).Style
+                .Font.SetBold()
+                .Fill.SetBackgroundColor(XLColor.Yellow)
+                .Border.SetOutsideBorder(XLBorderStyleValues.Medium)
                 .NumberFormat.SetFormat("#,##0");
-            worksheet.Range(row, 1, row, 19).Style
-                .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
-            // Set column widths
+            worksheet.Range(row, 1, row, 14).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+            worksheet.Cell(row, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+
+            // Column width
             worksheet.Column(1).Width = 5;
             worksheet.Column(2).Width = 10;
             worksheet.Column(3).Width = 18;
             worksheet.Column(4).Width = 12;
-            worksheet.Columns(5, 19).Width = 12;
+            worksheet.Columns(5, 14).Width = 12;
 
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);

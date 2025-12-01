@@ -1,46 +1,48 @@
+/* ======================= Create View ======================= */
 @model ChiTietKhenThuongViewModels.ChiTietKhenThuongRequest
 
 @{
-    ViewData["Title"] = "Create";
+ViewData["Title"] = "Create";
 }
+ <form>
+        <div class="form-group">
+            <label asp-for="NgayKhenThuong" class="control-label"></label>
+            <input asp-for="NgayKhenThuong" class="form-control" type="date" />
+            <span asp-validation-for="NgayKhenThuong" class="text-danger"></span>
+        </div>
 
-<h1>Create</h1>
+        <div class="form-group">
+            <label asp-for="LyDo" class="control-label"></label>
+            <input asp-for="LyDo" class="form-control" />
+            <span asp-validation-for="LyDo" class="text-danger"></span>
+        </div>
 
-<h4>ChiTietKhenThuong</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="NgayKhenThuong" class="control-label"></label>
-                <input asp-for="NgayKhenThuong" class="form-control" />
-                <span asp-validation-for="NgayKhenThuong" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LyDo" class="control-label"></label>
-                <input asp-for="LyDo" class="form-control" />
-                <span asp-validation-for="LyDo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaKT" class="control-label"></label>
-                <select asp-for="MaKT" class ="form-control" asp-items="ViewBag.MaKT"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaNV" class="control-label"></label>
-                <select asp-for="MaNV" class ="form-control" asp-items="ViewBag.MaNV"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+        <div class="form-group">
+            <label asp-for="MaKT" class="control-label"></label>
+            <select asp-for="MaKT"
+                    class="form-control"
+                    asp-items="@(ViewData["MaKT"] as SelectList ?? new SelectList(Enumerable.Empty<SelectListItem>()))">
+                <option value="">-- Chọn loại khen thưởng --</option>
+            </select>
+            <span asp-validation-for="MaKT" class="text-danger"></span>
+        </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        <div class="form-group">
+            <label asp-for="MaNV" class="control-label"></label>
+            <select asp-for="MaNV"
+                    class="form-control"
+                    asp-items="@(ViewData["MaNV"] as SelectList ?? new SelectList(Enumerable.Empty<SelectListItem>()))">
+                <option value="">-- Chọn nhân viên --</option>
+            </select>
+            <span asp-validation-for="MaNV" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-3">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
