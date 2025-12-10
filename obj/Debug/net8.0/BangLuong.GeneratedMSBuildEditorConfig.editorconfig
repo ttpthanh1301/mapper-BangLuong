@@ -70,6 +70,26 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFvQ2FvL1BoaWV1THVvbmdDYU5oYW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/BaoHiem/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFvSGllbS9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/BaoHiem/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFvSGllbS9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/BaoHiem/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFvSGllbS9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/BaoHiem/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFvSGllbS9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/BaoHiem/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFvSGllbS9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/tranthanh/Documents/Workspaces/Dotnet/BangLuong/Views/ChamCong/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hhbUNvbmcvQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

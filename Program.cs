@@ -128,6 +128,7 @@ builder.Services.AddScoped<IThamSoHeThongService, ThamSoHeThongService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IBaoCaoService, BaoCaoService>();
 builder.Services.AddScoped<IExcelExportService, ExcelExportService>();
+builder.Services.AddScoped<IBaoHiemService, BaoHiemService>();
 
 // -------------------------------------------------------
 // BUILD APP

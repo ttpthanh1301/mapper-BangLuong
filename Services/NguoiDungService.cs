@@ -69,22 +69,31 @@ namespace BangLuong.Services
             if (string.IsNullOrEmpty(request.Password))
                 throw new Exception("Mật khẩu không được để trống");
 
+            // ✅ FIX: Trim email để loại bỏ khoảng trắng
+            var email = request.Email?.Trim() ?? string.Empty;
+
             // Tạo user mới với MaNV là Id
             var user = new NguoiDung
             {
-                Id = request.MaNV,
-                UserName = request.MaNV,
-                Email = request.Email,
+                Id = request.MaNV.Trim(),
+                UserName = request.MaNV.Trim(),
+                Email = email,  // ✅ Dùng email đã trim
                 PhanQuyen = request.PhanQuyen ?? "Employee",
                 TrangThai = request.TrangThai ?? "Active"
             };
+
+            // Debug log
+            Console.WriteLine($"[DEBUG] Creating user: MaNV={user.Id}, UserName={user.UserName}, Email={user.Email}");
 
             var result = await _userManager.CreateAsync(user, request.Password);
             if (!result.Succeeded)
             {
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                Console.WriteLine($"[ERROR] User creation failed: {errors}");
                 throw new Exception($"Đăng ký thất bại: {errors}");
             }
+
+            Console.WriteLine($"[DEBUG] User created successfully");
 
             // Gán role
             if (!string.IsNullOrEmpty(request.PhanQuyen))
@@ -144,8 +153,9 @@ namespace BangLuong.Services
             user.PhanQuyen = request.PhanQuyen ?? user.PhanQuyen;
             user.TrangThai = request.TrangThai ?? user.TrangThai;
 
+            // ✅ FIX: Trim email
             if (!string.IsNullOrEmpty(request.Email))
-                user.Email = request.Email;
+                user.Email = request.Email.Trim();
 
             // Cập nhật mật khẩu nếu có
             if (!string.IsNullOrEmpty(request.Password))

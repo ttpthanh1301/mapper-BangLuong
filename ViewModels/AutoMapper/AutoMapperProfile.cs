@@ -104,5 +104,9 @@ public class AutoMapperProfile : Profile
         CreateMap<ThamSoHeThong, ThamSoHeThongViewModel>();
         CreateMap<ThamSoHeThongViewModel, ThamSoHeThong>();
         CreateMap<ThamSoHeThongRequest, ThamSoHeThong>();
+        
+        CreateMap<BaoHiem, BaoHiemViewModels.BaoHiemViewModel>();
+        CreateMap<BaoHiemViewModels.BaoHiemViewModel, BaoHiem>();
+        CreateMap<BaoHiemViewModels.BaoHiemRequest, BaoHiem>();
     }
 }

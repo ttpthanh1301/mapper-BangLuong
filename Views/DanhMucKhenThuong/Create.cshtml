@@ -1,41 +1,98 @@
-@model DanhMucKhenThuongViewModels.DanhMucKhenThuongRequest
+@model BangLuong.ViewModels.ChiTietKhenThuongViewModels.ChiTietKhenThuongRequest
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Tạo Khen Thưởng";
 }
 
-<h1>Create</h1>
-
-<h4>DanhMucKhenThuong</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="MaKT" class="control-label"></label>
-                <input asp-for="MaKT" class="form-control" />
-                <span asp-validation-for="MaKT" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TenKhenThuong" class="control-label"></label>
-                <input asp-for="TenKhenThuong" class="form-control" />
-                <span asp-validation-for="TenKhenThuong" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SoTien" class="control-label"></label>
-                <input asp-for="SoTien" class="form-control" />
-                <span asp-validation-for="SoTien" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1><i class="fas fa-award text-success"></i> Tạo Chi Tiết Khen Thưởng Mới</h1>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> Thông tin khen thưởng
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div classß="form-group">
+                                    <label asp-for="MaNV" class="font-weight-bold">
+                                        <i class="fas fa-user-tag text-primary"></i> Nhân viên <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="MaNV"
+                                            class="form-control"
+                                            asp-items="@(ViewData["MaNV"] as SelectList)">
+                                        <option value="">-- Chọn nhân viên --</option>
+                                    </select>
+                                    <span asp-validation-for="MaNV" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="MaKT" class="font-weight-bold">
+                                        <i class="fas fa-trophy text-primary"></i> @Html.DisplayNameFor(m => m.MaKT)
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="MaKT"
+                                            class="form-control"
+                                            asp-items="@(ViewData["MaKT"] as SelectList)">
+                                        <option value="">-- Chọn loại khen thưởng --</option>
+                                    </select>
+                                    <span asp-validation-for="MaKT" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label asp-for="NgayKhenThuong" class="font-weight-bold">
+                                        <i class="far fa-calendar-alt text-primary"></i> @Html.DisplayNameFor(m => m.NgayKhenThuong)
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="NgayKhenThuong" type="date" class="form-control" />
+                                    <span asp-validation-for="NgayKhenThuong" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label asp-for="LyDo" class="font-weight-bold">
+                                        <i class="fas fa-align-left text-primary"></i> @Html.DisplayNameFor(m => m.LyDo)
+                                    </label>
+                                    <textarea asp-for="LyDo" class="form-control" rows="3" placeholder="Chi tiết lý do khen thưởng"></textarea>
+                                    <span asp-validation-for="LyDo" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="form-group text-center">
+                            <button type="submit" value="Create" class="btn btn-success btn-lg px-5">
+                                <i class="fas fa-save"></i> Lưu Khen Thưởng
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary btn-lg px-5 ml-2">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

@@ -15,29 +15,36 @@
 
                 <div class="card-body p-4 p-md-5">
                     <form asp-action="Create">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
                         
                         <div class="mb-3">
-                            <label asp-for="MaTS" class="form-label fw-semibold"></label>
+                            <label asp-for="MaTS" class="form-label fw-semibold">
+                                <i class="fa fa-tag text-primary"></i> @Html.DisplayNameFor(m => m.MaTS)
+                            </label>
                             <input asp-for="MaTS" class="form-control" placeholder="Nhập mã tham số (vd: LuongCoSo, BHXH)..."/>
                             <span asp-validation-for="MaTS" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="TenThamSo" class="form-label fw-semibold"></label>
+                            <label asp-for="TenThamSo" class="form-label fw-semibold">
+                                <i class="fa fa-list-alt text-primary"></i> @Html.DisplayNameFor(m => m.TenThamSo)
+                            </label>
                             <input asp-for="TenThamSo" class="form-control" placeholder="Nhập tên/mô tả của tham số..."/>
                             <span asp-validation-for="TenThamSo" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="GiaTri" class="form-label fw-semibold"></label>
+                            <label asp-for="GiaTri" class="form-label fw-semibold">
+                                <i class="fa fa-dollar-sign text-primary"></i> @Html.DisplayNameFor(m => m.GiaTri)
+                            </label>
                             <input asp-for="GiaTri" class="form-control" placeholder="Nhập giá trị (vd: 1800000, 0.08)..."/>
                             <span asp-validation-for="GiaTri" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="NgayApDung" class="form-label fw-semibold"></label>
-                            @* Chuyển sang type="date" *@
+                            <label asp-for="NgayApDung" class="form-label fw-semibold">
+                                <i class="fa fa-calendar-alt text-primary"></i> @Html.DisplayNameFor(m => m.NgayApDung)
+                            </label>
                             <input asp-for="NgayApDung" class="form-control" type="date"/>
                             <span asp-validation-for="NgayApDung" class="text-danger small"></span>
                         </div>

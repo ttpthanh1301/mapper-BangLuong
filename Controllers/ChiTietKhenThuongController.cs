@@ -1,13 +1,21 @@
+using System; 
+using System.Collections.Generic; 
+using System.Linq; 
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 using BangLuong.Services;
 using static BangLuong.ViewModels.ChiTietKhenThuongViewModels;
-using Microsoft.AspNetCore.Authorization;
+
+// SỬ DỤNG 'USING STATIC' ĐỂ KHẮC PHỤC LỖI CS0138
+using static BangLuong.ViewModels.NhanVienViewModels;
+using static BangLuong.ViewModels.DanhMucKhenThuongViewModels;
+
 
 namespace BangLuong.Controllers
 {
-    [Authorize(Roles = "Admin,Manager")] // Chỉ Admin và Manager mới được truy cập
+    [Authorize(Roles = "Admin,Manager")]
     public class ChiTietKhenThuongController : Controller
     {
         private readonly IChiTietKhenThuongService _service;
@@ -51,13 +59,34 @@ namespace BangLuong.Controllers
         // ======================= CREATE =======================
         public async Task<IActionResult> Create()
         {
-            var nhanVienList = await _nhanVienService.GetAll();
-            var khenThuongList = await _khenThuongService.GetAllAsync();
+            try
+            {
+                var nhanVienList = (await _nhanVienService.GetAll())?.ToList() ?? new List<NhanVienViewModel>();
+                var khenThuongList = (await _khenThuongService.GetAllAsync())?.ToList() ?? new List<DanhMucKhenThuongViewModel>();
 
-            ViewData["MaNV"] = new SelectList(nhanVienList, "MaNV", "TenNV");
-            ViewData["MaKT"] = new SelectList(khenThuongList, "MaKT", "TenKhenThuong");
+                // SỬA: Tạo SelectList với Text là MaNV và HoTen
+                var nhanVienSelectItems = nhanVienList.Select(n => new
+                {
+                    Value = n.MaNV,
+                    Text = $"{n.MaNV} - {n.HoTen}" // Kết hợp Mã và Tên để hiển thị
+                }).ToList();
 
-            return View();
+                ViewData["MaNV"] = new SelectList(nhanVienSelectItems, "Value", "Text");
+                ViewData["MaKT"] = new SelectList(khenThuongList, "MaKT", "TenKhenThuong");
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Exception in Create GET: {ex.Message}");
+                Console.WriteLine($"[ERROR] StackTrace: {ex.StackTrace}");
+                
+                ViewData["MaNV"] = new SelectList(new List<NhanVienViewModel>());
+                ViewData["MaKT"] = new SelectList(new List<DanhMucKhenThuongViewModel>());
+                
+                TempData["ErrorMessage"] = $"Lỗi khi tải dữ liệu: {ex.Message}";
+                return View();
+            }
         }
 
         [HttpPost]
@@ -66,14 +95,31 @@ namespace BangLuong.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _service.CreateAsync(request);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _service.CreateAsync(request);
+                    TempData["SuccessMessage"] = "Tạo khen thưởng thành công!";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[ERROR] Exception in Create POST: {ex.Message}");
+                    ModelState.AddModelError("", ex.Message);
+                }
             }
 
-            var nhanVienList = await _nhanVienService.GetAll();
-            var khenThuongList = await _khenThuongService.GetAllAsync();
+            // Reload data on error
+            var nhanVienList = (await _nhanVienService.GetAll())?.ToList() ?? new List<NhanVienViewModel>();
+            var khenThuongList = (await _khenThuongService.GetAllAsync())?.ToList() ?? new List<DanhMucKhenThuongViewModel>();
 
-            ViewData["MaNV"] = new SelectList(nhanVienList, "MaNV", "TenNV", request.MaNV);
+            // SỬA: Tạo SelectList với Text là MaNV và HoTen (khi lỗi)
+            var nhanVienSelectItems = nhanVienList.Select(n => new
+            {
+                Value = n.MaNV,
+                Text = $"{n.MaNV} - {n.HoTen}" // Kết hợp Mã và Tên để hiển thị
+            }).ToList();
+
+            ViewData["MaNV"] = new SelectList(nhanVienSelectItems, "Value", "Text", request.MaNV);
             ViewData["MaKT"] = new SelectList(khenThuongList, "MaKT", "TenKhenThuong", request.MaKT);
 
             return View(request);
@@ -85,10 +131,17 @@ namespace BangLuong.Controllers
             var item = await _service.GetByIdAsync(id);
             if (item == null) return NotFound();
 
-            var nhanVienList = await _nhanVienService.GetAll();
-            var khenThuongList = await _khenThuongService.GetAllAsync();
+            var nhanVienList = (await _nhanVienService.GetAll())?.ToList() ?? new List<NhanVienViewModel>();
+            var khenThuongList = (await _khenThuongService.GetAllAsync())?.ToList() ?? new List<DanhMucKhenThuongViewModel>();
 
-            ViewData["MaNV"] = new SelectList(nhanVienList, "MaNV", "TenNV", item.MaNV);
+            // SỬA: Tạo SelectList với Text là MaNV và HoTen (Edit GET)
+            var nhanVienSelectItems = nhanVienList.Select(n => new
+            {
+                Value = n.MaNV,
+                Text = $"{n.MaNV} - {n.HoTen}" // Kết hợp Mã và Tên để hiển thị
+            }).ToList();
+
+            ViewData["MaNV"] = new SelectList(nhanVienSelectItems, "Value", "Text", item.MaNV);
             ViewData["MaKT"] = new SelectList(khenThuongList, "MaKT", "TenKhenThuong", item.MaKT);
 
             return View(item);
@@ -100,14 +153,30 @@ namespace BangLuong.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _service.UpdateAsync(id, request);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _service.UpdateAsync(id, request);
+                    TempData["SuccessMessage"] = "Cập nhật khen thưởng thành công!";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[ERROR] Exception in Edit POST: {ex.Message}");
+                    ModelState.AddModelError("", ex.Message);
+                }
             }
 
-            var nhanVienList = await _nhanVienService.GetAll();
-            var khenThuongList = await _khenThuongService.GetAllAsync();
+            var nhanVienList = (await _nhanVienService.GetAll())?.ToList() ?? new List<NhanVienViewModel>();
+            var khenThuongList = (await _khenThuongService.GetAllAsync())?.ToList() ?? new List<DanhMucKhenThuongViewModel>();
 
-            ViewData["MaNV"] = new SelectList(nhanVienList, "MaNV", "TenNV", request.MaNV);
+            // SỬA: Tạo SelectList với Text là MaNV và HoTen (Edit POST)
+            var nhanVienSelectItems = nhanVienList.Select(n => new
+            {
+                Value = n.MaNV,
+                Text = $"{n.MaNV} - {n.HoTen}" // Kết hợp Mã và Tên để hiển thị
+            }).ToList();
+
+            ViewData["MaNV"] = new SelectList(nhanVienSelectItems, "Value", "Text", request.MaNV);
             ViewData["MaKT"] = new SelectList(khenThuongList, "MaKT", "TenKhenThuong", request.MaKT);
 
             return View(request);
@@ -126,8 +195,18 @@ namespace BangLuong.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _service.DeleteAsync(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _service.DeleteAsync(id);
+                TempData["SuccessMessage"] = "Xóa khen thưởng thành công!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Exception in Delete: {ex.Message}");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

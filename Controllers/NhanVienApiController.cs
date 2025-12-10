@@ -10,17 +10,19 @@ namespace BangLuong.Controllers.Api
     public class NhanVienApiController : ControllerBase
     {
         private readonly INhanVienService _nhanVienService;
+        private readonly ILogger<NhanVienApiController> _logger;
 
-        public NhanVienApiController(INhanVienService nhanVienService)
+        public NhanVienApiController(INhanVienService nhanVienService, ILogger<NhanVienApiController> logger)
         {
             _nhanVienService = nhanVienService;
+            _logger = logger;
         }
 
         // GET: api/NhanVien
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var list = await _nhanVienService.GetAllFilter("", "", "", null, 1000); // Lấy tất cả
+            var list = await _nhanVienService.GetAllFilter("", "", "", null, 1000);
             return Ok(list);
         }
 
@@ -47,12 +49,80 @@ namespace BangLuong.Controllers.Api
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            if (string.IsNullOrEmpty(id)) return BadRequest("Id không được trống.");
+            if (string.IsNullOrEmpty(id)) 
+                return BadRequest("Id không được trống.");
 
             var nhanVien = await _nhanVienService.GetById(id);
-            if (nhanVien == null) return NotFound();
+            if (nhanVien == null) 
+                return NotFound();
 
             return Ok(nhanVien);
+        }
+
+        // GET: api/nhanvien/get-email-by-manv?maNV=NV001
+        [HttpGet("get-email-by-manv")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetEmailByMaNV([FromQuery(Name = "maNV")] string maNV)
+        {
+            Console.WriteLine($"[DEBUG] GetEmailByMaNV called with MaNV: '{maNV}'");
+
+            if (string.IsNullOrWhiteSpace(maNV))
+            {
+                Console.WriteLine("[DEBUG] MaNV is empty");
+                return Ok(new 
+                { 
+                    success = false, 
+                    message = "Mã Nhân Viên không được để trống" 
+                });
+            }
+
+            try
+            {
+                var trimmedMaNV = maNV.Trim();
+                Console.WriteLine($"[DEBUG] Searching for employee with MaNV: '{trimmedMaNV}'");
+
+                var nhanVien = await _nhanVienService.GetById(trimmedMaNV);
+
+                if (nhanVien == null)
+                {
+                    Console.WriteLine($"[DEBUG] No employee found with MaNV: '{trimmedMaNV}'");
+                    return Ok(new 
+                    { 
+                        success = false, 
+                        message = "Không tìm thấy nhân viên với mã này" 
+                    });
+                }
+
+                Console.WriteLine($"[DEBUG] Employee found: {nhanVien.HoTen}, Email: {nhanVien.Email ?? "NULL"}");
+
+                if (string.IsNullOrWhiteSpace(nhanVien.Email))
+                {
+                    Console.WriteLine($"[DEBUG] Employee {trimmedMaNV} has no email");
+                    return Ok(new 
+                    { 
+                        success = false, 
+                        message = "Nhân viên này chưa có email" 
+                    });
+                }
+
+                Console.WriteLine($"[DEBUG] Returning email: {nhanVien.Email}");
+                return Ok(new 
+                { 
+                    success = true,
+                    email = nhanVien.Email,
+                    hoTen = nhanVien.HoTen
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Exception in GetEmailByMaNV: {ex.Message}");
+                Console.WriteLine($"[ERROR] StackTrace: {ex.StackTrace}");
+                return StatusCode(500, new 
+                { 
+                    success = false, 
+                    message = "Lỗi server: " + ex.Message 
+                });
+            }
         }
 
         // POST: api/NhanVien
@@ -112,7 +182,6 @@ namespace BangLuong.Controllers.Api
             await _nhanVienService.ImportFromExcel(request.File);
             return Ok(new { message = "Import successful" });
         }
-
 
         // Download Template
         [HttpGet("template")]

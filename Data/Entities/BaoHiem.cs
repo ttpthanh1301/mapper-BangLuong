@@ -25,8 +25,8 @@ public int MaBH { get; set; }
     [MaxLength(100)]
     public string? NoiCapSo { get; set; }
 
-    [Required]
-    [MaxLength(15)]
+    [Required]       
+     [StringLength(450)]
     public string MaNV { get; set; } = null!; // FK + Unique
 
     // Navigation

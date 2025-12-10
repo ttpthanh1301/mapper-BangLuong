@@ -33,6 +33,7 @@ public class HopDong
     public string TrangThai { get; set; } = null!;
 
     [Required, ForeignKey(nameof(NhanVien))]
+    [StringLength(15)]
     public string MaNV { get; set; } = null!;
     // Navigation
     public NhanVien NhanVien { get; set; } = null!;

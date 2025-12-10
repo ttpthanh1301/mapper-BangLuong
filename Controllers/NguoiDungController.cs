@@ -7,7 +7,7 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace BangLuong.Controllers
 {
-    [Authorize] // Mặc định: tất cả user đã login
+    // [Authorize] // Mặc định: tất cả user đã login
     public class NguoiDungController : Controller
     {
         private readonly INguoiDungService _nguoiDungService;
@@ -40,8 +40,8 @@ namespace BangLuong.Controllers
             }
         }
 
-        // ======================= REGISTER =======================
-        [Authorize(Roles = "Admin,Manager")]
+        // // ======================= REGISTER =======================
+        // [Authorize(Roles = "Admin,Manager")]
         public IActionResult Register()
         {
             return View();
@@ -49,7 +49,7 @@ namespace BangLuong.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Manager")]
+        // [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Register(NguoiDungViewModels.NguoiDungRequest request)
         {
             if (string.IsNullOrEmpty(request.PhanQuyen))

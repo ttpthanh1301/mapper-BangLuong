@@ -1,0 +1,56 @@
+@model BangLuong.ViewModels.BaoHiemViewModels.BaoHiemViewModel
+
+@{
+    ViewData["Title"] = "Xác nhận Xóa Hồ Sơ Bảo Hiểm";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-danger rounded-4">
+
+                <div class="card-header bg-danger text-white text-center rounded-top-4">
+                    <h3 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Xác nhận Xóa</h3>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <h4 class="text-danger mb-4">Bạn có chắc muốn xóa hồ sơ bảo hiểm này không?</h4>
+                    
+                    <dl class="row detail-list">
+                        
+                        <dt class="col-sm-4"><i class="fas fa-user-tag text-primary me-2"></i> Mã Nhân Viên</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MaNV)</dd>
+
+                        <dt class="col-sm-4"><i class="fas fa-user text-primary me-2"></i> Họ và Tên</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.TenNhanVien)</dd>
+                        
+                        <hr class="my-3" />
+                        
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.SoSoBHXH)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.SoSoBHXH)</dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.MaTheBHYT)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MaTheBHYT)</dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.NgayCapSo)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.NgayCapSo)</dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.NoiCapSo)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.NoiCapSo)</dd>
+                    </dl>
+                </div>
+                
+                <div class="card-footer d-flex justify-content-start">
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="MaBH" />
+                        <button type="submit" class="btn btn-danger btn-lg me-2">
+                            <i class="fas fa-trash-alt"></i> Xác nhận Xóa
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary btn-lg">
+                            <i class="fa fa-arrow-left"></i> Hủy và Quay lại
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

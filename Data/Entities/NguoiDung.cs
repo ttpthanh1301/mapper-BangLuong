@@ -11,19 +11,23 @@ public class NguoiDung : IdentityUser
 
     [Required]
     [MaxLength(50)]
-    public string TrangThai { get; set; } = "Active"; // "Active" hoặc "Inactive"
+    public string TrangThai { get; set; } = "Active";
 
-    // XÓA thuộc tính Password - IdentityUser đã có PasswordHash
-    // [Required]
-    // public string Password { get; set; } = null!;
-
-    [NotMapped]
-    public string MaNV
+    // Override Id để dùng làm MaNV
+    [Key]
+    [StringLength(15)]
+    [Column(TypeName = "nvarchar(15)")]
+    public override string Id
     {
-        get => Id;
-        set => Id = value;
+        get => base.Id;
+        set => base.Id = value;
     }
 
-    [ForeignKey(nameof(MaNV))]
+    // Giữ MaNV để code dễ đọc, EF sẽ không tạo cột mới
+    [NotMapped]
+    public string MaNV => Id;
+
+    // Navigation property 1-1 với NhanVien
+    [ForeignKey(nameof(Id))]
     public NhanVien NhanVien { get; set; } = null!;
 }

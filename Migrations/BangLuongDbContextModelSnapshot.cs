@@ -32,7 +32,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("MaNV")
                         .IsRequired()
-                        .HasMaxLength(15)
+                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("MaTheBHYT")
@@ -99,6 +99,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("MaNV")
                         .IsRequired()
+                        .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<DateTime>("NgayBatDau")
@@ -308,7 +309,9 @@ namespace BangLuong.Migrations
                     b.Property<string>("TrangThaiHopDong")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("BaoCaoNhanSuViewModels");
+                    b.ToTable((string)null);
+
+                    b.ToView(null, (string)null);
                 });
 
             modelBuilder.Entity("BangLuong.ViewModels.BaoCaoTongHopCongViewModel", b =>
@@ -349,7 +352,9 @@ namespace BangLuong.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.ToTable("BaoCaoTongHopCongViewModels");
+                    b.ToTable((string)null);
+
+                    b.ToView(null, (string)null);
                 });
 
             modelBuilder.Entity("BangLuong.ViewModels.PhieuLuongCaNhanViewModel", b =>
@@ -447,7 +452,9 @@ namespace BangLuong.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.ToTable("PhieuLuongCaNhanViewModels");
+                    b.ToTable((string)null);
+
+                    b.ToView(null, (string)null);
                 });
 
             modelBuilder.Entity("BangTinhLuong", b =>
@@ -772,7 +779,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.HasKey("Id");
 
@@ -794,7 +801,7 @@ namespace BangLuong.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -806,7 +813,7 @@ namespace BangLuong.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("RoleId")
                         .HasColumnType("varchar(50)");
@@ -821,7 +828,7 @@ namespace BangLuong.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -842,7 +849,7 @@ namespace BangLuong.Migrations
                     b.Property<string>("Id")
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -863,10 +870,6 @@ namespace BangLuong.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("MaNV")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -906,9 +909,6 @@ namespace BangLuong.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MaNV")
-                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -1193,7 +1193,7 @@ namespace BangLuong.Migrations
                 {
                     b.HasOne("BangLuong.Data.Entities.NhanVien", "NhanVien")
                         .WithOne("NguoiDung")
-                        .HasForeignKey("NguoiDung", "MaNV")
+                        .HasForeignKey("NguoiDung", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

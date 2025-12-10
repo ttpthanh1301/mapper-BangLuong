@@ -1,0 +1,116 @@
+@model PaginatedList<BangLuong.ViewModels.BaoHiemViewModels.BaoHiemViewModel>
+
+@{
+    ViewData["Title"] = "Danh Sách Hồ Sơ Bảo Hiểm";
+    var prevDisabledClass = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabledClass = !Model.HasNextPage ? "disabled" : "";
+}
+
+<style>
+    /* CSS cho bảng gọn gàng hơn */
+    table.table {
+        border-collapse: separate !important;
+        border-spacing: 0 6px; 
+    }
+    table.table th, table.table td {
+        padding: 12px 18px; 
+        vertical-align: middle;
+    }
+    table.table tbody tr:hover {
+        background-color: #f5f9ff;
+        transition: background-color 0.2s ease-in-out;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top-4">
+            <h3 class="mb-0"><i class="fas fa-file-invoice-dollar"></i> @ViewData["Title"]</h3>
+            <div>
+                <a asp-action="Create" class="btn btn-success">
+                    <i class="fa fa-plus-circle"></i> Thêm mới
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="searchString" class="form-control" placeholder="Tìm kiếm theo Mã/Tên NV, Số sổ BHXH..."
+                           value="@ViewData["CurrentFilter"]" autocomplete="off" />
+                    <button class="btn btn-secondary" type="submit">
+                        <i class="fa fa-search"></i> Tìm kiếm
+                    </button>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-primary text-center">
+                        <tr>
+                            <th>
+                                <a asp-action="Index" asp-route-sortOrder="@ViewData["MaNVSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Mã NV</a>
+                            </th>
+                            <th>Họ và Tên</th>
+                            <th>
+                                <a asp-action="Index" asp-route-sortOrder="@ViewData["SSBHSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model[0].SoSoBHXH)</a>
+                            </th>
+                            <th>@Html.DisplayNameFor(model => model[0].MaTheBHYT)</th>
+                            <th>@Html.DisplayNameFor(model => model[0].NoiDKKCB)</th>
+                            <th>@Html.DisplayNameFor(model => model[0].NgayCapSo)</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@Html.DisplayFor(modelItem => item.MaNV)</td>
+                                <td>@Html.DisplayFor(modelItem => item.TenNhanVien)</td>
+                                <td>@Html.DisplayFor(modelItem => item.SoSoBHXH)</td>
+                                <td>@Html.DisplayFor(modelItem => item.MaTheBHYT)</td>
+                                <td>@Html.DisplayFor(modelItem => item.NoiDKKCB)</td>
+                                <td class="text-center">@item.NgayCapSo?.ToString("dd/MM/yyyy")</td>
+                                
+                                <td class="text-center">
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <a asp-action="Edit" asp-route-id="@item.MaBH" class="btn btn-warning btn-sm" title="Sửa" data-bs-toggle="tooltip">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.MaBH" class="btn btn-info btn-sm text-white" title="Chi tiết" data-bs-toggle="tooltip">
+                                            <i class="fa fa-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.MaBH" class="btn btn-danger btn-sm" title="Xóa" data-bs-toggle="tooltip">
+                                            <i class="fa fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @* Cập nhật phân trang *@
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <a asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-searchString="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   class="btn btn-outline-primary @prevDisabledClass">
+                    <i class="fa fa-chevron-left"></i> Trước
+                </a>
+
+                <span class="fw-semibold">Trang @Model.PageIndex / @Model.TotalPages (Tổng: @Model.TotalCount)</span>
+
+                <a asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-searchString="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   class="btn btn-outline-primary @nextDisabledClass">
+                    Sau <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
